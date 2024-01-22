@@ -1,9 +1,4 @@
 FROM rocker/verse:4.3.1 AS verse
-WORKDIR /handbook
-COPY ./handbook .
-RUN quarto render --to html --output-dir html
-RUN quarto render --to docx --output-dir docx
-RUN quarto render --to pdf --output-dir pdf
 WORKDIR /site
 COPY ./site .
 ADD --chmod=644 https://cdn.jsdelivr.net/npm/alpinejs@3.13.2/dist/cdn.min.js alpine@3.12.2.min.js

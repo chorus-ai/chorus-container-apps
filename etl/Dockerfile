@@ -13,10 +13,8 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -
         r-base \
         r-base-dev \
         r-cran-remotes \
-        tini \
-        /*.deb && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /*.deb
+        tini && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /opt/etl
 RUN Rscript -e 'remotes::install_version("renv", "1.0.2")'
 COPY renv.lock .

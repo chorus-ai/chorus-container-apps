@@ -17,8 +17,7 @@ RUN cd /tmp && \
     echo "deb [signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list && \
     apt-get update && \
     apt-get install --yes --no-install-recommends azure-cli && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm *.zip *.deb
+    rm -rf /var/lib/apt/lists/*
 USER ${NB_UID}
 RUN mamba install --yes \
         jupyter-rsession-proxy \

@@ -1,0 +1,18 @@
+# Do not edit .envrc.sample!  Instead:
+#
+# 1. Copy .envrc.sample to .envrc.
+# 2. Edit .envrc to set or adjust values as needed.
+# 3. Run `direnv allow` to add them to your environment.
+
+# Addresses and ports where particular web servers are exposed.
+export ADMIN_HOST=127.0.0.1
+export ADMIN_PORT=8080
+export DGS_HOST=127.0.0.1
+export DGS_PORT=8081
+export JAEGER_HOST=127.0.0.1
+export JAEGER_PORT=16686
+
+# The user account to assume when you access the web server;
+# must be listed in www-admin/access.json or www-dgs/access.json.
+export REMOTE_USER=
+

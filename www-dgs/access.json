@@ -1,0 +1,8 @@
+{
+  "paths": {
+    "": ["*"]
+  },
+  "roles": {
+    "Jared.Houghtaling@tuftsmedicine.org": ["admin"]
+  }
+}

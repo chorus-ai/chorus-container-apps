@@ -1,0 +1,3 @@
+[credential "https://github.com"]
+    username = dummy
+    helper = "!helper() { test \"$1\" = get && [ -n \"$GITHUB_PAT\" ] && echo \"password=$GITHUB_PAT\"; }; helper"

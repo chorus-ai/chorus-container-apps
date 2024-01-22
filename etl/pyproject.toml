@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "etl"
+version = "1.0.0"
+description = "ETL pipelines for the CHoRUS Bridge2AI Azure Data Enclave"
+dependencies = [
+    "azure-identity",
+    "azure-storage-blob",
+    "click",
+    "prefect",
+    "psycopg[binary]",
+    "sqlparse",
+]
+
+[project.scripts]
+etl = "etl:cli"

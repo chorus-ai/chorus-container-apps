@@ -1,0 +1,6 @@
+otel_exporter {
+    endpoint ${OTEL_ENDPOINT};
+}
+otel_service_name  www-dgs;
+otel_trace         on;
+otel_trace_context inject;

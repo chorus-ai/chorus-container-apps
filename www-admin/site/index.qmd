@@ -1,0 +1,10 @@
+---
+title: Administration Portal
+subtitle: CHoRUS Azure Data Enclave
+---
+
+The CHoRUS Administrator Portal currently offers a small collection of tools and services.
+
+- Check **[Ares](/ares/)** to characterize data and assess data quality.
+- Visit **[Prefect](/prefect/)** to orchestrate ingestion, merging, and Ares processes.
+- Open **[Jupyter Lab](/lab/)** to write code in Python, and R.

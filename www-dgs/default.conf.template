@@ -1,0 +1,38 @@
+server {
+    listen ${SERVER_PORT};
+    proxy_http_version 1.1;
+    proxy_ssl_server_name on;
+    proxy_set_header Authorization "";
+    client_max_body_size ${UPLOADS_CLIENT_MAX_BODY_SIZE};
+    set $authenticated_user $http_x_ms_client_principal_name;
+    if ($authenticated_user = '') {
+        set $authenticated_user ${REMOTE_USER};
+    }
+    js_var $protected_uri $uri;
+    if ($protected_uri) {
+    }
+    otel_span_attr authenticated_user $authenticated_user;
+    auth_request /authorize;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        expires epoch;
+    }
+
+    location = /authorize {
+        internal;
+        js_content http.authorize;
+    }
+
+    location = /whoami {
+        js_content http.whoami;
+    }
+
+
+    location /uploads/ {
+        client_body_in_file_only clean;
+        client_body_temp_path /uploads/client_temp;
+        js_content http.uploads;
+    }
+}

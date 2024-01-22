@@ -72,9 +72,9 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}
+            latest
           labels: |
-            ${{ steps.meta.outputs.labels }}
+            latest
           platforms: |
             linux/amd64
           cache-from: type=gha

@@ -1,0 +1,17 @@
+---
+
+transformations:
+
+  cdm_source:
+
+    cdm_source: &CDM_SOURCE
+      sql:
+        - cdm_source.sql
+      depends:
+      parallel: true
+      sub_path: ""
+
+  orchestrate:
+
+    sequence:
+      - *CDM_SOURCE

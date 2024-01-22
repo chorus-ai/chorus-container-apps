@@ -1,0 +1,9 @@
+{
+  "paths": {
+    "": [
+      "Jared.Houghtaling@tuftsmedicine.org"
+    ],
+    "/whoami": ["*"]
+  },
+  "roles": {}
+}

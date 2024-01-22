@@ -1,0 +1,312 @@
+---
+
+transformations:
+
+  metadata:
+
+    metadata: &METADATA
+      sql:
+        - metadata.sql
+      depends:
+      parallel: true
+      sub_path: ""
+
+      
+  health_system:
+
+    location: &LOCATION
+      sql:
+        - location.sql
+      depends:
+      parallel: true
+      sub_path: ""
+
+    care_site: &CARE_SITE
+      sql:
+        - care_site.sql
+      depends:
+        - *LOCATION
+      parallel: true
+      sub_path: ""
+
+    provider: &PROVIDER
+      sql:
+        - provider_dedup.sql
+        - provider.sql
+      depends:
+        - *LOCATION
+        - *CARE_SITE
+      parallel: false
+      sub_path: ""
+
+  clinical:
+
+    person: &PERSON
+      # Multiple sql files will be executed in order listed, unless parallel = true
+      sql:
+        - person.sql
+      depends:
+        - *LOCATION
+        - *CARE_SITE
+        - *PROVIDER
+      parallel: false
+      sub_path: ""
+
+    death: &DEATH
+      sql:
+        - death.sql
+      depends:
+        - *PERSON
+      parallel: true
+      sub_path: ""
+
+    specimen: &SPECIMEN
+      sql:
+        - specimen.sql
+      depends:
+        - *PERSON
+      parallel: true
+      sub_path: ""
+
+    visit_occurrence: &VISIT_OCCURRENCE
+      # Multiple sql files will be executed in order listed, unless parallel = true
+      sql:
+        - visit_occurrence.sql
+      depends:
+        - *CARE_SITE
+        - *PROVIDER
+        - *PERSON
+        - *DEATH
+      parallel: true
+      sub_path: ""  
+
+    visit_detail: &VISIT_DETAIL
+      # Multiple sql files will be executed in order listed, unless parallel = true
+      sql:
+        - visit_detail.sql
+      depends:
+        - *CARE_SITE
+        - *PROVIDER
+        - *PERSON
+        - *DEATH
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    condition_occurrence: &CONDITION_OCCURRENCE
+      # Multiple sql files will be executed in order listed, unless parallel = true
+      sql:
+        - condition_occurrence.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    device_exposure: &DEVICE_EXPOSURE
+      sql:
+        - device_exposure.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    drug_exposure: &DRUG_EXPOSURE
+      sql:
+        - drug_exposure.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    measurement: &MEASUREMENT
+      sql:
+        - measurement.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+    
+    note: &NOTE
+      sql:
+        - note_map.sql
+        - note.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: false
+      sub_path: ""
+
+    note_nlp: &NOTE_NLP
+      sql:
+        - note_nlp.sql
+      depends:
+        - *NOTE
+      parallel: false
+      sub_path: ""
+
+    observation: &OBSERVATION
+      sql:
+        - observation.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    procedure_occurrence: &PROCEDURE_OCCURRENCE
+      sql:
+        - procedure_occurrence.sql
+      depends:
+        - *PERSON
+        - *PROVIDER
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    observation_period: &OBSERVATION_PERIOD
+      sql: 
+        - observation_period.sql
+      notebooks: 
+      depends:
+        - *CONDITION_OCCURRENCE
+        - *DEATH
+        - *DEVICE_EXPOSURE
+        - *DRUG_EXPOSURE
+        - *MEASUREMENT
+        - *NOTE
+        - *OBSERVATION
+        - *PERSON
+        - *PROCEDURE_OCCURRENCE
+        - *SPECIMEN
+        - *VISIT_DETAIL
+        - *VISIT_OCCURRENCE
+      parallel: false
+      sub_path: ""
+
+      
+    fact_relationship: &FACT_RELATIONSHIP
+      sql:
+        - fact_relationship.sql
+      depends:
+        - *OBSERVATION_PERIOD
+      parallel: true
+      sub_path: ""
+
+  derived:
+
+    condition_era: &CONDITION_ERA
+      sql:
+        - condition_era.sql
+      depends:
+        - *CONDITION_OCCURRENCE
+      parallel: true
+      sub_path: ""
+
+    dose_era: &DOSE_ERA
+      sql:
+        - dose_era.sql
+      depends:
+        - *DRUG_EXPOSURE
+      parallel: true
+      sub_path: ""
+
+    drug_era: &DRUG_ERA
+      sql:
+        - drug_era.sql
+      depends:
+        - *DRUG_EXPOSURE
+      parallel: true
+      sub_path: ""
+
+    episode: &EPISODE
+      sql:
+        - episode.sql
+      depends:
+        - *OBSERVATION_PERIOD
+      parallel: true
+      sub_path: ""
+
+    episode_event: &EPISODE_EVENT
+      sql:
+        - episode_event.sql
+      depends:
+        - *EPISODE
+      parallel: true
+      sub_path: ""
+
+  health_economics:
+
+    cost: &COST
+      sql:
+        - cost.sql
+      depends:
+        - *OBSERVATION_PERIOD
+      parallel: true
+      sub_path: ""
+
+    payer_plan_period: &PAYER_PLAN_PERIOD
+      sql:
+        - payer_plan_period.sql
+      depends:
+        - *OBSERVATION_PERIOD
+      parallel: true
+      sub_path: ""
+  
+  extension:
+
+    location_history: &LOCATION_HISTORY
+      sql:
+        - location_history.sql
+      depends:
+        - *LOCATION
+        - *PERSON
+      parallel: true
+      sub_path: ""
+      
+  orchestrate:
+
+    sequence:
+      - *METADATA
+      - *LOCATION
+      - *CARE_SITE
+      - *PROVIDER
+      - *PERSON
+      - *LOCATION_HISTORY
+      - *DEATH
+      - *SPECIMEN
+      - *VISIT_OCCURRENCE
+      - *VISIT_DETAIL
+      - *CONDITION_OCCURRENCE
+      - *DEVICE_EXPOSURE
+      - *DRUG_EXPOSURE
+      - *MEASUREMENT
+      - *NOTE
+      - *NOTE_NLP
+      - *OBSERVATION
+      - *PROCEDURE_OCCURRENCE
+      - *OBSERVATION_PERIOD
+      - *FACT_RELATIONSHIP
+      - *CONDITION_ERA
+      - *DOSE_ERA
+      - *DRUG_ERA
+      - *EPISODE
+      - *EPISODE_EVENT
+      - *COST
+      - *PAYER_PLAN_PERIOD

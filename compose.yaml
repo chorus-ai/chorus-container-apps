@@ -1,0 +1,119 @@
+services:
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+
+  etl:
+    image: ghcr.io/chorus-ai/chorus-etl
+    container_name: chorus-etl
+    environment:
+      PYTHONDONTWRITEBYTECODE: 'true'
+      AZURE_STORAGE_ACCOUNT:
+      AZURE_STORAGE_ACCOUNT_CONTAINER:
+      SSH_AUTH_SOCK:
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: mysecretpassword
+      PREFECT_API_URL: http://prefect:4200/api
+    volumes:
+    - ares:/ares/data
+    - ./etl:/opt/etl
+    - ~/.azure:/root/.azure
+    - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
+    depends_on:
+    - db
+    - otel
+    - prefect
+    restart: on-failure
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.47
+    ports:
+    - ${JAEGER_HOST}:${JAEGER_PORT}:16686
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+      SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: 'false'
+      BADGER_DIRECTORY_VALUE: /badger/data
+      BADGER_DIRECTORY_KEY: /badger/key
+    volumes:
+    - jaeger:/badger
+
+  lab:
+    image: ghcr.io/chorus-ai/chorus-lab
+    container_name: chorus-lab
+    environment:
+      NOTEBOOK_ARGS: --ServerApp.base_url=/lab/default/ --ServerApp.allow_origin='*' --IdentityProvider.token=
+      DATABRICKS_SERVER_HOSTNAME:
+      DATABRICKS_HTTP_PATH:
+      DATABRICKS_ACCESS_TOKEN:
+      DATABRICKS_CATALOG:
+      SSH_AUTH_SOCK:
+    volumes:
+    - jovyan:/home/jovyan
+    - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
+
+  otel:
+    image: ghcr.io/chorus-ai/chorus-otel
+    container_name: chorus-otel
+    volumes:
+    - ./otel/config-dev.yaml:/etc/otelcol-contrib/config.yaml
+    depends_on:
+    - jaeger
+
+  prefect:
+    image: ghcr.io/chorus-ai/chorus-prefect
+    container_name: chorus-prefect
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: mysecretpassword
+      PREFECT_API_DATABASE_CONNECTION_URL: "postgresql+asyncpg:///prefect"
+      PREFECT_API_URL: /prefect/api
+    depends_on:
+    - db
+    - otel
+
+  www-admin:
+    image: ghcr.io/chorus-ai/chorus-www-admin
+    container_name: chorus-www-admin
+    ports:
+    - ${ADMIN_HOST}:${ADMIN_PORT}:8080
+    environment:
+      OTEL_ENDPOINT: otel:4317
+      CHORUS_LAB_BACKEND_TEMPLATE: http://lab:8888/
+      CHORUS_PREFECT_BACKEND: http://prefect:4200/
+      REMOTE_USER:
+    volumes:
+    - ares:/usr/share/nginx/html/ares/data
+    depends_on:
+    - lab
+    - otel
+    - prefect
+    - webapi
+
+  www-dgs:
+    image: ghcr.io/chorus-ai/chorus-www-dgs
+    container_name: chorus-www-dgs
+    ports:
+    - ${DGS_HOST}:${DGS_PORT}:8080
+    environment:
+      OTEL_ENDPOINT: otel:4317
+      REMOTE_USER:
+    volumes:
+    - uploads:/uploads
+    depends_on:
+    - otel
+
+volumes:
+  ares:
+  db:
+  jaeger:
+  jovyan:
+  uploads:

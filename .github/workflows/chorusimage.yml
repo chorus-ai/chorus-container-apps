@@ -49,8 +49,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: b2ai-googleform-bot
+          password: ${{ secrets.GH_TOKEN }}
 
       - name: Extract Docker metadata
         id: meta

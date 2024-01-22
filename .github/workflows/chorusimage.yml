@@ -21,16 +21,22 @@ jobs:
         include:
           - dockerfile: ./etl/Dockerfile
             image: ghcr.io/chorus-ai/chorus-etl
+            context: ./etl
           - dockerfile: ./lab/Dockerfile
             image: ghcr.io/chorus-ai/chorus-lab
+            context: ./lab
           - dockerfile: ./otel/Dockerfile
             image: ghcr.io/chorus-ai/chorus-otel
+            context: ./otel
           - dockerfile: ./prefect/Dockerfile
             image: ghcr.io/chorus-ai/chorus-prefect
+            context: ./prefect
           - dockerfile: ./www-admin/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-admin
+            context: ./www-admin
           - dockerfile: ./www-dgs/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-dgs
+            context: ./www-dgs
 
     permissions:
       contents: read
@@ -62,7 +68,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |

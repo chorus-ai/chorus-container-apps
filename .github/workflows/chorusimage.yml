@@ -19,6 +19,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
+          - dockerfile: ./ares/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-ares
+            context: ./ares
           - dockerfile: ./etl/Dockerfile
             image: ghcr.io/chorus-ai/chorus-etl
             context: ./etl

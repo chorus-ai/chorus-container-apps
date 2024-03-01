@@ -1,5 +1,13 @@
 services:
 
+  ares:
+    # Note - this is an isolated, standalone container
+    image: ghcr.io/chorus-ai/chorus-ares
+    volumes:
+      - ./aresdata:/usr/share/nginx/html/data
+    ports:
+      - 7070:80
+
   db:
     image: postgres:15
     environment:

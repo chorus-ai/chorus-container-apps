@@ -88,6 +88,24 @@ services:
     - db
     - otel
 
+  reports:
+    # Note - this is an isolated, standalone container
+    image: ghcr.io/chorus-ai/chorus-reports
+    environment:
+      SOURCE_NAME: "MIMIC"
+      SOURCE_DESCRIPTION: "MIMIC-IV is a publicly available database of patients admitted to the Beth Israel Deaconess Medical Center in Boston, MA, USA."
+      CDM_SCHEMA: "mimic_demo"
+      RESULTS_SCHEMA: "mimic_demo"
+      DB_DBMS: "spark"
+      DB_HOSTNAME: ""
+      DB_NAME: ""
+      DB_PORT: ""
+      DB_USERNAME: ""
+      DB_PASSWORD: ""
+      AUTHORS: "CHoRUS Standards Team"
+    volumes:
+      - ./qualityreport:/output/chorusreports
+
   www-admin:
     image: ghcr.io/chorus-ai/chorus-www-admin
     container_name: chorus-www-admin

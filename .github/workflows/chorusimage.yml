@@ -34,6 +34,9 @@ jobs:
           - dockerfile: ./prefect/Dockerfile
             image: ghcr.io/chorus-ai/chorus-prefect
             context: ./prefect
+          - dockerfile: ./reports/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-reports
+            context: ./reports
           - dockerfile: ./www-admin/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-admin
             context: ./www-admin

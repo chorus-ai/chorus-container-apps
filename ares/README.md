@@ -4,7 +4,7 @@ This Dockerfile packages the pre-built Ares release into a deployable image with
 with the following command:
 
 ```bash
-docker run --rm -p 7070:80 ghcr.io/chorus-ai/chorus-ares
+docker run -d --rm -p 7070:80 ghcr.io/chorus-ai/chorus-ares:main
 ```
 
 Once executed, you should be able to view the ares webpage from your webbrowser at `0.0.0.0:7070` (unix/mac) or `127.0.0.1:7070` (Windows)
@@ -13,9 +13,9 @@ In order to include your own source releases in the application, you will need t
 
 1. Mount a local volume to `/usr/share/nginx/html/data`
    ```
-   docker run --rm -p 7070:80 \
+   docker run -d --rm -p 7070:80 \
    -v ./data:/usr/share/nginx/html/data \
-   ghcr.io/chorus-ai/chorus-ares
+   ghcr.io/chorus-ai/chorus-ares:main
    ```
 2. Run the [AresIndexer](https://github.com/OHDSI/AresIndexer/blob/main/extras/CodeToRun.R) process against your dataset
     - [Achilles Output](https://drive.google.com/drive/folders/1b2EhWZ08OvEjFj5A0uCAbR0SsbQan7e6?usp=drive_link)

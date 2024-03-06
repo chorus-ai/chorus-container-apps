@@ -16,13 +16,13 @@ from .common import (
     CDM_TABLES,
     DELIVERED_TABLES,
     VOCABULARY_TABLES,
+    archive_and_rename_schema,
     create_or_replace_schema,
     execute_sql,
     generate_flow_run_name,
     get_last_cdm_release_date,
     get_schemas_as_list,
     ingest_omop,
-    insert_tables,
     load_and_execute_sql,
     load_sql,
     orchestrate_sql_w_dependencies,
@@ -86,7 +86,7 @@ def ingest_etl(
 
     if run_qc:
         subprocess_run(
-            [os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, mode, PRODUCTION_SCHEMA],
+            ['Rscript', os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, mode, PRODUCTION_SCHEMA],
             cwd='/ares',
             check=True,
         )

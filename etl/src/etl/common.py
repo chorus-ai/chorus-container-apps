@@ -15,10 +15,7 @@ import pyarrow, pyarrow.csv
 import sqlparse
 
 from .config import (
-    AZURE_STORAGE_ACCOUNT,
-    AZURE_STORAGE_ACCOUNT_CONTAINER,
     ETL_DIR,
-    INGEST_MODE,
     PGHOST,
     PGPORT,
     PGUSER,
@@ -35,7 +32,8 @@ VOCABULARY_TABLES = [
     'concept_synonym',
     'concept_ancestor',
     'drug_strength',
-    'concept_recommended'
+    'concept_recommended',
+    'source_to_concept_map'
 ]
 
 CDM_TABLES = [
@@ -186,10 +184,11 @@ def create_or_replace_schema(schema: str, comment: str) -> None:
 
 
 def archive_and_rename_schema(src_schema: str, trg_schema: str, date_suffix: str) -> None:
+    run_suffix = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
     execute_sql(
         f"RENAME SCHEMA {src_schema} TO {trg_schema}",
         [
-            f"ALTER SCHEMA {trg_schema} RENAME TO {trg_schema}_{date_suffix} CASCADE;",
+            f"ALTER SCHEMA {trg_schema} RENAME TO {trg_schema}_{date_suffix}_{run_suffix};",
             f"ALTER SCHEMA {src_schema} RENAME TO {trg_schema};",
         ]
     )
@@ -216,7 +215,7 @@ def drop_schema(schema) -> None:
 def get_schemas_as_list() -> List[str]:
     with postgresql_cursor() as c:
         c.execute("SELECT schema_name FROM information_schema.schemata;")
-        return [row.schema_name for row in c.fetchall()]
+        return [row[0] for row in c.fetchall()]
 
 
 def view_tables(
@@ -230,7 +229,7 @@ def view_tables(
     qs = []
     for table in source_tables:
         names.append(f"CREATE VIEW OF {table} IN {source_schema}")
-        source_name = f"{qn(source_schema)}.{qn(table)}"
+        source_name = f"{source_schema}.{table}"
         target_name = f"{schema}.{prefix + table + suffix}"
         qs.append(
             f"CREATE VIEW {target_name} AS \n"
@@ -387,23 +386,17 @@ def copy_db_data_from_stdin(
 ) -> None:
     hd = '2' if header else '1'
     pgdbname = os.environ['MODEPGDB']
-    subprocess_run(
-        [
-            'tail',
-            '-q', # remove file references
-            '-n', f'+{hd}', # remove headers if necessary
-            copy_path,
-            '|',
-            f'PGPASSWORD={PGPASSWORD}',
-            'psql',
-            '-d', pgdbname,
-            '-h', PGHOST,
-            '-U', PGUSER,
-            '-p', PGPORT,
-            '-c', f"\copy {schema}.{table} FROM STDIN CSV DELIMITER E'{delim}'",
-        ],
-        check=True,
-    )
+    tmp_file = '/tmp/load.sh'
+    tmp_shell = f"""
+    tail -q -n +{hd} {copy_path} | 
+    psql -d {pgdbname} -h {PGHOST} -U {PGUSER} -p {PGPORT} 
+    -c \"\copy {schema}.{table} FROM STDIN CSV DELIMITER E'{delim}'\"
+    """
+    with open(tmp_file, 'w') as t:
+        t.write("#!/bin/bash\n")
+        t.write(tmp_shell)
+    subprocess_run(['chmod', '+x', tmp_file], check=True)
+    subprocess_run([tmp_file], check=True)
 
 def ingest_omop(
         tables: list[str],
@@ -415,8 +408,9 @@ def ingest_omop(
     logger = prefect.get_run_logger()
     for table in tables:
         try:
-            copy_db_data_from_stdin(schema, table, copy_path, delim, header)
-            logger.info(f'Copied {table} from {copy_path} to database')
+            new_path = os.path.join(copy_path, table + "__*.csv")
+            copy_db_data_from_stdin(schema, table, new_path, delim, header)
+            logger.info(f'Copied {table} from {new_path} to database')
         except Exception as e:
             logger.info(f'Unable to copy {table} from {copy_path} to database: {e}')
             continue

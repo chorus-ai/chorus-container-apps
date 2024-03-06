@@ -1,6 +1,7 @@
 import os
 
 import prefect
+import typing
 
 from .common import (
     VOCABULARY_TABLES,
@@ -40,7 +41,7 @@ def upload_vocabulary(db: typing.Literal['columbia', 'duke', 'emory', 'mgh',
         copy_db_data_from_stdin(
             VOCABULARY_SCHEMA,
             table,
-            os.path.join(load_args['path'], f'{table.upper()}.csv'),
+            os.path.join(load_args['path'], f'{table}.csv'),
             load_args['delimiter'],
             has_header
         )

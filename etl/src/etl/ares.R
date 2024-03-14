@@ -1,5 +1,3 @@
-#!/usr/bin/env Rscript
-
 args <- commandArgs(TRUE)
 if (length(args) != 3) {
     stop(sprintf("Usage: %s <dataroot> %s <dbmode> %s <schema>",

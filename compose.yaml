@@ -21,8 +21,6 @@ services:
     container_name: chorus-etl
     environment:
       PYTHONDONTWRITEBYTECODE: 'true'
-      AZURE_STORAGE_ACCOUNT:
-      AZURE_STORAGE_ACCOUNT_CONTAINER:
       SSH_AUTH_SOCK:
       PGHOST: db
       PGUSER: postgres

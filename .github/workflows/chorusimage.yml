@@ -6,7 +6,6 @@ on:
       - ".github/workflows/chorusimage.yml"
     branches:
       - main
-      - gh-action-tweaks
 
 env:
   REGISTRY: ghcr.io

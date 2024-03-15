@@ -2,8 +2,6 @@ name: chorus images
 
 on:
   push:
-    paths:
-      - ".github/workflows/chorusimage.yml"
     branches:
       - main
 

@@ -1,7 +1,7 @@
 {
   "paths": {
     "": [
-      "Jared.Houghtaling@tuftsmedicine.org"
+      "jhamill@mgb.org"
     ],
     "/whoami": ["*"]
   },

@@ -34,6 +34,9 @@ jobs:
           - dockerfile: ./reports/Dockerfile
             image: ghcr.io/chorus-ai/chorus-reports
             context: ./reports
+          - dockerfile: ./webapi/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-webapi
+            context: ./webapi
           - dockerfile: ./www-admin/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-admin
             context: ./www-admin

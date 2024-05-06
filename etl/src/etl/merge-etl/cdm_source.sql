@@ -13,9 +13,9 @@ INSERT INTO
         vocabulary_version
     )
 SELECT
-    'CHoRUS - MERGE' AS cdm_source_name,
-    'CHoRUS-MERGE' AS cdm_source_abbreviation,
-    'CHoRUS DGP' AS cdm_holder,
+    'MERGE' AS cdm_source_name,
+    'MERGE' AS cdm_source_abbreviation,
+    'MERGE' AS cdm_holder,
     NULL AS source_description,
     NULL AS source_documentation_reference,
     'https://github.com/chorus-ai/chorus-container-apps' AS cdm_etl_reference,

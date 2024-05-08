@@ -287,3 +287,33 @@ CREATE TABLE omopcdm.src_condition_era
     condition_era_end_date     TEXT,
     condition_occurrence_count TEXT
 );
+
+CREATE TABLE omopcdm.src_specimen
+(
+    specimen_id                 TEXT,
+    person_id                   TEXT,
+    specimen_concept_id         TEXT,
+    specimen_type_concept_id    TEXT,
+    specimen_date               TEXT,
+    specimen_datetime           TEXT,
+    quantity                    TEXT,
+    unit_concept_id             TEXT,
+    anatomic_site_concept_id    TEXT,
+    disease_status_concept_id   TEXT,
+    specimen_source_id          TEXT,
+    specimen_source_value       TEXT,
+    unit_source_value           TEXT,
+    anatomic_site_source_value  TEXT,
+    disease_status_source_value TEXT
+);
+
+CREATE TABLE omopcdm.src_dose_era
+(
+    dose_era_id         TEXT,
+    person_id           TEXT,
+    drug_concept_id     TEXT,
+    unit_concept_id     TEXT,
+    dose_value          TEXT,
+    dose_era_start_date TEXT,
+    dose_era_end_date   TEXT
+);

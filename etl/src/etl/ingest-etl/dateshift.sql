@@ -1,7 +1,7 @@
 INSERT INTO
     persist.date_shift (person_id, days)
 SELECT
-    person_id::bigint,
+    person_id::float::bigint,
     (random() * 61)::int - 30 AS days
 FROM omopcdm.src_person
 WHERE person_id::bigint NOT IN (SELECT person_id FROM persist.date_shift);

@@ -19,6 +19,9 @@ jobs:
           - dockerfile: ./ares/Dockerfile
             image: ghcr.io/chorus-ai/chorus-ares
             context: ./ares
+          - dockerfile: ./athena/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-athena
+            context: ./athena
           - dockerfile: ./etl/Dockerfile
             image: ghcr.io/chorus-ai/chorus-etl
             context: ./etl
@@ -34,6 +37,9 @@ jobs:
           - dockerfile: ./reports/Dockerfile
             image: ghcr.io/chorus-ai/chorus-reports
             context: ./reports
+          - dockerfile: ./solr/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-solr
+            context: ./solr
           - dockerfile: ./webapi/Dockerfile
             image: ghcr.io/chorus-ai/chorus-webapi
             context: ./webapi

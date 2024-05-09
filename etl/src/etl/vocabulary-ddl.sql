@@ -94,3 +94,14 @@ CREATE TABLE concept_recommended (
   concept_id_2 integer NOT NULL,
   relationship_id text NOT NULL
 );
+
+CREATE TABLE concept_hierarchy
+ (concept_id             INT,
+  concept_name           VARCHAR(400),
+  treemap                VARCHAR(20),
+  concept_hierarchy_type VARCHAR(20),
+  level1_concept_name    VARCHAR(255),
+  level2_concept_name    VARCHAR(255),
+  level3_concept_name    VARCHAR(255),
+  level4_concept_name    VARCHAR(255)
+);

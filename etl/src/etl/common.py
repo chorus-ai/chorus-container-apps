@@ -98,7 +98,7 @@ DELIVERED_TABLES = [
     'condition_era',
 ]
 
-SITE_LIST = ['columbia',
+SITE_LIST = ['copsql lumbia',
              'duke',
              'emory',
              'mgh',
@@ -251,30 +251,26 @@ def pipe_table_transfer(
     """Creates tables in a different database using the dblink extension."""
     names = []
     qs = []
+    tmp_file = f'/tmp/transfer-{source_dbname}.sh'
+    with open(tmp_file, 'w') as t:
+        t.write("#!/bin/bash\n")
+
     for table in source_tables:
         names.append(f"TRANSFER {table} IN {source_dbname} to {trg_dbname}")
         source_name = f"{source_schema}.{table}"
         target_name = f"{trg_schema}.{prefix + table + suffix}"
-        subprocess_run(
-            [
-                f'PGPASSWORD={PGPASSWORD}',
-                'psql',
-                '-d', source_dbname,
-                '-h', PGHOST,
-                '-U', PGUSER,
-                '-p', PGPORT,
-                '-c', f"\copy {source_name} TO STDOUT CSV",
-                '|',
-                f'PGPASSWORD={PGPASSWORD}',
-                'psql',
-                '-d', trg_dbname,
-                '-h', PGHOST,
-                '-U', PGUSER,
-                '-p', PGPORT,
-                '-c', f"\copy {target_name} FROM STDIN CSV",
-            ],
-        check=True,
-        )
+        tmp_shell = f"""
+                psql -d {source_dbname} -U {PGUSER} \
+                -c \"\copy {source_name} TO STDOUT CSV\" | \
+                psql -d {trg_dbname} -U {PGUSER} \
+                -c \"\copy {target_name} FROM STDIN CSV\"
+                """
+        with open(tmp_file, 'a') as t:
+            t.write(tmp_shell)
+            t.write("\n")
+
+    subprocess_run(['chmod', '+x', tmp_file], check=True)
+    subprocess_run([tmp_file], check=True)
 
 
 def load_yaml(

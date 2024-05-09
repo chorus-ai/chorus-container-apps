@@ -1,4 +1,3 @@
-CREATE TABLE person_map AS (
     WITH person_joined AS (
         SELECT person_id AS old_id,
                'columbia' AS source_name
@@ -56,7 +55,9 @@ CREATE TABLE person_map AS (
                'seattle' AS source_name
         FROM seattle.person
                         )
-    SELECT row_number() OVER (ORDER BY source_name, old_id) AS new_id,
+    INSERT INTO persist.person_map
+    SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.person_map) AS new_id,
            old_id,
            source_name
-    FROM person_joined;
+    FROM person_joined
+    WHERE CONCAT(old_id::text, "|", source_name) NOT IN (SELECT CONCAT(old_id::text, "|", source_name) FROM persist.person_map);

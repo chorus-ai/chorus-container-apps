@@ -1,0 +1,4 @@
+.env
+*.jar
+/solr/data
+/solr/logs

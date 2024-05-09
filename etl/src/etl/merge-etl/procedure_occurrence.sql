@@ -22,15 +22,12 @@ WITH
             modifier_source_value
         FROM
             columbia.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'columbia') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'columbia') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'columbia'
-            AND vom.source_name = 'columbia'
-            AND vdm.source_name = 'columbia'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -54,15 +51,12 @@ WITH
             modifier_source_value
         FROM
             duke.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'duke') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'duke') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'duke'
-            AND vom.source_name = 'duke'
-            AND vdm.source_name = 'duke'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -86,15 +80,12 @@ WITH
             modifier_source_value
         FROM
             emory.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'emory') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'emory') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'emory'
-            AND vom.source_name = 'emory'
-            AND vdm.source_name = 'emory'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -118,15 +109,12 @@ WITH
             modifier_source_value
         FROM
             mgh.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mgh') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mgh') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'mgh'
-            AND vom.source_name = 'mgh'
-            AND vdm.source_name = 'mgh'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -150,15 +138,12 @@ WITH
             modifier_source_value
         FROM
             mit.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mit') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mit') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'mit'
-            AND vom.source_name = 'mit'
-            AND vdm.source_name = 'mit'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -182,15 +167,12 @@ WITH
             modifier_source_value
         FROM
             mayo.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mayo') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mayo') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'mayo'
-            AND vom.source_name = 'mayo'
-            AND vdm.source_name = 'mayo'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -214,15 +196,12 @@ WITH
             modifier_source_value
         FROM
             nationwide.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'nationwide') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'nationwide') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'nationwide'
-            AND vom.source_name = 'nationwide'
-            AND vdm.source_name = 'nationwide'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -246,15 +225,12 @@ WITH
             modifier_source_value
         FROM
             newmexico.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'newmexico') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'newmexico') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'newmexico'
-            AND vom.source_name = 'newmexico'
-            AND vdm.source_name = 'newmexico'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -278,15 +254,12 @@ WITH
             modifier_source_value
         FROM
             ucla.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucla') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucla') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'ucla'
-            AND vom.source_name = 'ucla'
-            AND vdm.source_name = 'ucla'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -310,15 +283,12 @@ WITH
             modifier_source_value
         FROM
             ucsf.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucla') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucla') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'ucsf'
-            AND vom.source_name = 'ucsf'
-            AND vdm.source_name = 'ucsf'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -342,15 +312,12 @@ WITH
             modifier_source_value
         FROM
             florida.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'florida') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'florida') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'florida'
-            AND vom.source_name = 'florida'
-            AND vdm.source_name = 'florida'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -374,15 +341,12 @@ WITH
             modifier_source_value
         FROM
             pittsburgh.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'pittsburgh') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'pittsburgh') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'pittsburgh'
-            AND vom.source_name = 'pittsburgh'
-            AND vdm.source_name = 'pittsburgh'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -406,15 +370,12 @@ WITH
             modifier_source_value
         FROM
             virginia.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'virginia') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'virginia') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'virginia'
-            AND vom.source_name = 'virginia'
-            AND vdm.source_name = 'virginia'
         UNION
         SELECT
             procedure_occurrence_id AS src_table_id,
@@ -438,15 +399,12 @@ WITH
             modifier_source_value
         FROM
             seattle.procedure_occurrence p
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'seattle') pm
                 ON pm.old_id = p.person_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'seattle') vom
             ON vom.old_id = p.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = p.visit_occurrence_id
-        WHERE pm.source_name = 'seattle'
-            AND vom.source_name = 'seattle'
-            AND vdm.source_name = 'seattle'
     )
 INSERT INTO
     procedure_occurrence

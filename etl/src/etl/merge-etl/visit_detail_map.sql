@@ -1,4 +1,3 @@
-CREATE TABLE visit_detail_map AS (
     WITH visit_detail_joined AS (
         SELECT visit_detail_id AS old_id,
                'columbia' AS source_name
@@ -56,7 +55,10 @@ CREATE TABLE visit_detail_map AS (
                'seattle' AS source_name
         FROM seattle.visit_detail
                         )
-    SELECT row_number() OVER (ORDER BY source_name, old_id) AS new_id,
+    INSERT INTO persist.visit_detail_map
+    SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.visit_detail_map) AS new_id,
            old_id,
            source_name
-    FROM visit_detail_joined;
+    FROM visit_detail_joined
+    WHERE CONCAT(old_id::text, "|", source_name) NOT IN (SELECT CONCAT(old_id::text, "|", source_name) FROM persist.visit_detail_map)
+    ;

@@ -26,21 +26,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             columbia.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'columbia') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'columbia') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'columbia'
-            AND vom.source_name = 'columbia'
-            AND vdm.source_name = 'columbia'
-            AND vdm2.source_name = 'columbia'
-            AND vdm3.source_name = 'columbia'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -68,21 +63,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             duke.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'duke') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'duke') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'duke'
-            AND vom.source_name = 'duke'
-            AND vdm.source_name = 'duke'
-            AND vdm2.source_name = 'duke'
-            AND vdm3.source_name = 'duke'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -110,21 +100,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             emory.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'emory') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'emory') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'emory'
-            AND vom.source_name = 'emory'
-            AND vdm.source_name = 'emory'
-            AND vdm2.source_name = 'emory'
-            AND vdm3.source_name = 'emory'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -152,21 +137,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             mgh.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mgh') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mgh') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'mgh'
-            AND vom.source_name = 'mgh'
-            AND vdm.source_name = 'mgh'
-            AND vdm2.source_name = 'mgh'
-            AND vdm3.source_name = 'mgh'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -194,21 +174,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             mit.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mit') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mit') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'mit'
-            AND vom.source_name = 'mit'
-            AND vdm.source_name = 'mit'
-            AND vdm2.source_name = 'mit'
-            AND vdm3.source_name = 'mit'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -236,21 +211,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             mayo.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mayo') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mayo') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'mayo'
-            AND vom.source_name = 'mayo'
-            AND vdm.source_name = 'mayo'
-            AND vdm2.source_name = 'mayo'
-            AND vdm3.source_name = 'mayo'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -278,21 +248,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             nationwide.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'nationwide') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'nationwide') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'nationwide'
-            AND vom.source_name = 'nationwide'
-            AND vdm.source_name = 'nationwide'
-            AND vdm2.source_name = 'nationwide'
-            AND vdm3.source_name = 'nationwide'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -320,21 +285,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             newmexico.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'newmexico') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'newmexico') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'newmexico'
-            AND vom.source_name = 'newmexico'
-            AND vdm.source_name = 'newmexico'
-            AND vdm2.source_name = 'newmexico'
-            AND vdm3.source_name = 'newmexico'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -362,21 +322,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             ucla.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucla') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucla') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'ucla'
-            AND vom.source_name = 'ucla'
-            AND vdm.source_name = 'ucla'
-            AND vdm2.source_name = 'ucla'
-            AND vdm3.source_name = 'ucla'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -404,21 +359,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             ucsf.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucsf') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucsf') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'ucsf'
-            AND vom.source_name = 'ucsf'
-            AND vdm.source_name = 'ucsf'
-            AND vdm2.source_name = 'ucsf'
-            AND vdm3.source_name = 'ucsf'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -446,21 +396,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             florida.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'florida') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'florida') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'florida'
-            AND vom.source_name = 'florida'
-            AND vdm.source_name = 'florida'
-            AND vdm2.source_name = 'florida'
-            AND vdm3.source_name = 'florida'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -488,21 +433,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             pittsburgh.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'pittsburgh') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'pittsburgh') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'pittsburgh'
-            AND vom.source_name = 'pittsburgh'
-            AND vdm.source_name = 'pittsburgh'
-            AND vdm2.source_name = 'pittsburgh'
-            AND vdm3.source_name = 'pittsburgh'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -530,21 +470,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             virginia.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'virginia') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'virginia') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'virginia'
-            AND vom.source_name = 'virginia'
-            AND vdm.source_name = 'virginia'
-            AND vdm2.source_name = 'virginia'
-            AND vdm3.source_name = 'virginia'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
         UNION
         SELECT
             visit_detail_id AS src_visit_detail_id,
@@ -572,21 +507,16 @@ WITH
             vom.new_id AS visit_occurrence_id
         FROM
             seattle.visit_detail v
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'seattle') pm
                 ON pm.old_id = v.person_id
-        INNER JOIN visit_occurrence_map vom
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'seattle') vom
             ON vom.old_id = v.visit_occurrence_id
-        INNER JOIN visit_detail_map vdm
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = v.visit_detail_id
-        LEFT JOIN visit_detail_map vdm2
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm2
             ON vdm2.old_id = v.preceding_visit_detail_id
-        LEFT JOIN visit_detail_map vdm3
-            ON vdm2.old_id = v.parent_visit_detail_id
-        WHERE pm.source_name = 'seattle'
-            AND vom.source_name = 'seattle'
-            AND vdm.source_name = 'seattle'
-            AND vdm2.source_name = 'seattle'
-            AND vdm3.source_name = 'seattle'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
     )
 INSERT INTO
 visit_detail
@@ -599,8 +529,8 @@ SELECT
     visit_detail_end_date,
     visit_detail_end_datetime,
     visit_detail_type_concept_id,
-    provider_id,
-    care_site_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
     visit_detail_source_value,
     visit_detail_source_concept_id,
     admitted_from_concept_id,

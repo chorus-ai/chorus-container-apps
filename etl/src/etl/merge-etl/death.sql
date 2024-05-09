@@ -12,7 +12,7 @@ WITH
             cause_source_concept_id
         FROM
             columbia.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'columbia'
         UNION
@@ -28,7 +28,7 @@ WITH
             cause_source_concept_id
         FROM
             duke.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'duke'
         UNION
@@ -44,7 +44,7 @@ WITH
             cause_source_concept_id
         FROM
             emory.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'emory'
         UNION
@@ -60,7 +60,7 @@ WITH
             cause_source_concept_id
         FROM
             mgh.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'mgh'
         UNION
@@ -76,7 +76,7 @@ WITH
             cause_source_concept_id
         FROM
             mit.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'mit'
         UNION
@@ -92,7 +92,7 @@ WITH
             cause_source_concept_id
         FROM
             mayo.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'mayo'
         UNION
@@ -108,7 +108,7 @@ WITH
             cause_source_concept_id
         FROM
             nationwide.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'nationwide'
         UNION
@@ -124,7 +124,7 @@ WITH
             cause_source_concept_id
         FROM
             newmexico.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'newmexico'
         UNION
@@ -140,7 +140,7 @@ WITH
             cause_source_concept_id
         FROM
             ucla.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'ucla'
         UNION
@@ -156,7 +156,7 @@ WITH
             cause_source_concept_id
         FROM
             ucsf.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'ucsf'
         UNION
@@ -172,7 +172,7 @@ WITH
             cause_source_concept_id
         FROM
             florida.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'florida'
         UNION
@@ -188,7 +188,7 @@ WITH
             cause_source_concept_id
         FROM
             pittsburgh.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'pittsburgh'
         UNION
@@ -204,7 +204,7 @@ WITH
             cause_source_concept_id
         FROM
             virginia.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'virginia'
         UNION
@@ -220,7 +220,7 @@ WITH
             cause_source_concept_id
         FROM
             seattle.death de
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'seattle'
     )

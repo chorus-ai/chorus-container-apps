@@ -363,32 +363,32 @@ CREATE TABLE cost (
 );
 
 CREATE TABLE drug_era (
-  drug_era_id integer NOT NULL,
-  person_id integer NOT NULL,
+  drug_era_id bigint NOT NULL,
+  person_id bigint NOT NULL,
   drug_concept_id integer NOT NULL,
   drug_era_start_date date NOT NULL,
   drug_era_end_date date NOT NULL,
-  drug_exposure_count integer,
-  gap_days integer
+  drug_exposure_count bigint,
+  gap_days bigint
 );
 
 CREATE TABLE dose_era (
-  dose_era_id integer NOT NULL,
-  person_id integer NOT NULL,
-  drug_concept_id integer NOT NULL,
-  unit_concept_id integer NOT NULL,
+  dose_era_id bigint NOT NULL,
+  person_id bigint NOT NULL,
+  drug_concept_id bigint NOT NULL,
+  unit_concept_id bigint NOT NULL,
   dose_value float NOT NULL,
   dose_era_start_date date NOT NULL,
   dose_era_end_date date NOT NULL
 );
 
 CREATE TABLE condition_era (
-  condition_era_id integer NOT NULL,
-  person_id integer NOT NULL,
+  condition_era_id bigint NOT NULL,
+  person_id bigint NOT NULL,
   condition_concept_id integer NOT NULL,
   condition_era_start_date date NOT NULL,
   condition_era_end_date date NOT NULL,
-  condition_occurrence_count integer
+  condition_occurrence_count bigint
 );
 
 CREATE TABLE episode (

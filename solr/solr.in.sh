@@ -110,7 +110,7 @@ SOLR_JAVA_MEM="-Xms3120m -Xmx3120m"
 
 # Path to a directory that Solr will use as root for data folders for each core.
 # If not set, defaults to <instance_dir>/data. Overridable per core through 'dataDir' core property
-#SOLR_DATA_HOME=
+SOLR_DATA_HOME=/solr_mnt
 
 # Solr provides a default Log4J configuration xml file in server/resources
 # however, you may want to customize the log settings and file appender location

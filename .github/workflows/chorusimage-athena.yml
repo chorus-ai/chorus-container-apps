@@ -1,9 +1,12 @@
-name: chorus images
+name: chorus images athena
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'athena/**'
+      - 'solr/**'
 
 env:
   REGISTRY: ghcr.io
@@ -16,40 +19,12 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./ares/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-ares
-            context: ./ares
           - dockerfile: ./athena/Dockerfile
             image: ghcr.io/chorus-ai/chorus-athena
             context: ./athena
-          - dockerfile: ./etl/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-etl
-            context: ./etl
-          - dockerfile: ./lab/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-lab
-            context: ./lab
-          - dockerfile: ./otel/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-otel
-            context: ./otel
-          - dockerfile: ./prefect/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-prefect
-            context: ./prefect
-          - dockerfile: ./reports/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-reports
-            context: ./reports
           - dockerfile: ./solr/Dockerfile
             image: ghcr.io/chorus-ai/chorus-solr
             context: ./solr
-          - dockerfile: ./webapi/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-webapi
-            context: ./webapi
-          - dockerfile: ./www-admin/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-admin
-            context: ./www-admin
-          - dockerfile: ./www-dgs/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-dgs
-            context: ./www-dgs
-
     permissions:
       contents: read
       packages: write

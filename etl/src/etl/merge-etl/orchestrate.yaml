@@ -1,6 +1,25 @@
 ---
 
 transformations:
+  ddl: &DDL
+    ddl:
+      sql:
+        - merge_ddl.sql
+      depends:
+      parallel: true
+      sub_path: ""
+
+  maps:
+    maps: &MAPS
+      sql:
+        - person_map.sql
+        - visit_occurrence_map.sql
+        - visit_detail_map.sql
+        - note_map.sql
+      depends:
+        - *DDL
+      parallel: true
+      sub_path: ""
 
   metadata:
 
@@ -8,6 +27,7 @@ transformations:
       sql:
         - metadata.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -18,6 +38,7 @@ transformations:
       sql:
         - location.sql
       depends:
+        - *METADATA
       parallel: true
       sub_path: ""
 
@@ -31,7 +52,6 @@ transformations:
 
     provider: &PROVIDER
       sql:
-        - provider_dedup.sql
         - provider.sql
       depends:
         - *LOCATION
@@ -56,7 +76,6 @@ transformations:
       sql:
         - death.sql
       depends:
-        - *PERSON
       parallel: true
       sub_path: ""
 
@@ -64,7 +83,6 @@ transformations:
       sql:
         - specimen.sql
       depends:
-        - *PERSON
       parallel: true
       sub_path: ""
 
@@ -73,10 +91,6 @@ transformations:
       sql:
         - visit_occurrence.sql
       depends:
-        - *CARE_SITE
-        - *PROVIDER
-        - *PERSON
-        - *DEATH
       parallel: true
       sub_path: ""  
 
@@ -85,11 +99,6 @@ transformations:
       sql:
         - visit_detail.sql
       depends:
-        - *CARE_SITE
-        - *PROVIDER
-        - *PERSON
-        - *DEATH
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
@@ -98,10 +107,6 @@ transformations:
       sql:
         - condition_occurrence.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
@@ -109,10 +114,6 @@ transformations:
       sql:
         - device_exposure.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
@@ -120,10 +121,6 @@ transformations:
       sql:
         - drug_exposure.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
@@ -131,23 +128,14 @@ transformations:
       sql:
         - measurement.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
     
     note: &NOTE
       sql:
-        - note_map.sql
         - note.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
-      parallel: false
+      parallel: true
       sub_path: ""
 
     note_nlp: &NOTE_NLP
@@ -162,10 +150,6 @@ transformations:
       sql:
         - observation.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
@@ -173,17 +157,13 @@ transformations:
       sql:
         - procedure_occurrence.sql
       depends:
-        - *PERSON
-        - *PROVIDER
-        - *VISIT_DETAIL
-        - *VISIT_OCCURRENCE
       parallel: true
       sub_path: ""
 
-    observation_period: &OBSERVATION_PERIOD
-      sql: 
-        - observation_period.sql
-      notebooks: 
+    index: &INDEX
+      sql:
+        - cdm_index.sql
+      notebooks:
       depends:
         - *CONDITION_OCCURRENCE
         - *DEATH
@@ -197,6 +177,15 @@ transformations:
         - *SPECIMEN
         - *VISIT_DETAIL
         - *VISIT_OCCURRENCE
+      parallel: false
+      sub_path: ""
+
+    observation_period: &OBSERVATION_PERIOD
+      sql:
+        - observation_period.sql
+      notebooks:
+      depends:
+        - *INDEX
       parallel: false
       sub_path: ""
 
@@ -283,12 +272,13 @@ transformations:
   orchestrate:
 
     sequence:
+      - *DDL
+      - *MAPS
       - *METADATA
       - *LOCATION
       - *CARE_SITE
       - *PROVIDER
       - *PERSON
-      - *LOCATION_HISTORY
       - *DEATH
       - *SPECIMEN
       - *VISIT_OCCURRENCE
@@ -301,6 +291,7 @@ transformations:
       - *NOTE_NLP
       - *OBSERVATION
       - *PROCEDURE_OCCURRENCE
+      - *INDEX
       - *OBSERVATION_PERIOD
       - *FACT_RELATIONSHIP
       - *CONDITION_ERA

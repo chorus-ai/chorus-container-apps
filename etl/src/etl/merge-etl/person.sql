@@ -19,7 +19,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             columbia.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'columbia'
         UNION
@@ -42,7 +42,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             duke.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'duke'
         UNION
@@ -65,7 +65,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             emory.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'emory'
         UNION
@@ -88,7 +88,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             mgh.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mgh'
         UNION
@@ -111,7 +111,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             mit.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mit'
         UNION
@@ -134,7 +134,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             mayo.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mayo'
         UNION
@@ -157,7 +157,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             nationwide.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'nationwide'
         UNION
@@ -180,7 +180,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             newmexico.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'newmexico'
         UNION
@@ -203,7 +203,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             ucla.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'ucla'
         UNION
@@ -226,7 +226,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             ucsf.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'ucsf'
         UNION
@@ -249,7 +249,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             florida.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'florida'
         UNION
@@ -272,7 +272,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             pittsburgh.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'pittsburgh'
         UNION
@@ -295,7 +295,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             virginia.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'virginia'
         UNION
@@ -318,7 +318,7 @@ WITH
             ethnicity_source_concept_id
         FROM
             seattle.person p
-        INNER JOIN person_map pm
+        INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'seattle'
     )

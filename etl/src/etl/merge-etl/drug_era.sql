@@ -164,3 +164,11 @@ INSERT INTO
                     )
 SELECT *
 FROM tmp_de;
+
+CREATE INDEX idx_drug_era_person_id_1 ON omopcdm.drug_era (person_id ASC);
+CLUSTER omopcdm.drug_era USING idx_drug_era_person_id_1;
+CREATE INDEX idx_drug_era_concept_id_1 ON omopcdm.drug_era (drug_concept_id ASC);
+
+
+ALTER TABLE omopcdm.DRUG_ERA
+    ADD CONSTRAINT xpk_DRUG_ERA PRIMARY KEY (drug_era_id);

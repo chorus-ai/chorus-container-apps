@@ -69,8 +69,8 @@ def merge_etl(run_qc: bool = True):
         )
         logger.info(f"Temporary schema for {site} populated successfully!")
 
-    logger.info(f"Building {mode}...")
-    base_etl_dir = os.path.join(ETL_DIR, 'merge-etl', mode)
+    logger.info(f"Building MERGE...")
+    base_etl_dir = os.path.join(ETL_DIR, 'merge-etl')
 
     orchestrate_sql_w_dependencies(base_etl_dir, TEMP_SCHEMA)
 

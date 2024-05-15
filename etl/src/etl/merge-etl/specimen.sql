@@ -17,7 +17,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM columbia.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'columbia'
                             UNION
@@ -39,7 +39,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM duke.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'duke'
                             UNION
@@ -61,7 +61,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM emory.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'emory'
                             UNION
@@ -83,7 +83,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM mgh.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'mgh'
                             UNION
@@ -105,7 +105,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM mit.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'mit'
                             UNION
@@ -127,7 +127,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM mayo.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'mayo'
                             UNION
@@ -149,7 +149,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM nationwide.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'nationwide'
                             UNION
@@ -171,7 +171,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM newmexico.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'newmexico'
                             UNION
@@ -193,7 +193,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM ucla.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'ucla'
                             UNION
@@ -215,7 +215,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM ucsf.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'ucsf'
                             UNION
@@ -237,7 +237,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM florida.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'florida'
                             UNION
@@ -259,7 +259,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM pittsburgh.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'pittsburgh'
                             UNION
@@ -281,7 +281,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM virginia.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'virginia'
                             UNION
@@ -303,7 +303,7 @@ WITH specimen_joined AS (
                                    anatomic_site_source_value,
                                    disease_status_source_value
                             FROM seattle.specimen s
-                                     INNER JOIN person_map pm
+                                     INNER JOIN persist.person_map pm
                                                 ON pm.old_id = s.person_id
                             WHERE pm.source_name = 'seattle'
                         )

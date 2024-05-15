@@ -23,18 +23,14 @@ WITH
             note_event_field_concept_id
         FROM
             columbia.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'columbia') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'columbia') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'columbia') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'columbia'
-            AND nm.source_name = 'columbia'
-            AND vom.source_name = 'columbia'
-            AND vdm.source_name = 'columbia'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -59,18 +55,14 @@ WITH
             note_event_field_concept_id
         FROM
             duke.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'duke') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'duke') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'duke') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'duke'
-            AND nm.source_name = 'duke'
-            AND vom.source_name = 'duke'
-            AND vdm.source_name = 'duke'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -95,18 +87,14 @@ WITH
             note_event_field_concept_id
         FROM
             emory.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'emory') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'emory') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'emory') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'emory'
-            AND nm.source_name = 'emory'
-            AND vom.source_name = 'emory'
-            AND vdm.source_name = 'emory'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -131,18 +119,14 @@ WITH
             note_event_field_concept_id
         FROM
             mgh.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mgh') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mgh') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mgh') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'mgh'
-            AND nm.source_name = 'mgh'
-            AND vom.source_name = 'mgh'
-            AND vdm.source_name = 'mgh'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -167,18 +151,14 @@ WITH
             note_event_field_concept_id
         FROM
             mit.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mit') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mit') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mit') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'mit'
-            AND nm.source_name = 'mit'
-            AND vom.source_name = 'mit'
-            AND vdm.source_name = 'mit'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -203,18 +183,14 @@ WITH
             note_event_field_concept_id
         FROM
             mayo.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'mayo') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mayo') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mayo') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'mayo'
-            AND nm.source_name = 'mayo'
-            AND vom.source_name = 'mayo'
-            AND vdm.source_name = 'mayo'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -239,18 +215,14 @@ WITH
             note_event_field_concept_id
         FROM
             nationwide.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'nationwide') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'nationwide') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'nationwide') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'nationwide'
-            AND nm.source_name = 'nationwide'
-            AND vom.source_name = 'nationwide'
-            AND vdm.source_name = 'nationwide'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -275,18 +247,14 @@ WITH
             note_event_field_concept_id
         FROM
             newmexico.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'newmexico') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'newmexico') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'newmexico') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'newmexico'
-            AND nm.source_name = 'newmexico'
-            AND vom.source_name = 'newmexico'
-            AND vdm.source_name = 'newmexico'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -311,18 +279,14 @@ WITH
             note_event_field_concept_id
         FROM
             ucla.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucla') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucla') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucla') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'ucla'
-            AND nm.source_name = 'ucla'
-            AND vom.source_name = 'ucla'
-            AND vdm.source_name = 'ucla'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -347,18 +311,14 @@ WITH
             note_event_field_concept_id
         FROM
             ucsf.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'ucsf') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucsf') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucsf') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'ucsf'
-            AND nm.source_name = 'ucsf'
-            AND vom.source_name = 'ucsf'
-            AND vdm.source_name = 'ucsf'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -383,18 +343,14 @@ WITH
             note_event_field_concept_id
         FROM
             florida.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'florida') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'florida') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'florida') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'florida'
-            AND nm.source_name = 'florida'
-            AND vom.source_name = 'florida'
-            AND vdm.source_name = 'florida'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -419,18 +375,14 @@ WITH
             note_event_field_concept_id
         FROM
             pittsburgh.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'pittsburgh') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'pittsburgh') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'pittsburgh') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'pittsburgh'
-            AND nm.source_name = 'pittsburgh'
-            AND vom.source_name = 'pittsburgh'
-            AND vdm.source_name = 'pittsburgh'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -455,18 +407,14 @@ WITH
             note_event_field_concept_id
         FROM
             virginia.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'virginia') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'virginia') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'virginia') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'virginia'
-            AND nm.source_name = 'virginia'
-            AND vom.source_name = 'virginia'
-            AND vdm.source_name = 'virginia'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm
+            ON vdm.old_id = n.visit_detail_id
         UNION
         SELECT
             note_id AS src_table_id,
@@ -491,18 +439,14 @@ WITH
             note_event_field_concept_id
         FROM
             seattle.note n
-        INNER JOIN person_map pm
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'seattle') pm
                 ON pm.old_id = n.person_id
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'seattle') nm
                 ON nm.old_id = n.note_id
-        LEFT JOIN visit_occurrence_map vom
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'seattle') vom
             ON vom.old_id = n.visit_occurrence_id
-        LEFT JOIN visit_detail_map vdm
-            ON vdm.old_id = n.visit_occurrence_id
-        WHERE pm.source_name = 'seattle'
-            AND nm.source_name = 'seattle'
-            AND vom.source_name = 'seattle'
-            AND vdm.source_name = 'seattle'
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
+            ON vdm.old_id = n.visit_detail_id
     )
 INSERT INTO
     note

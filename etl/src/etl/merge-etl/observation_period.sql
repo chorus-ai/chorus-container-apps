@@ -107,8 +107,8 @@ FROM
 GROUP BY
     observation_period_all.person_id;
 
-CREATE INDEX idx_observation_period_id_1 ON omopcdm.observation_period (person_id ASC);
-CLUSTER omopcdm.observation_period USING idx_observation_period_id_1;
+CREATE INDEX idx_observation_period_id_1 ON observation_period (person_id ASC);
+CLUSTER observation_period USING idx_observation_period_id_1;
 
-ALTER TABLE omopcdm.OBSERVATION_PERIOD
+ALTER TABLE OBSERVATION_PERIOD
     ADD CONSTRAINT xpk_OBSERVATION_PERIOD PRIMARY KEY (observation_period_id);

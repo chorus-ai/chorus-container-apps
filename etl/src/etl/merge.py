@@ -84,10 +84,15 @@ def merge_etl(run_qc: bool = True):
 
     if run_qc:
         subprocess_run(
-            [os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, 'merge', PRODUCTION_SCHEMA],
+            ['Rscript', os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, 'merge', PRODUCTION_SCHEMA],
             cwd='/ares',
             check=True,
         )
+
+    post_etl_dir = os.path.join(ETL_DIR, 'atlas')
+
+    orchestrate_sql_w_dependencies(post_etl_dir, PRODUCTION_SCHEMA)
+
 
     t1 = datetime.datetime.now()
     minutes = round((t1 - t0).total_seconds() / 60)

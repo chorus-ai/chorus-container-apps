@@ -7,7 +7,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -19,9 +19,8 @@ WITH
             term_modifiers
         FROM
             columbia.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'columbia') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'columbia'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -30,7 +29,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -42,9 +41,8 @@ WITH
             term_modifiers
         FROM
             duke.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'duke') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'duke'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -53,7 +51,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -65,9 +63,8 @@ WITH
             term_modifiers
         FROM
             emory.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'emory') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'emory'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -76,7 +73,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -88,9 +85,8 @@ WITH
             term_modifiers
         FROM
             mgh.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mgh') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'mgh'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -99,7 +95,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -111,9 +107,8 @@ WITH
             term_modifiers
         FROM
             mit.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mit') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'mit'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -122,7 +117,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -134,9 +129,8 @@ WITH
             term_modifiers
         FROM
             mayo.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mayo') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'mayo'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -145,7 +139,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -157,9 +151,8 @@ WITH
             term_modifiers
         FROM
             nationwide.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'nationwide') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'nationwide'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -168,7 +161,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -180,9 +173,8 @@ WITH
             term_modifiers
         FROM
             newmexico.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'newmexico') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'newmexico'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -191,7 +183,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -203,9 +195,8 @@ WITH
             term_modifiers
         FROM
             ucla.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucla') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'ucla'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -214,7 +205,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -226,9 +217,8 @@ WITH
             term_modifiers
         FROM
             ucsf.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucsf') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'ucsf'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -237,7 +227,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -249,9 +239,8 @@ WITH
             term_modifiers
         FROM
             florida.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'florida') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'florida'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -260,7 +249,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -272,9 +261,8 @@ WITH
             term_modifiers
         FROM
             pittsburgh.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'pittsburgh') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'pittsburgh'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -283,7 +271,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -295,9 +283,8 @@ WITH
             term_modifiers
         FROM
             virginia.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'virginia') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'virginia'
         UNION
         SELECT
             note_nlp_id  AS src_table_id,
@@ -306,7 +293,7 @@ WITH
             nm.new_id AS note_id,
             section_concept_id,
             snippet,
-            offset,
+            "offset",
             lexical_variant,
             note_nlp_concept_id,
             note_nlp_source_concept_id,
@@ -318,9 +305,8 @@ WITH
             term_modifiers
         FROM
             seattle.note_nlp n
-        INNER JOIN note_map nm
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'seattle') nm
                 ON nm.old_id = n.note_id
-        WHERE nm.source_name = 'seattle'
     )
 INSERT INTO
     note_nlp
@@ -329,7 +315,7 @@ SELECT
     note_id,
     section_concept_id,
     snippet,
-    offset,
+    "offset",
     lexical_variant,
     note_nlp_concept_id,
     note_nlp_source_concept_id,

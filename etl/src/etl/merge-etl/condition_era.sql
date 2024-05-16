@@ -13,7 +13,7 @@ SELECT co.person_id
        co.condition_start_date
         ,
        COALESCE(co.condition_end_date, (condition_start_date + 1 * INTERVAL '1 day')) AS condition_end_date
-FROM omopcdm.condition_occurrence co;
+FROM condition_occurrence co;
 ANALYZE
 cteConditionTarget
 ;
@@ -139,7 +139,7 @@ cteConditionEnds
 ;
 /* / */
 INSERT INTO
-    omopcdm.condition_era (
+    condition_era (
                               condition_era_id,
                               person_id,
                               condition_concept_id,
@@ -167,9 +167,9 @@ GROUP BY person_id
          era_end_date;
 
 
-CREATE INDEX idx_condition_era_person_id_1 ON omopcdm.condition_era (person_id ASC);
-CLUSTER omopcdm.condition_era USING idx_condition_era_person_id_1;
-CREATE INDEX idx_condition_era_concept_id_1 ON omopcdm.condition_era (condition_concept_id ASC);
+CREATE INDEX idx_condition_era_person_id_1 ON condition_era (person_id ASC);
+CLUSTER condition_era USING idx_condition_era_person_id_1;
+CREATE INDEX idx_condition_era_concept_id_1 ON condition_era (condition_concept_id ASC);
 
-ALTER TABLE omopcdm.CONDITION_ERA
+ALTER TABLE CONDITION_ERA
     ADD CONSTRAINT xpk_CONDITION_ERA PRIMARY KEY (condition_era_id);

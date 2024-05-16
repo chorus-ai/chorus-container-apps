@@ -26,6 +26,7 @@ transformations:
     metadata: &METADATA
       sql:
         - metadata.sql
+        - cdm_source.sql
       depends:
         - *MAPS
       parallel: true

@@ -412,4 +412,55 @@ def ingest_omop(
             continue
 
 
+def update_source(
+        id: int,
+        name: str,
+        key: str,
+        connection: str,
+        dialect: str,
+        username: str,
+        password: str,
+        schema: str,
+        priority: int = 1,
+) -> None:
+    """Add information about a CDM dataset to WebAPI database"""
+    with postgresql_cursor() as c:
+        c.execute(
+            """
+            DELETE FROM source_daimon
+            WHERE source_id = %s
+            """,
+            (id,),
+        )
+        c.execute(
+            """
+            INSERT INTO source (source_id, source_name, source_key, source_connection, source_dialect, username, password, is_cache_enabled)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, false)
+            ON CONFLICT (source_id) DO UPDATE
+            SET
+              source_name = EXCLUDED.source_name,
+              source_key = EXCLUDED.source_key,
+              source_connection = EXCLUDED.source_connection,
+              source_dialect = EXCLUDED.source_dialect,
+              username = EXCLUDED.username,
+              password = EXCLUDED.password,
+              is_cache_enabled = EXCLUDED.is_cache_enabled
+            """,
+            (id, name, key, connection, dialect, username, password),
+        )
+        c.executemany(
+            """
+            INSERT INTO source_daimon (source_daimon_id, source_id, daimon_type, table_qualifier, priority)
+            VALUES (%s, %s, %s, %s, %s)
+            """,
+            # Daimon types (https://github.com/OHDSI/WebAPI/blob/master/src/main/java/org/ohdsi/webapi/source/SourceDaimon.java#L45):
+            # 0 = CDM, 1 = Vocabulary, 2 = Results, 3 = CEM, 4 = CEMResults, 5 = Temp
+            [
+                (10 * id + 0, id, 0, schema, priority),
+                (10 * id + 1, id, 1, schema, priority),
+                (10 * id + 2, id, 2, schema, priority),
+                (10 * id + 5, id, 5, schema, priority),
+            ],
+        )
+
 

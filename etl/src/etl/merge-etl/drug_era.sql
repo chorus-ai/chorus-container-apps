@@ -16,9 +16,9 @@ WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_e
             (drug_exposure_start_date + 1*INTERVAL'1 day')
             ---Add 1 day to the drug_exposure_start_date since there is no end_date or INTERVAL for the days_supply
         ) AS drug_exposure_end_date
-    FROM omopcdm.drug_exposure d
-        JOIN omopcdm.concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
-        JOIN omopcdm.concept C ON ca.ancestor_concept_id = C.concept_id
+    FROM drug_exposure d
+        JOIN concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
+        JOIN concept C ON ca.ancestor_concept_id = C.concept_id
         WHERE C.vocabulary_id =  CAST('RxNorm' AS TEXT) AND C.concept_class_id = 'Ingredient'
         AND d.drug_concept_id != 0 ---Our unmapped drug_concept_id's are set to 0, so we don't want different drugs wrapped up in the same era
         AND COALESCE(d.days_supply,0) >= 0 ---We have cases where days_supply is negative, and this can set the end_date before the start_date, which we don't want. So we're just looking over those rows. This is a data-quality issue.
@@ -153,7 +153,7 @@ ANALYZE
 tmp_de
 ;
 INSERT INTO
-    omopcdm.drug_era(
+    drug_era(
                         drug_era_id,
                         person_id,
                         drug_concept_id,
@@ -164,3 +164,11 @@ INSERT INTO
                     )
 SELECT *
 FROM tmp_de;
+
+CREATE INDEX idx_drug_era_person_id_1 ON drug_era (person_id ASC);
+CLUSTER drug_era USING idx_drug_era_person_id_1;
+CREATE INDEX idx_drug_era_concept_id_1 ON drug_era (drug_concept_id ASC);
+
+
+ALTER TABLE DRUG_ERA
+    ADD CONSTRAINT xpk_DRUG_ERA PRIMARY KEY (drug_era_id);

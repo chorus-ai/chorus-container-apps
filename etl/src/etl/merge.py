@@ -69,8 +69,8 @@ def merge_etl(run_qc: bool = True):
         )
         logger.info(f"Temporary schema for {site} populated successfully!")
 
-    logger.info(f"Building {mode}...")
-    base_etl_dir = os.path.join(ETL_DIR, 'merge-etl', mode)
+    logger.info(f"Building MERGE...")
+    base_etl_dir = os.path.join(ETL_DIR, 'merge-etl')
 
     orchestrate_sql_w_dependencies(base_etl_dir, TEMP_SCHEMA)
 
@@ -84,10 +84,15 @@ def merge_etl(run_qc: bool = True):
 
     if run_qc:
         subprocess_run(
-            [os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, 'merge', PRODUCTION_SCHEMA],
+            ['Rscript', os.path.join(ETL_DIR, 'ares.R'), ARES_DATA_ROOT, 'merge', PRODUCTION_SCHEMA],
             cwd='/ares',
             check=True,
         )
+
+    post_etl_dir = os.path.join(ETL_DIR, 'atlas')
+
+    orchestrate_sql_w_dependencies(post_etl_dir, PRODUCTION_SCHEMA)
+
 
     t1 = datetime.datetime.now()
     minutes = round((t1 - t0).total_seconds() / 60)

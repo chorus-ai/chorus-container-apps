@@ -1,28 +1,28 @@
-CREATE TABLE IF NOT EXISTS omopcdm.cohort
+CREATE TABLE IF NOT EXISTS cohort
  (COHORT_DEFINITION_ID int NOT NULL,
 	SUBJECT_ID bigint NOT NULL,
 	cohort_start_date date NOT NULL,
 	cohort_end_date date NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_censor_stats (cohort_definition_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_censor_stats (cohort_definition_id int NOT NULL,
   lost_count BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion (cohort_definition_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_inclusion (cohort_definition_id int NOT NULL,
   design_hash int NULL,
   rule_sequence int NOT NULL,
   name varchar(255) NULL,
   description varchar(1000) NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_result (cohort_definition_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_inclusion_result (cohort_definition_id int NOT NULL,
   mode_id int NOT NULL,
   inclusion_rule_mask bigint NOT NULL,
   person_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_stats (cohort_definition_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_inclusion_stats (cohort_definition_id int NOT NULL,
   rule_sequence int NOT NULL,
   mode_id int NOT NULL,
   person_count bigint NOT NULL,
@@ -30,29 +30,29 @@ CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_stats (cohort_definition_id 
   person_total bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_summary_stats (cohort_definition_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_summary_stats (cohort_definition_id int NOT NULL,
   mode_id int NOT NULL,
   base_count bigint NOT NULL,
   final_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_cache  (design_hash int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_cache  (design_hash int NOT NULL,
 	SUBJECT_ID bigint NOT NULL,
 	cohort_start_date date NOT NULL,
 	cohort_end_date date NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_censor_stats_cache  (design_hash int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_censor_stats_cache  (design_hash int NOT NULL,
   lost_count BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_result_cache  (design_hash int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_inclusion_result_cache  (design_hash int NOT NULL,
   mode_id int NOT NULL,
   inclusion_rule_mask bigint NOT NULL,
   person_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_stats_cache  (design_hash int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_inclusion_stats_cache  (design_hash int NOT NULL,
   rule_sequence int NOT NULL,
   mode_id int NOT NULL,
   person_count bigint NOT NULL,
@@ -60,13 +60,13 @@ CREATE TABLE IF NOT EXISTS omopcdm.cohort_inclusion_stats_cache  (design_hash in
   person_total bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_summary_stats_cache  (design_hash int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_summary_stats_cache  (design_hash int NOT NULL,
   mode_id int NOT NULL,
   base_count bigint NOT NULL,
   final_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.feas_study_inclusion_stats (study_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS feas_study_inclusion_stats (study_id int NOT NULL,
   rule_sequence int NOT NULL,
   name varchar(255) NOT NULL,
   person_count bigint NOT NULL,
@@ -74,17 +74,17 @@ CREATE TABLE IF NOT EXISTS omopcdm.feas_study_inclusion_stats (study_id int NOT 
   person_total bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.feas_study_index_stats (study_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS feas_study_index_stats (study_id int NOT NULL,
   person_count bigint NOT NULL,
   match_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.feas_study_result (study_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS feas_study_result (study_id int NOT NULL,
   inclusion_rule_mask bigint NOT NULL,
   person_count bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.heracles_analysis
+CREATE TABLE IF NOT EXISTS heracles_analysis
  (analysis_id int,
 	analysis_name varchar(255),
 	stratum_1_name varchar(255),
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.heracles_analysis
 	analysis_type varchar(255)
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.HERACLES_HEEL_results
+CREATE TABLE IF NOT EXISTS HERACLES_HEEL_results
  (cohort_definition_id int,
   analysis_id INT,
   HERACLES_HEEL_warning VARCHAR(255)
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.HERACLES_HEEL_results
 
 --HINT PARTITION(cohort_definition_id int)
 --HINT BUCKET(analysis_id, 64)
-CREATE TABLE IF NOT EXISTS omopcdm.heracles_results
+CREATE TABLE IF NOT EXISTS heracles_results
  (cohort_definition_id int,
 	analysis_id int,
 	stratum_1 varchar(255),
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.heracles_results
 
 --HINT PARTITION(cohort_definition_id int)
 --HINT BUCKET(analysis_id, 64)
-CREATE TABLE IF NOT EXISTS omopcdm.heracles_results_dist
+CREATE TABLE IF NOT EXISTS heracles_results_dist
  (cohort_definition_id int,
 	analysis_id int,
 	stratum_1 varchar(255),
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.heracles_results_dist
 	last_update_time TIMESTAMP DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.heracles_periods
+CREATE TABLE IF NOT EXISTS heracles_periods
  (period_id int,
   period_order int,
 	period_name varchar(255),
@@ -147,14 +147,14 @@ CREATE TABLE IF NOT EXISTS omopcdm.heracles_periods
 	period_end_date date
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cohort_sample_element (cohort_sample_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS cohort_sample_element (cohort_sample_id int NOT NULL,
     rank_value int NOT NULL,
     person_id bigint NOT NULL,
     age int,
     gender_concept_id int
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_dist  (analysis_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS ir_analysis_dist  (analysis_id int NOT NULL,
   target_id int NOT NULL,
   outcome_id int NOT NULL,
   strata_sequence int NULL,
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_dist  (analysis_id int NOT NULL,
   max_value int NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_result (analysis_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS ir_analysis_result (analysis_id int NOT NULL,
   target_id int NOT NULL,
   outcome_id int NOT NULL,
   strata_mask bigint NOT NULL,
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_result (analysis_id int NOT NULL,
   cases bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_strata_stats (analysis_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS ir_analysis_strata_stats (analysis_id int NOT NULL,
   target_id int NOT NULL,
   outcome_id int NOT NULL,
   strata_sequence int NOT NULL,
@@ -189,13 +189,13 @@ CREATE TABLE IF NOT EXISTS omopcdm.ir_analysis_strata_stats (analysis_id int NOT
   cases bigint NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.ir_strata (analysis_id int NOT NULL,
+CREATE TABLE IF NOT EXISTS ir_strata (analysis_id int NOT NULL,
   strata_sequence int NOT NULL,
   name varchar(255) NULL,
   description varchar(1000) NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.cc_results
+CREATE TABLE IF NOT EXISTS cc_results
  (type VARCHAR(255) NOT NULL,
   fa_type VARCHAR(255) NOT NULL,
   cc_generation_id BIGINT NOT NULL,
@@ -223,14 +223,14 @@ CREATE TABLE IF NOT EXISTS omopcdm.cc_results
   missing_means_zero INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_codes
+CREATE TABLE IF NOT EXISTS pathway_analysis_codes
  (pathway_analysis_generation_id BIGINT NOT NULL,
 	code BIGINT NOT NULL,
 	name VARCHAR(2000) NOT NULL,
 	is_combo int NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_events
+CREATE TABLE IF NOT EXISTS pathway_analysis_events
  (pathway_analysis_generation_id BIGINT NOT NULL,
 	target_cohort_id INTEGER NOT NULL,
 	combo_id BIGINT NOT NULL,
@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_events
 	cohort_end_date TIMESTAMP NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_paths
+CREATE TABLE IF NOT EXISTS pathway_analysis_paths
  (pathway_analysis_generation_id BIGINT NOT NULL,
   target_cohort_id INTEGER NOT NULL,
   step_1 BIGINT,
@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_paths
   count_value BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_stats
+CREATE TABLE IF NOT EXISTS pathway_analysis_stats
  (pathway_analysis_generation_id BIGINT NOT NULL,
   target_cohort_id INTEGER NOT NULL,
   target_cohort_count BIGINT NOT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE IF NOT EXISTS omopcdm.pathway_analysis_stats
 /*********************************************************************/
 /***** Create hierarchy lookup table for the treemap hierarchies *****/
 /*********************************************************************/
-CREATE TABLE IF NOT EXISTS omopcdm.concept_hierarchy
+CREATE TABLE IF NOT EXISTS concept_hierarchy
  (concept_id             INT,
   concept_name           VARCHAR(400),
   treemap                VARCHAR(20),
@@ -280,14 +280,14 @@ CREATE TABLE IF NOT EXISTS omopcdm.concept_hierarchy
 /***********************************************************/
 /***** Populate the hierarchy with existing vocab table*****/
 /***********************************************************/
-TRUNCATE TABLE omopcdm.concept_hierarchy;
+TRUNCATE TABLE concept_hierarchy;
 
-INSERT INTO omopcdm.concept_hierarchy SELECT * FROM vocabulary.concept_hierarchy;
+INSERT INTO concept_hierarchy SELECT * FROM vocabulary.concept_hierarchy;
 
 -- init heracles_analysis
-TRUNCATE TABLE omopcdm.heracles_analysis;
+TRUNCATE TABLE heracles_analysis;
 
-insert into omopcdm.heracles_analysis
+insert into heracles_analysis
 (analysis_id,analysis_name,stratum_1_name,stratum_2_name,stratum_3_name,stratum_4_name,stratum_5_name,analysis_type)
 select    0 as analysis_id,
 CAST('Source name' as VARCHAR(255)) as analysis_name,
@@ -2298,9 +2298,9 @@ from yearly_dates yd
 ANALYZE temp_period
 ;
 
-TRUNCATE TABLE omopcdm.heracles_periods;
+TRUNCATE TABLE heracles_periods;
 
-INSERT INTO omopcdm.heracles_periods (period_id, period_name, period_order, period_type, period_start_date, period_end_date)
+INSERT INTO heracles_periods (period_id, period_name, period_order, period_type, period_start_date, period_end_date)
 select CAST(row_number() over (order by period_order, period_start_date) AS INT) as period_id
 			, period_name, period_order, period_type, period_start_date, period_end_date
 from temp_period;
@@ -2333,30 +2333,30 @@ TRUNCATE TABLE temp_period;
 
 DROP TABLE temp_period;
 
-CREATE INDEX HRD_IDX_COHORT_DEF_ID ON omopcdm.HERACLES_RESULTS_DIST (cohort_definition_id);
+CREATE INDEX HRD_IDX_COHORT_DEF_ID ON HERACLES_RESULTS_DIST (cohort_definition_id);
 
-CREATE INDEX HRD_IDX_COHORT_ID_ANALYSIS_ID ON omopcdm.HERACLES_RESULTS_DIST (cohort_definition_id, analysis_id);
+CREATE INDEX HRD_IDX_COHORT_ID_ANALYSIS_ID ON HERACLES_RESULTS_DIST (cohort_definition_id, analysis_id);
 
-CREATE INDEX HRD_IDX_COHORT_DEF_ID_DT ON omopcdm.HERACLES_RESULTS_DIST (cohort_definition_id, last_update_time);
+CREATE INDEX HRD_IDX_COHORT_DEF_ID_DT ON HERACLES_RESULTS_DIST (cohort_definition_id, last_update_time);
 
-CREATE INDEX HRD_IDX_COHORT_ID_FIRST_RES ON omopcdm.HERACLES_RESULTS_DIST (cohort_definition_id, analysis_id, count_value, stratum_1);
+CREATE INDEX HRD_IDX_COHORT_ID_FIRST_RES ON HERACLES_RESULTS_DIST (cohort_definition_id, analysis_id, count_value, stratum_1);
 
-CREATE INDEX HR_IDX_COHORT_DEF_ID ON omopcdm.HERACLES_RESULTS (cohort_definition_id);
+CREATE INDEX HR_IDX_COHORT_DEF_ID ON HERACLES_RESULTS (cohort_definition_id);
 
-CREATE INDEX HR_IDX_COHORT_ID_ANALYSIS_ID ON omopcdm.HERACLES_RESULTS (cohort_definition_id, analysis_id);
+CREATE INDEX HR_IDX_COHORT_ID_ANALYSIS_ID ON HERACLES_RESULTS (cohort_definition_id, analysis_id);
 
-CREATE INDEX HR_IDX_COHORT_ANALYSIS_CONCEPT ON omopcdm.HERACLES_RESULTS (cohort_definition_id, analysis_id) WHERE stratum_2 <> '';
+CREATE INDEX HR_IDX_COHORT_ANALYSIS_CONCEPT ON HERACLES_RESULTS (cohort_definition_id, analysis_id) WHERE stratum_2 <> '';
 
-CREATE INDEX HR_IDX_COHORT_DEF_ID_DT ON omopcdm.HERACLES_RESULTS (cohort_definition_id, last_update_time);
+CREATE INDEX HR_IDX_COHORT_DEF_ID_DT ON HERACLES_RESULTS (cohort_definition_id, last_update_time);
 
-CREATE INDEX HR_IDX_COHORT_ID_FIRST_RES ON omopcdm.HERACLES_RESULTS (cohort_definition_id, analysis_id, count_value, stratum_1);
+CREATE INDEX HR_IDX_COHORT_ID_FIRST_RES ON HERACLES_RESULTS (cohort_definition_id, analysis_id, count_value, stratum_1);
 
-CREATE INDEX HH_IDX_COHORT_ID_ANALYSIS_ID ON omopcdm.HERACLES_HEEL_RESULTS (cohort_definition_id, analysis_id);
+CREATE INDEX HH_IDX_COHORT_ID_ANALYSIS_ID ON HERACLES_HEEL_RESULTS (cohort_definition_id, analysis_id);
 
-CREATE INDEX idx_heracles_periods_startdate ON omopcdm.heracles_periods (period_start_date);
+CREATE INDEX idx_heracles_periods_startdate ON heracles_periods (period_start_date);
 
-CREATE INDEX idx_heracles_periods_end_date ON omopcdm.heracles_periods (period_end_date);
+CREATE INDEX idx_heracles_periods_end_date ON heracles_periods (period_end_date);
 
-CREATE INDEX idx_cohort_sample_element_rank ON omopcdm.cohort_sample_element (cohort_sample_id, rank_value);
+CREATE INDEX idx_cohort_sample_element_rank ON cohort_sample_element (cohort_sample_id, rank_value);
 
-CREATE INDEX idx_pathway_events_combo_id ON omopcdm.pathway_analysis_events (combo_id);
+CREATE INDEX idx_pathway_events_combo_id ON pathway_analysis_events (combo_id);

@@ -473,7 +473,7 @@ CREATE TABLE metadata (
   metadata_concept_id bigint NOT NULL,
   metadata_type_concept_id bigint NOT NULL,
   name text NOT NULL,
-  value_as_text text,
+  value_as_string text,
   value_as_concept_id bigint,
   value_as_number float,
   metadata_date date,

@@ -1,0 +1,16 @@
+transformations:
+
+  atlas_prep:
+
+    atlas_prep: &ATLAS_PREP
+      sql:
+        - achilles-ddl.sql
+        - result-ddl-rapid.sql
+      depends:
+      parallel: true
+      sub_path: ""
+
+  orchestrate:
+
+    sequence:
+      - *ATLAS_PREP

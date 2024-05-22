@@ -1,12 +1,12 @@
 ---
 
 transformations:
-  ddl: &DDL
-    ddl:
+  ddl:
+    ddl: &DDL
       sql:
         - merge_ddl.sql
       depends:
-      parallel: true
+      parallel: false
       sub_path: ""
 
   maps:
@@ -28,7 +28,7 @@ transformations:
         - metadata.sql
         - cdm_source.sql
       depends:
-        - *MAPS
+        - *DDL
       parallel: true
       sub_path: ""
 
@@ -39,7 +39,7 @@ transformations:
       sql:
         - location.sql
       depends:
-        - *METADATA
+        - *DDL
       parallel: true
       sub_path: ""
 
@@ -47,7 +47,7 @@ transformations:
       sql:
         - care_site.sql
       depends:
-        - *LOCATION
+        - *DDL
       parallel: true
       sub_path: ""
 
@@ -55,8 +55,7 @@ transformations:
       sql:
         - provider.sql
       depends:
-        - *LOCATION
-        - *CARE_SITE
+        - *DDL
       parallel: false
       sub_path: ""
 
@@ -67,9 +66,7 @@ transformations:
       sql:
         - person.sql
       depends:
-        - *LOCATION
-        - *CARE_SITE
-        - *PROVIDER
+        - *MAPS
       parallel: false
       sub_path: ""
 
@@ -77,6 +74,7 @@ transformations:
       sql:
         - death.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -84,6 +82,7 @@ transformations:
       sql:
         - specimen.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -92,6 +91,7 @@ transformations:
       sql:
         - visit_occurrence.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""  
 
@@ -100,6 +100,7 @@ transformations:
       sql:
         - visit_detail.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -108,6 +109,7 @@ transformations:
       sql:
         - condition_occurrence.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -115,6 +117,7 @@ transformations:
       sql:
         - device_exposure.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -122,6 +125,7 @@ transformations:
       sql:
         - drug_exposure.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -129,6 +133,7 @@ transformations:
       sql:
         - measurement.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
     
@@ -136,6 +141,7 @@ transformations:
       sql:
         - note.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -151,6 +157,7 @@ transformations:
       sql:
         - observation.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -158,6 +165,7 @@ transformations:
       sql:
         - procedure_occurrence.sql
       depends:
+        - *MAPS
       parallel: true
       sub_path: ""
 
@@ -206,6 +214,7 @@ transformations:
         - condition_era.sql
       depends:
         - *CONDITION_OCCURRENCE
+        - *INDEX
       parallel: true
       sub_path: ""
 
@@ -214,6 +223,7 @@ transformations:
         - dose_era.sql
       depends:
         - *DRUG_EXPOSURE
+        - *INDEX
       parallel: true
       sub_path: ""
 
@@ -222,6 +232,7 @@ transformations:
         - drug_era.sql
       depends:
         - *DRUG_EXPOSURE
+        - *INDEX
       parallel: true
       sub_path: ""
 

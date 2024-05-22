@@ -98,7 +98,7 @@ DELIVERED_TABLES = [
     'condition_era',
 ]
 
-SITE_LIST = ['copsql lumbia',
+SITE_LIST = ['columbia',
              'duke',
              'emory',
              'mgh',

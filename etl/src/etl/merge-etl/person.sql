@@ -3,6 +3,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'columbia' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -26,6 +27,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'duke' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -49,6 +51,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'emory' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -72,6 +75,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'mgh' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -95,6 +99,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'mit' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -118,6 +123,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'mayo' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -141,6 +147,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'nationwide' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -164,6 +171,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'newmexico' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -187,6 +195,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'ucla' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -210,6 +219,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'ucsf' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -233,6 +243,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'florida' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -256,6 +267,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'pittsburgh' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -279,6 +291,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'virginia' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -302,6 +315,7 @@ WITH
         SELECT
             person_id AS src_person_id,
             'seattle' AS src_name,
+            new_id AS person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -325,7 +339,7 @@ WITH
 INSERT INTO
     person
 SELECT
-    row_number() OVER (ORDER BY src_name, src_person_id) AS person_id,
+    person_id,
     gender_concept_id,
     year_of_birth,
     month_of_birth,

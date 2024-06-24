@@ -1,6 +1,6 @@
 SELECT a.name,
        concat(to_char(concat(split_part(filename, '_', 2), ' ',
-                             split_part(filename, '_', 3))::TIMESTAMP + INTERVAL '1' DAY * C.days, 'YYYYmmDDHHMMSS'),
+                             split_part(filename, '_', 3))::TIMESTAMP + INTERVAL '1' DAY * C.days, 'YYYYmmDDHHmiSS'),
               '_',
               array_to_string(((string_to_array(filename, '_'))[4:]), '_')) AS modified_name
 FROM public.mgh_allfiles a

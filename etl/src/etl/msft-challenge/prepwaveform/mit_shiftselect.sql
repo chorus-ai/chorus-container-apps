@@ -2,16 +2,16 @@ SELECT b.merge_id,
        a.name,
        CASE WHEN extension = 'RECORDS' THEN
        concat(split_part(a.name, '/', 3), '_',
-               to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHMMSS'),
+               to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHmiSS'),
               '_RECORDS')
        WHEN (array_length((string_to_array(filename, '_')), 1) > 1) THEN
        concat(split_part(a.name, '/', 3), '_',
-               to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHMMSS'),
+               to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHmiSS'),
               '_',
               array_to_string((string_to_array(filename, '_'))[2:], '_'))
        ELSE
         concat(split_part(split_part(a.name, '/', 4), '.', 1), '_',
-              to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHMMSS'),
+              to_char(b.start_time + INTERVAL '1' DAY * COALESCE(C.days, 0), 'YYYYmmDDHHmiSS'),
               '_main.',
               split_part(split_part(a.name, '/', 4), '.', 2))
         END AS modified_name

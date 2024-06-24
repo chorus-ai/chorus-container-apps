@@ -1,5 +1,5 @@
 SELECT a.name,
-       concat(to_char(to_timestamp(split_part(filename, '_', 2)::bigint) + INTERVAL '1' DAY * C.days, 'YYYYmmDDHHMMSS'),
+       concat(to_char(to_timestamp(split_part(filename, '_', 2)::bigint) + INTERVAL '1' DAY * C.days, 'YYYYmmDDHHmiSS'),
               '_',
               array_to_string(((string_to_array(filename, '_'))[4:]), '_')) AS modified_name
 FROM public.nationwide_allfiles a

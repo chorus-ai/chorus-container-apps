@@ -19,10 +19,12 @@ for i in "${!idlink[@]}"
 do
   PERSON_ID="${idlink[$i]}"
   TRG_NAME="${filelink[$i]}"
-  SRC_URL="https://choruspilotstorage.blob.core.windows.net/mit/${i}?<SAS TOKEN>"
+  SUB_DIR=${i:0:2}
+  SRC_URL="https://choruspilotstorage.blob.core.windows.net/mit/waveforms/${SUB_DIR}/${i}?<SAS TOKEN>"
   TRG_URL="https://choruspilotstorage.blob.core.windows.net/msft-challenge/2/${PERSON_ID}/${TRG_NAME}?<SAS TOKEN>"
   echo "person: $PERSON_ID"
-  echo "source: $i"
+  echo "source: waveforms/${SUB_DIR}/$i"
   echo "target: 2/$PERSON_ID/$TRG_NAME"
-  azcopy cp --output-level quiet --overwrite=false "${SRC_URL}" "${TRG_URL}"
+  azcopy cp --overwrite=false --recursive "${SRC_URL}" "${TRG_URL}"
+  #azcopy cp --output-level quiet --overwrite=false --recursive "${SRC_URL}" "${TRG_URL}"
 done

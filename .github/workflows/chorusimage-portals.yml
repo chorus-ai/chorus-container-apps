@@ -39,6 +39,9 @@ jobs:
           - dockerfile: ./www-admin/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-admin
             context: ./www-admin
+          - dockerfile: ./www-challenge/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-www-challenge
+            context: ./www-challenge
           - dockerfile: ./www-dgs/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-dgs
             context: ./www-dgs

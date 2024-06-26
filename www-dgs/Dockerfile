@@ -10,6 +10,7 @@ RUN unzip ares.zip -d /ares && \
     rm -rf /ares/data
 
 FROM nginx:1.25.3
+RUN curl -s https://nginx.org/keys/nginx_signing.key | gpg --dearmor > /usr/share/keyrings/nginx-keyring.gpg
 RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/debian/ bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install --yes --no-install-recommends nginx-module-otel && \

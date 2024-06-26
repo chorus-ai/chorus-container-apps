@@ -11,7 +11,9 @@ RUN unzip ares.zip -d /ares && \
 FROM ohdsi/atlas:2.13.0 AS atlas
 
 FROM nginx:1.25.3
-RUN curl -s https://nginx.org/keys/nginx_signing.key | gpg --dearmor > /usr/share/keyrings/nginx-keyring.gpg
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends gpg && \
+    curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/debian/ bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install --yes --no-install-recommends nginx-module-otel && \

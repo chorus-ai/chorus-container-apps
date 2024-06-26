@@ -1,0 +1,10 @@
+project:
+  type: website
+
+website:
+  title: B2AI Challenge Portal
+
+format:
+  html:
+    theme: simplex
+    toc: true

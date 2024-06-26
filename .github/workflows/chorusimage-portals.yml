@@ -11,6 +11,7 @@ on:
       - 'webapi/**'
       - 'www-admin/**'
       - 'www-dgs/**'
+      - 'www-challenge/**'
 
 env:
   REGISTRY: ghcr.io

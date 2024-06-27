@@ -8,6 +8,7 @@ server {
     proxy_http_version 1.1;
     proxy_ssl_server_name on;
     proxy_set_header Authorization "";
+    set $chorus_lab_backend_template ${CHORUS_LAB_BACKEND_TEMPLATE};
     set $authenticated_user $http_x_ms_client_principal_name;
     if ($authenticated_user = '') {
         set $authenticated_user ${REMOTE_USER};
@@ -23,6 +24,22 @@ server {
         index index.html;
         autoindex on;
         expires epoch;
+    }
+
+   location = /lab/ {
+       js_content http.redirect_to_default_lab;
+   }
+
+    location /lab/ {
+        resolver ${NGINX_LOCAL_RESOLVERS};
+        js_set $chorus_lab_backend http.get_chorus_lab_backend;
+        proxy_pass $chorus_lab_backend$uri$is_args$args;
+        proxy_redirect $chorus_lab_backend/ /;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 180s;
+        proxy_send_timeout 180s;
     }
 
     location /webapi/ {

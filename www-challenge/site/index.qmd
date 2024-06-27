@@ -7,4 +7,4 @@ The B2AI Challenge Portal currently offers a small collection of tools and servi
 
 - Check **[Ares](/ares/)** to characterize data and assess data quality for the OMOP data.
 - Use **[Atlas](/atlas/)** to conduct scientific analyses, create cohorts, and generate models against OMOP data.
-- Open the challenge's **[ML Workspace](ML_WORKSPACE_URL)** to write code in Python and R, and train models against the dataset.
+- Open the challenge's **[ML Workspace](/lab/)** to write code in Python and R, and train models against the dataset.

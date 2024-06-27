@@ -21,6 +21,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://
 COPY nginx.conf http.js /etc/nginx/
 COPY access.json /etc/nginx/access/
 COPY *.template /etc/nginx/templates/
+COPY *.sh /docker-entrypoint.d/
 COPY --from=verse /site/html /usr/share/nginx/html
 COPY --from=busybox /ares /usr/share/nginx/html/ares
 COPY --from=atlas /etc/nginx/conf.d/optimization.conf /etc/nginx/conf.d/optimization.conf
@@ -29,7 +30,5 @@ COPY ./atlas/config-local.js /usr/share/nginx/html/atlas/js/config-local.js
 ENV SERVER_PORT=8080 \
     REMOTE_USER=- \
     OTEL_ENDPOINT=127.0.0.1:4317 \
-    CHORUS_LAB_BACKEND_TEMPLATE=http://127.0.0.1:\$server_port/undefined/ \
-    CHORUS_PREFECT_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_WEBAPI_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1

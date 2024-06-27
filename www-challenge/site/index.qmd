@@ -1,11 +1,10 @@
 ---
-title: Challenge Portal
+title: B2AI Challenge Portal
 subtitle: B2AI Azure Data Enclave
 ---
 
 The B2AI Challenge Portal currently offers a small collection of tools and services.
 
-- Check **[Ares](/ares/)** to characterize data and assess OMOP data quality.
-- Use **[Atlas](/atlas/)** to conduct scientific analyses and construct cohorts.
-- Open **[Jupyter Lab](/lab/)** to write code in Python, and R in a custom sandbox environment.
-- Visit the **[Azure ML Workspace](/mlw/)** to train models and execute machine learning workflows.
+- Check **[Ares](/ares/)** to characterize data and assess data quality for the OMOP data.
+- Use **[Atlas](/atlas/)** to conduct scientific analyses, create cohorts, and generate models against OMOP data.
+- Open the challenge's **[ML Workspace](ML_WORKSPACE_URL)** to write code in Python and R, and train models against the dataset.

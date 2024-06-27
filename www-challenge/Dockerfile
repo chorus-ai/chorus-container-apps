@@ -21,7 +21,8 @@ RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://
 COPY nginx.conf http.js /etc/nginx/
 COPY access.json /etc/nginx/access/
 COPY *.template /etc/nginx/templates/
-COPY *.sh /docker-entrypoint.d/
+COPY update-index-with-link.sh /docker-entrypoint.d/
+RUN chmod +x /docker-entrypoint.d/update-index-with-link.sh
 COPY --from=verse /site/html /usr/share/nginx/html
 COPY --from=busybox /ares /usr/share/nginx/html/ares
 COPY --from=atlas /etc/nginx/conf.d/optimization.conf /etc/nginx/conf.d/optimization.conf

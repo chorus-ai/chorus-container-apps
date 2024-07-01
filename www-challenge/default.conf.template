@@ -26,15 +26,12 @@ server {
         expires epoch;
     }
 
-   location = /lab/ {
-       js_content http.redirect_to_default_lab;
-   }
 
-    location /lab/ {
+    location /lab {
         resolver ${NGINX_LOCAL_RESOLVERS};
-        js_set $chorus_lab_backend http.get_chorus_lab_backend;
-        proxy_pass $chorus_lab_backend$uri$is_args$args;
-        proxy_redirect $chorus_lab_backend/ /;
+        js_set $challenge_backend http.get_challenge_backend;
+        rewrite /lab/(.*) /$1 break;
+        proxy_pass $challenge_backend/$1$is_args$args;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;

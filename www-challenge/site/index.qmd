@@ -3,8 +3,174 @@ title: B2AI Challenge Portal
 subtitle: B2AI Azure Data Enclave
 ---
 
-The B2AI Challenge Portal currently offers a small collection of tools and services.
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-- Check **[Ares](/ares/)** to characterize data and assess data quality for the OMOP data.
-- Use **[Atlas](/atlas/)** to conduct scientific analyses, create cohorts, and generate models against OMOP data.
-- Open the challenge's **[ML Workspace](/lab/)** to write code in Python and R, and train models against the dataset.
+    .container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        background-color: #003366;
+        color: #ffffff;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.5em;
+    }
+
+    header h2 {
+        margin: 0;
+        font-size: 1.5em;
+        font-weight: 300;
+    }
+
+    section {
+        margin: 20px 0;
+    }
+
+    section h2 {
+        color: #003366;
+        margin-bottom: 10px;
+    }
+
+    .tool {
+        margin: 20px 0;
+    }
+
+    .tool h3 {
+        color: #0066cc;
+        margin-bottom: 5px;
+    }
+
+    .tool p {
+        margin: 5px 0;
+    }
+
+    .tool ul {
+        padding-left: 20px;
+    }
+
+    .cta {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #0066cc;
+        color: #fff;
+        border-radius: 5px;
+        margin-top: -20px;
+        float: right;
+    }
+
+    .cta:hover {
+        background-color: #004999;
+    }
+
+    footer {
+        background-color: #003366;
+        color: #ffffff;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+
+## Welcome to the B2AI Challenge Portal
+
+Your gateway to a suite of powerful tools and services designed to enhance your data analysis and machine learning capabilities.
+
+<section id="themes-challenges" class="main-content">
+    <h2>Challenges</h2>
+    <p>Choose a challenge that inspires you:</p>
+    <ul>
+      <li><strong>Challenge 1:</strong> Develop solutions to improve patient something</li>
+      <li><strong>Challenge 2:</strong> Develop solutions to improve patient something.</li
+
+    </ul>
+  </section>
+
+  <section id="prizes" class="prizes">
+    <h2>Prizes</h2>
+    <ul>
+      <li><strong>First Place:</strong> $000 + Mentorship Opportunity</li>
+      <li><strong>Second Place:</strong> $000 + Tech Gadgets</li>
+      <li><strong>Third Place:</strong> $000 + Swag Bags</li>
+      <li><strong>Best Beginner Project:</strong> $000 </li>
+    </ul>
+  </section>
+
+  <section id="registration" class="registration">
+    <h2>How to Register</h2>
+    <p>To register, please fill out the <a href="https://example.com/register">registration form</a> by September 15, 2024. Participation is free, but spots are limited, so register early!</p>
+  </section>
+
+  <section id="conduct" class="conduct">
+    <h2>Code of Conduct</h2>
+    <p>We are committed to providing a welcoming and inclusive environment for all participants. Please read our <a href="https://example.com/code-of-conduct">Code of Conduct</a> before participating.</p>
+  </section>
+
+
+## Explore Our Tools and Services
+
+### [Ares](/ares/) 
+
+Effortlessly explore and evaluate the quality of your OMOP data with **Ares**, ensuring your datasets are robust and ready for analysis.
+
+- **Data Quality Checks**: Ensure the integrity and quality of your data.
+- **Interactive Dashboards**: Visualize data quality metrics.
+
+<a href="/ares/" class="cta">Get Started</a>
+</br>
+
+### [Atlas](/atlas/)
+
+Harness the power of **Atlas** to conduct in-depth scientific analyses. Create cohorts, develop comprehensive models, and unlock insights from your OMOP data.
+
+- **Cohort Builder**: Define and create patient cohorts.
+- **Advanced Analytics**: Perform complex data analyses and visualizations.
+
+<a href="/atlas/" class="cta">Get Started</a>
+</br>
+
+### [Lab Workspace](/lab/)
+
+Dive into our **Lab Workspace** to write and execute code user-specific container hosting a Firefox browser inside the private network together with the challenge dataset in Python and R. Train your models directly on the provided datasets and push the boundaries of your research.
+
+- **Code Execution**: Write and run Python and R code.
+- **Model Training**: Develop and train machine learning models.
+
+
+
+<p>ℹ️ Your user-specific container will be scaled to 0 prior to accessing. When you first click this link, expect a ~10 second delay while the container initializes.</p>
+<p>ℹ️ This link WILL NOT WORK if you try and access it from the public network. It is only visible from within the private network (accessible via your user-specific Firefox environment).</p>
+<p>ℹ️ Note that clipboard functionality in the Firefox container is coordinated via a pop-out tab on the left hand side of the screen.</p>
+ 
+<a href="/lab/" class="cta">Get Started</a>
+</br>
+
+</div>
+
+<footer>
+    <p>© 2024 B2AI Challenge Portal. All rights reserved.</p>
+    <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
+</footer>
+
+

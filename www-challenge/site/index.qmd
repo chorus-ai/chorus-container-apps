@@ -4,16 +4,24 @@ subtitle: B2AI Azure Data Enclave
 ---
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Open Sans', sans-serif;
         margin: 0;
         padding: 0;
+        background-color: #fdfdff;
+        opacity: 1;
+        background-image:  linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77);
+        background-size: 50px 88px;
+        background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px;
     }
 
     .container {
         max-width: 1500px;
         margin: 0 auto;
         padding: 20px;
+        
     }
 
     header {
@@ -36,6 +44,11 @@ subtitle: B2AI Azure Data Enclave
 
     section {
         margin: 20px 0;
+    }
+
+    section div {
+        border: 1px solid #cccccc;
+
     }
 
     section h2 {
@@ -128,7 +141,10 @@ Your gateway to a suite of powerful tools and services designed to enhance your 
   </section>
 
 
-## Explore Our Tools and Services
+
+  <section id="tools" class="tools">
+    <h2>Explore Our Tools and Services</h2>
+
 
 ### [Ares](/ares/) 
 
@@ -150,14 +166,12 @@ Harness the power of **Atlas** to conduct in-depth scientific analyses. Create c
 <a href="/atlas/" class="cta">Get Started</a>
 </br>
 
-### [Lab Workspace](/lab/)
+### [Challenge Workspace](/lab/)
 
-Dive into our **Lab Workspace** to write and execute code user-specific container hosting a Firefox browser inside the private network together with the challenge dataset in Python and R. Train your models directly on the provided datasets and push the boundaries of your research.
+Dive into our **Challenge Workspace** to write and execute code user-specific container hosting a Firefox browser inside the private network together with the challenge dataset in Python and R. Train your models directly on the provided datasets and push the boundaries of your research.
 
 - **Code Execution**: Write and run Python and R code.
 - **Model Training**: Develop and train machine learning models.
-
-
 
 <p>ℹ️ Your user-specific container will be scaled to 0 prior to accessing. When you first click this link, expect a ~10 second delay while the container initializes.</p>
 <p>ℹ️ This link WILL NOT WORK if you try and access it from the public network. It is only visible from within the private network (accessible via your user-specific Firefox environment).</p>
@@ -165,11 +179,11 @@ Dive into our **Lab Workspace** to write and execute code user-specific containe
  
 <a href="/lab/" class="cta">Get Started</a>
 </br>
-
+  </section>
 </div>
 
 <footer>
-    <p>© 2024 B2AI Challenge Portal. All rights reserved.</p>
+    <p>© 2024 B2AI CHoRUS Challenge Portal. All rights reserved.</p>
     <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
 </footer>
 

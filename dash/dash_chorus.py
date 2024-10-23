@@ -9,7 +9,7 @@ from datetime import datetime
 import pytz
 import os
 
-app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], static_folder='static', url_base_pathname='/dash/')
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], url_base_pathname='/dash/')
 app.css.config.serve_locally = True
 app.scripts.config.serve_locally = True
 app.title = 'Data Deliveries'

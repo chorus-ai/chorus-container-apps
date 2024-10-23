@@ -43,6 +43,10 @@ server {
         proxy_pass ${CHORUS_WEBAPI_BACKEND};
     }
 
+    location /dash/ {
+        proxy_pass ${CHORUS_DASH_BACKEND};
+    }
+
     location = /authorize {
         internal;
         js_content http.authorize;

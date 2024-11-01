@@ -21,8 +21,8 @@ for site_name in blob_list:
                                 data_tmp.at[cnt, key] = value
                 cnt = cnt + 1
 
-        data_tmp['extension'] = data_tmp['name'].str.split(pat=".").str[1]
-        data_all = pd.concat([data_all, data_tmp[data_tmp['extension'].notnull()]])
+        data_tmp['extension'] = data_tmp['name'].str.split(pat=".").str[-1]
+        data_all = pd.concat([data_all, data_tmp[data_tmp['size']>0]])
         print(f"Finished with {site_name}")
 
 data_all.to_csv("/pilot_meta/data/all_metadata.csv")

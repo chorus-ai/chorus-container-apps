@@ -31,7 +31,7 @@ for site_name in blob_list:
                 if (cnt3 == 100000):
                     print("Refreshing dataframe buffer...")
                     data_tmp['extension'] = data_tmp['name'].str.split(pat=".").str[-1]
-                    data_all = pd.concat([data_all, data_tmp[data_tmp['size']>0]])
+                    data_all = pd.concat([data_all, data_tmp[data_tmp['size']>0]], ignore_index=True)
                     data_tmp = pd.DataFrame()
                     cnt3 = 0
         data_tmp['extension'] = data_tmp['name'].str.split(pat=".").str[-1]

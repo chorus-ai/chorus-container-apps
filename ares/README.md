@@ -1,6 +1,6 @@
 # Ares Standalone Image
 
-This Dockerfile packages the pre-built Ares release into a deployable image with demo data that can be brought up 
+This Dockerfile, built for both AMD and ARM architectures, packages the pre-built Ares release into a deployable image with demo data that can be brought up 
 with the following command:
 
 ```bash

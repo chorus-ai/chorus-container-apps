@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'www-aimahead/**'
+      - '.github/chorus-aimahead.yml'
 
 env:
   REGISTRY: ghcr.io
@@ -18,9 +19,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./aimahead/Dockerfile
+          - dockerfile: ./www-aimahead/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-aimahead
-            context: ./aimahead
+            context: ./www-aimahead
     permissions:
       contents: read
       packages: write

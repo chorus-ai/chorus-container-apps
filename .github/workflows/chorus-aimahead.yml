@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'www-aimahead/**'
-      - '.github/chorus-aimahead.yml'
+      - '.github/workflows/chorus-aimahead.yml'
 
 env:
   REGISTRY: ghcr.io

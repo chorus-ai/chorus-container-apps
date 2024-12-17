@@ -139,12 +139,13 @@ FROM
 INSERT INTO
     omopcdm.observation
 SELECT
-    o.observation_id::float::bigint,
+    row_number() OVER (order by o.person_id, o.observation_concept_id),
     o.person_id::float::bigint,
-    o.observation_concept_id::float::bigint,
+    CASE WHEN (char_length(o.observation_concept_id) <= 10) AND (o.observation_concept_id ~ '^([0-9]+\.?[0-9]*|\.[0-9]+)$')  THEN o.observation_concept_id::float::bigint
+    ELSE 0 END AS observation_concept_id,
     o.observation_date::date + INTERVAL'1 day'*ds.days AS observation_date,
     o.observation_datetime::timestamp + INTERVAL'1 day'*ds.days AS observation_datetime,
-    o.observation_type_concept_id::float::bigint,
+    COALESCE(o.observation_type_concept_id::float::bigint, 0),
     o.value_as_number::float,
     o.value_as_string,
     o.value_as_concept_id::float::bigint,
@@ -301,7 +302,8 @@ SELECT
     vo.preceding_visit_occurrence_id::float::bigint
 FROM
     omopcdm.src_visit_occurrence AS vo
-    JOIN persist.date_shift AS ds ON vo.person_id::float::bigint = ds.person_id;
+    JOIN persist.date_shift AS ds ON vo.person_id::float::bigint = ds.person_id
+    WHERE visit_start_date IS NOT NULL AND visit_end_date IS NOT NULL;
 
 INSERT INTO
     omopcdm.condition_era

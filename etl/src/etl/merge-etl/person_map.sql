@@ -82,6 +82,12 @@
         FROM seattle.person
         WHERE person_id NOT IN
               (SELECT old_id FROM persist.person_map WHERE source_name = 'seattle')
+        UNION
+        SELECT person_id AS old_id,
+               'tufts' AS source_name
+        FROM tufts.person
+        WHERE person_id NOT IN
+              (SELECT old_id FROM persist.person_map WHERE source_name = 'tufts')
                         )
     INSERT INTO persist.person_map
     SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.person_map) AS new_id,

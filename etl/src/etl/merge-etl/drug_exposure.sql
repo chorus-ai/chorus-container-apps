@@ -503,6 +503,42 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = de.visit_occurrence_id
+        UNION
+        SELECT
+            drug_exposure_id AS src_table_id,
+            person_id AS src_person_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            visit_detail_id AS src_visit_detail_id,
+            'tufts' AS src_name,
+            pm.new_id AS person_id,
+            drug_concept_id,
+            drug_exposure_start_date,
+            drug_exposure_start_datetime,
+            drug_exposure_end_date,
+            drug_exposure_end_datetime,
+            verbatim_end_date,
+            drug_type_concept_id,
+            stop_reason,
+            refills,
+            quantity,
+            days_supply,
+            sig,
+            route_concept_id,
+            lot_number,
+            vom.new_id AS visit_occurrence_id,
+            vdm.new_id AS visit_detail_id,
+            drug_source_value,
+            drug_source_concept_id,
+            route_source_value,
+            dose_unit_source_value
+        FROM
+            tufts.drug_exposure de
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = de.person_id
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = de.visit_occurrence_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+            ON vdm.old_id = de.visit_occurrence_id
     )
 INSERT INTO
     drug_exposure

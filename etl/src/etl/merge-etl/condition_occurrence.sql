@@ -405,6 +405,35 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
                 ON vdm.old_id = co.visit_occurrence_id
+        UNION
+        SELECT
+            condition_occurrence_id AS src_table_id,
+            person_id AS src_person_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            visit_detail_id AS src_visit_detail_id,
+            'tufts' AS src_name,
+            pm.new_id AS person_id,
+            condition_concept_id,
+            condition_start_date,
+            condition_start_datetime,
+            condition_end_date,
+            condition_end_datetime,
+            condition_type_concept_id,
+            condition_status_concept_id,
+            stop_reason,
+            vom.new_id AS visit_occurrence_id,
+            vdm.new_id AS visit_detail_id,
+            condition_source_value,
+            condition_source_concept_id,
+            condition_status_source_value
+        FROM
+            tufts.condition_occurrence co
+            INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = co.person_id
+            LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+                ON vom.old_id = co.visit_occurrence_id
+            LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+                ON vdm.old_id = co.visit_occurrence_id
     )
 INSERT INTO
     condition_occurrence

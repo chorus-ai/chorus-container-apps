@@ -517,6 +517,43 @@ WITH
             ON vdm2.old_id = v.preceding_visit_detail_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm3
             ON vdm3.old_id = v.parent_visit_detail_id
+        UNION
+        SELECT
+            visit_detail_id AS src_visit_detail_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            person_id AS src_person_id,
+            preceding_visit_detail_id AS src_prec_visit_detail_id,
+            parent_visit_detail_id AS src_parent_visit_detail_id,
+            'tufts' AS src_name,
+            vdm.new_id AS visit_detail_id,
+            pm.new_id AS person_id,
+            visit_detail_concept_id,
+            visit_detail_start_date,
+            visit_detail_start_datetime,
+            visit_detail_end_date,
+            visit_detail_end_datetime,
+            visit_detail_type_concept_id,
+            visit_detail_source_value,
+            visit_detail_source_concept_id,
+            admitted_from_concept_id,
+            admitted_from_source_value,
+            discharged_to_concept_id,
+            discharged_to_source_value,
+            vdm2.new_id AS preceding_visit_detail_id,
+            vdm3.new_id AS parent_visit_detail_id,
+            vom.new_id AS visit_occurrence_id
+        FROM
+            tufts.visit_detail v
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = v.person_id
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = v.visit_occurrence_id
+        INNER JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+            ON vdm.old_id = v.visit_detail_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm2
+            ON vdm2.old_id = v.preceding_visit_detail_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm3
+            ON vdm3.old_id = v.parent_visit_detail_id
     )
 INSERT INTO
 visit_detail

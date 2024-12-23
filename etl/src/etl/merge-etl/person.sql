@@ -335,6 +335,30 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'seattle'
+        UNION
+        SELECT
+            person_id AS src_person_id,
+            'tufts' AS src_name,
+            new_id AS person_id,
+            gender_concept_id,
+            year_of_birth,
+            month_of_birth,
+            day_of_birth,
+            birth_datetime,
+            race_concept_id,
+            ethnicity_concept_id,
+            person_source_value,
+            gender_source_value,
+            gender_source_concept_id,
+            race_source_value,
+            race_source_concept_id,
+            ethnicity_source_value,
+            ethnicity_source_concept_id
+        FROM
+            tufts.person p
+        INNER JOIN persist.person_map pm
+                ON pm.old_id = p.person_id
+        WHERE pm.source_name = 'tufts'
     )
 INSERT INTO
     person

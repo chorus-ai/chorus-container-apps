@@ -223,6 +223,22 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = de.person_id
         WHERE pm.source_name = 'seattle'
+        UNION
+        SELECT
+            person_id AS src_person_id,
+            'tufts' AS src_name,
+            pm.new_id AS person_id,
+            death_date,
+            death_datetime,
+            death_type_concept_id,
+            cause_concept_id,
+            cause_source_value,
+            cause_source_concept_id
+        FROM
+            tufts.death de
+        INNER JOIN persist.person_map pm
+                ON pm.old_id = de.person_id
+        WHERE pm.source_name = 'tufts'
     )
 INSERT INTO
     death

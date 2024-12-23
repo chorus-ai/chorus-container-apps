@@ -307,6 +307,28 @@ WITH
             seattle.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'seattle') nm
                 ON nm.old_id = n.note_id
+        UNION
+        SELECT
+            note_nlp_id  AS src_table_id,
+            note_id AS src_note_id,
+            'tufts' AS src_name,
+            nm.new_id AS note_id,
+            section_concept_id,
+            snippet,
+            "offset",
+            lexical_variant,
+            note_nlp_concept_id,
+            note_nlp_source_concept_id,
+            nlp_system,
+            nlp_date,
+            nlp_datetime,
+            term_exists,
+            term_temporal,
+            term_modifiers
+        FROM
+            tufts.note_nlp n
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'tufts') nm
+                ON nm.old_id = n.note_id
     )
 INSERT INTO
     note_nlp

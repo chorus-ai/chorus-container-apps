@@ -82,6 +82,12 @@ WITH note_joined AS (
     FROM seattle.note
     WHERE note_id NOT IN
           (SELECT old_id FROM persist.note_map WHERE source_name = 'seattle')
+    UNION
+    SELECT note_id AS old_id,
+           'tufts' AS source_name
+    FROM tufts.note
+    WHERE note_id NOT IN
+          (SELECT old_id FROM persist.note_map WHERE source_name = 'tufts')
                     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,

@@ -82,6 +82,12 @@
         FROM seattle.visit_occurrence
         WHERE visit_occurrence_id NOT IN
               (SELECT old_id FROM persist.visit_occurrence_map WHERE source_name = 'seattle')
+        UNION ALL
+        SELECT visit_occurrence_id AS old_id,
+               'tufts' AS source_name
+        FROM tufts.visit_occurrence
+        WHERE visit_occurrence_id NOT IN
+              (SELECT old_id FROM persist.visit_occurrence_map WHERE source_name = 'tufts')
                         )
     INSERT INTO persist.visit_occurrence_map
     SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.visit_occurrence_map) AS new_id,

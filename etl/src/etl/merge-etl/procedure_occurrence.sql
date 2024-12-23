@@ -405,6 +405,35 @@ WITH
             ON vom.old_id = p.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = p.visit_occurrence_id
+        UNION
+        SELECT
+            procedure_occurrence_id AS src_table_id,
+            person_id AS src_person_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            visit_detail_id AS src_visit_detail_id,
+            'tufts' AS src_name,
+            pm.new_id AS person_id,
+            procedure_concept_id,
+            procedure_date,
+            procedure_datetime,
+            procedure_end_date,
+            procedure_end_datetime,
+            procedure_type_concept_id,
+            modifier_concept_id,
+            quantity,
+            vom.new_id AS visit_occurrence_id,
+            vdm.new_id AS visit_detail_id,
+            procedure_source_value,
+            procedure_source_concept_id,
+            modifier_source_value
+        FROM
+            tufts.procedure_occurrence p
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = p.person_id
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = p.visit_occurrence_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+            ON vdm.old_id = p.visit_occurrence_id
     )
 INSERT INTO
     procedure_occurrence

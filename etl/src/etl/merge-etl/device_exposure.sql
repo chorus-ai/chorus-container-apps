@@ -586,6 +586,48 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'seattle'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
+                                   UNION
+                                   SELECT device_exposure_id  AS src_table_id,
+                                          person_id           AS src_person_id,
+                                          visit_occurrence_id AS src_visit_occurrence_id,
+                                          visit_detail_id     AS src_visit_detail_id,
+                                          'tufts'             AS src_name,
+                                          pm.new_id           AS person_id,
+                                          device_concept_id,
+                                          device_exposure_start_date,
+                                          device_exposure_start_datetime,
+                                          device_exposure_end_date,
+                                          device_exposure_end_datetime,
+                                          device_type_concept_id,
+                                          unique_device_id,
+                                          production_id,
+                                          quantity,
+                                          vom.new_id          AS visit_occurrence_id,
+                                          vdm.new_id          AS visit_detail_id,
+                                          device_source_value,
+                                          device_source_concept_id,
+                                          unit_concept_id,
+                                          unit_source_value,
+                                          unit_source_concept_id
+                                   FROM tufts.device_exposure de
+                                            INNER JOIN (
+                                                           SELECT *
+                                                           FROM persist.person_map
+                                                           WHERE source_name = 'tufts'
+                                                       ) pm
+                                                       ON pm.old_id = de.person_id
+                                            LEFT JOIN (
+                                                          SELECT *
+                                                          FROM persist.visit_occurrence_map
+                                                          WHERE source_name = 'tufts'
+                                                      ) vom
+                                                      ON vom.old_id = de.visit_occurrence_id
+                                            LEFT JOIN (
+                                                          SELECT *
+                                                          FROM persist.visit_detail_map
+                                                          WHERE source_name = 'tufts'
+                                                      ) vdm
+                                                      ON vdm.old_id = de.visit_occurrence_id
                                )
 INSERT
 INTO

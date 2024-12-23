@@ -475,6 +475,40 @@ WITH
             ON vom.old_id = o.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = o.visit_occurrence_id
+        UNION
+        SELECT
+            observation_id AS src_table_id,
+            person_id AS src_person_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            visit_detail_id AS src_visit_detail_id,
+            'tufts' AS src_name,
+            pm.new_id AS person_id,
+            observation_concept_id,
+            observation_date,
+            observation_datetime,
+            observation_type_concept_id,
+            value_as_number,
+            value_as_string,
+            value_as_concept_id,
+            qualifier_concept_id,
+            unit_concept_id,
+            vom.new_id AS visit_occurrence_id,
+            vdm.new_id AS visit_detail_id,
+            observation_source_value,
+            observation_source_concept_id,
+            unit_source_value,
+            qualifier_source_value,
+            value_source_value,
+            observation_event_id,
+            obs_event_field_concept_id
+        FROM
+            tufts.observation o
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = o.person_id
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = o.visit_occurrence_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+            ON vdm.old_id = o.visit_occurrence_id
     )
 INSERT INTO
     observation

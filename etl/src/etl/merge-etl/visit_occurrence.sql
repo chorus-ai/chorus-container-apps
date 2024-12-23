@@ -405,6 +405,35 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'seattle') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
+        UNION
+        SELECT
+            visit_occurrence_id AS src_visit_occurrence_id,
+            person_id AS src_person_id,
+            preceding_visit_occurrence_id AS src_prec_visit_occurrence_id,
+            'tufts' AS src_name,
+            vom.new_id AS visit_occurrence_id,
+            pm.new_id AS person_id,
+            visit_concept_id,
+            visit_start_date,
+            visit_start_datetime,
+            visit_end_date,
+            visit_end_datetime,
+            visit_type_concept_id,
+            visit_source_value,
+            visit_source_concept_id,
+            admitted_from_concept_id,
+            admitted_from_source_value,
+            discharged_to_concept_id,
+            discharged_to_source_value,
+            vom2.new_id AS preceding_visit_occurrence_id
+        FROM
+            tufts.visit_occurrence v
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = v.person_id
+        INNER JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = v.visit_occurrence_id
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom2
+            ON vom2.old_id = v.preceding_visit_occurrence_id
     )
 INSERT INTO
     visit_occurrence

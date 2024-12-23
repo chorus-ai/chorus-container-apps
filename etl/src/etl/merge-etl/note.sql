@@ -447,6 +447,38 @@ WITH
             ON vom.old_id = n.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = n.visit_detail_id
+        UNION
+        SELECT
+            note_id AS src_table_id,
+            person_id AS src_person_id,
+            visit_occurrence_id AS src_visit_occurrence_id,
+            visit_detail_id AS src_visit_detail_id,
+            'tufts' AS src_name,
+            nm.new_id AS note_id,
+            pm.new_id AS person_id,
+            note_date,
+            note_datetime,
+            note_type_concept_id,
+            note_class_concept_id,
+            note_title,
+            note_text,
+            encoding_concept_id,
+            language_concept_id,
+            vom.new_id AS visit_occurrence_id,
+            vdm.new_id AS visit_detail_id,
+            note_source_value,
+            note_event_id,
+            note_event_field_concept_id
+        FROM
+            tufts.note n
+        INNER JOIN (SELECT * FROM persist.person_map WHERE source_name = 'tufts') pm
+                ON pm.old_id = n.person_id
+        INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'tufts') nm
+                ON nm.old_id = n.note_id
+        LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'tufts') vom
+            ON vom.old_id = n.visit_occurrence_id
+        LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'tufts') vdm
+            ON vdm.old_id = n.visit_detail_id
     )
 INSERT INTO
     note

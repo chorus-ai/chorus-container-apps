@@ -1,10 +1,8 @@
-DROP TABLE if EXISTS tmp_de;
-CREATE
-TEMP TABLE tmp_de
+CREATE TEMP TABLE tmp_de
 AS
 WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_exposure_start_date, days_supply, drug_exposure_end_date)   AS (SELECT d.drug_exposure_id
         , d.person_id
-        , C.concept_id AS ingredient_concept_id
+        , c.concept_id AS ingredient_concept_id
         , d.drug_exposure_start_date AS drug_exposure_start_date
         , d.days_supply AS days_supply
         , COALESCE(
@@ -16,12 +14,12 @@ WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_e
             (drug_exposure_start_date + 1*INTERVAL'1 day')
             ---Add 1 day to the drug_exposure_start_date since there is no end_date or INTERVAL for the days_supply
         ) AS drug_exposure_end_date
-    FROM drug_exposure d
-        JOIN concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
-        JOIN concept C ON ca.ancestor_concept_id = C.concept_id
-        WHERE C.vocabulary_id =  CAST('RxNorm' AS TEXT) AND C.concept_class_id = 'Ingredient'
+    FROM omopcdm.drug_exposure d
+        JOIN omopcdm.concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
+        JOIN omopcdm.concept c ON ca.ancestor_concept_id = c.concept_id
+        WHERE c.vocabulary_id =  CAST('RxNorm' as TEXT) AND c.concept_class_id = 'Ingredient'
         AND d.drug_concept_id != 0 ---Our unmapped drug_concept_id's are set to 0, so we don't want different drugs wrapped up in the same era
-        AND COALESCE(d.days_supply,0) >= 0 ---We have cases where days_supply is negative, and this can set the end_date before the start_date, which we don't want. So we're just looking over those rows. This is a data-quality issue.
+        AND coalesce(d.days_supply,0) >= 0 ---We have cases where days_supply is negative, and this can set the end_date before the start_date, which we don't want. So we're just looking over those rows. This is a data-quality issue.
 )
 , cteSubExposureEndDates (person_id, ingredient_concept_id, end_date) AS --- A preliminary sorting that groups all of the overlapping exposures into one exposure so that we don't double-count non-gap-days
 (
@@ -30,7 +28,7 @@ WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_e
     (
         SELECT person_id, ingredient_concept_id, event_date, event_type,
         MAX(start_ordinal) OVER (PARTITION BY person_id, ingredient_concept_id
-            ORDER BY event_date, event_type ROWS UNBOUNDED PRECEDING) AS start_ordinal,
+            ORDER BY event_date, event_type ROWS unbounded preceding) AS start_ordinal,
         -- this pulls the current START down from the prior rows so that the NULLs
         -- from the END DATES will contain a value we can compare with
             ROW_NUMBER() OVER (PARTITION BY person_id, ingredient_concept_id
@@ -49,8 +47,7 @@ WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_e
         ) RAWDATA
     ) e
     WHERE (2 * e.start_ordinal) - e.overall_ord = 0
-)
-, cteDrugExposureEnds (person_id, drug_concept_id, drug_exposure_start_date, drug_sub_exposure_end_date) AS
+), cteDrugExposureEnds (person_id, drug_concept_id, drug_exposure_start_date, drug_sub_exposure_end_date) AS
 (
 SELECT
     dt.person_id
@@ -99,7 +96,7 @@ GROUP BY
             ROW_NUMBER() OVER (PARTITION BY person_id, ingredient_concept_id
                 ORDER BY event_date, event_type) AS overall_ord
             -- this re-numbers the inner UNION so all rows are numbered ordered by the event date
-        FROM (
+       FROM (
             -- select the start dates, assigning a row number to each
             SELECT person_id, ingredient_concept_id, drug_sub_exposure_start_date AS event_date,
             -1 AS event_type,
@@ -132,38 +129,22 @@ GROUP BY
     , drug_exposure_count
     , days_exposed
 )
-SELECT row_number()                         over(ORDER BY person_id) drug_era_id
+ SELECT
+row_number()over(order by person_id) drug_era_id
     , person_id
-        ,
-       drug_concept_id
-        ,
-       MIN(drug_sub_exposure_start_date) AS drug_era_start_date
-        ,
-       drug_era_end_date
-        ,
-       SUM(drug_exposure_count)          AS drug_exposure_count
-        ,
-       (CAST(drug_era_end_date AS DATE) - CAST(MIN(drug_sub_exposure_start_date) AS DATE)) -
-       SUM(days_exposed)                 AS gap_days
-FROM ctedrugeraends dee
-GROUP BY person_id,
-         drug_concept_id,
-         drug_era_end_date;
-ANALYZE
-tmp_de
+    , drug_concept_id
+    , MIN(drug_sub_exposure_start_date) AS drug_era_start_date
+    , drug_era_end_date
+    , SUM(drug_exposure_count) AS drug_exposure_count
+    , (CAST(drug_era_end_date AS DATE) - CAST(MIN(drug_sub_exposure_start_date) AS DATE))-SUM(days_exposed) as gap_days
+FROM
+cteDrugEraEnds dee
+GROUP BY person_id, drug_concept_id, drug_era_end_date;
+ANALYZE tmp_de
 ;
-INSERT INTO
-    drug_era(
-                        drug_era_id,
-                        person_id,
-                        drug_concept_id,
-                        drug_era_start_date,
-                        drug_era_end_date,
-                        drug_exposure_count,
-                        gap_days
-                    )
-SELECT *
-FROM tmp_de;
+INSERT INTO omopcdm.drug_era(drug_era_id,person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days)
+SELECT * FROM tmp_de;
+
 
 CREATE INDEX idx_drug_era_person_id_1 ON drug_era (person_id ASC);
 CLUSTER drug_era USING idx_drug_era_person_id_1;

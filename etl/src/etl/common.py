@@ -111,7 +111,8 @@ SITE_LIST = ['columbia',
              'florida',
              'pittsburgh',
              'seattle',
-             'virginia']
+             'virginia',
+             'tufts']
 
 @contextlib.contextmanager
 def postgresql_cursor():

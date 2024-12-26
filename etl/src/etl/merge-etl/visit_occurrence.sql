@@ -28,7 +28,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'columbia') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -57,7 +87,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'duke') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -86,7 +146,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'emory') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -115,7 +205,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mgh') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -144,7 +264,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mit') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -173,7 +323,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'mayo') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -202,7 +382,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'nationwide') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -231,7 +441,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'newmexico') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -260,7 +500,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucla') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -289,7 +559,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'ucsf') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -318,7 +618,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'florida') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -347,7 +677,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'pittsburgh') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -376,7 +736,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'virginia') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,
@@ -405,7 +795,37 @@ WITH
             ON vom.old_id = v.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_occurrence_map WHERE source_name = 'seattle') vom2
             ON vom2.old_id = v.preceding_visit_occurrence_id
-        UNION
+         )
+INSERT INTO
+    visit_occurrence
+SELECT
+    visit_occurrence_id,
+    person_id,
+    visit_concept_id,
+    visit_start_date,
+    visit_start_datetime,
+    visit_end_date,
+    visit_end_datetime,
+    visit_type_concept_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    visit_source_value,
+    visit_source_concept_id,
+    admitted_from_concept_id,
+    admitted_from_source_value,
+    discharged_to_concept_id,
+    discharged_to_source_value,
+    preceding_visit_occurrence_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_prec_visit_occurrence_id,
+    src_name
+FROM
+    visit_occurrence_joined;
+
+
+WITH
+    visit_occurrence_joined AS (
         SELECT
             visit_occurrence_id AS src_visit_occurrence_id,
             person_id AS src_person_id,

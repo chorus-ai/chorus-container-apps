@@ -21,7 +21,32 @@ WITH
             columbia.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'columbia') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -43,7 +68,32 @@ WITH
             duke.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'duke') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -65,7 +115,32 @@ WITH
             emory.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'emory') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -87,7 +162,32 @@ WITH
             mgh.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mgh') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -109,7 +209,32 @@ WITH
             mit.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mit') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -131,7 +256,32 @@ WITH
             mayo.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'mayo') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -153,7 +303,32 @@ WITH
             nationwide.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'nationwide') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -175,7 +350,32 @@ WITH
             newmexico.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'newmexico') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -197,7 +397,32 @@ WITH
             ucla.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucla') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -219,7 +444,32 @@ WITH
             ucsf.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'ucsf') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -241,7 +491,32 @@ WITH
             florida.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'florida') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -263,7 +538,32 @@ WITH
             pittsburgh.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'pittsburgh') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -285,7 +585,32 @@ WITH
             virginia.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'virginia') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -307,7 +632,32 @@ WITH
             seattle.note_nlp n
         INNER JOIN (SELECT * FROM persist.note_map WHERE source_name = 'seattle') nm
                 ON nm.old_id = n.note_id
-        UNION
+        )
+INSERT INTO
+    note_nlp
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
+    note_id,
+    section_concept_id,
+    snippet,
+    "offset",
+    lexical_variant,
+    note_nlp_concept_id,
+    note_nlp_source_concept_id,
+    nlp_system,
+    nlp_date,
+    nlp_datetime,
+    term_exists,
+    term_temporal,
+    term_modifiers,
+    src_table_id,
+    src_note_id,
+    src_name
+FROM
+    note_nlp_joined;
+
+WITH
+    note_nlp_joined AS (
         SELECT
             note_nlp_id  AS src_table_id,
             note_id AS src_note_id,
@@ -333,7 +683,7 @@ WITH
 INSERT INTO
     note_nlp
 SELECT
-    row_number() OVER (ORDER BY src_name, src_table_id) AS note_nlp_id,
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM note_nlp) AS note_nlp_id,
     note_id,
     section_concept_id,
     snippet,

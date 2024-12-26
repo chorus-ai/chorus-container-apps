@@ -28,7 +28,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -57,7 +87,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -86,7 +146,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -115,7 +205,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -144,7 +264,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -173,7 +323,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -202,7 +382,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -231,7 +441,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -260,7 +500,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -289,7 +559,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -318,7 +618,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -347,7 +677,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -376,7 +736,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -405,7 +795,37 @@ WITH
                 ON vom.old_id = co.visit_occurrence_id
             LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
                 ON vdm.old_id = co.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    condition_occurrence
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
+    person_id,
+    condition_concept_id,
+    condition_start_date,
+    condition_start_datetime,
+    condition_end_date,
+    condition_end_datetime,
+    condition_type_concept_id,
+    condition_status_concept_id,
+    stop_reason,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    condition_source_value,
+    condition_source_concept_id,
+    condition_status_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    condition_occurrence_joined;
+
+
+WITH
+    condition_occurrence_joined AS (
         SELECT
             condition_occurrence_id AS src_table_id,
             person_id AS src_person_id,
@@ -438,7 +858,7 @@ WITH
 INSERT INTO
     condition_occurrence
 SELECT
-    row_number() OVER (ORDER BY src_name, src_table_id) AS condition_occurrence_id,
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM condition_occurrence) AS condition_occurrence_id,
     person_id,
     condition_concept_id,
     condition_start_date,
@@ -461,4 +881,3 @@ SELECT
     src_name
 FROM
     condition_occurrence_joined;
-    

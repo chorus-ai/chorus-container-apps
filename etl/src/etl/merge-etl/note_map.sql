@@ -1,194 +1,240 @@
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'columbia' AS source_name
     FROM columbia.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'columbia')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'columbia'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'duke' AS source_name
     FROM duke.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'duke')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'duke'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'emory' AS source_name
     FROM emory.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'emory')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'emory'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'mgh' AS source_name
     FROM mgh.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'mgh')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'mgh'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'mit' AS source_name
     FROM mit.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'mit')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'mit'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'mayo' AS source_name
     FROM mayo.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'mayo')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'mayo'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
-           'nationwide'
+		    nm.old_id AS idexists,
+           'nationwide' AS source_name
     FROM nationwide.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'nationwide')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'nationwide'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'newmexico' AS source_name
     FROM newmexico.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'newmexico')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'newmexico'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
-           'ucla' AS source_name
-    FROM ucla.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'ucla')
-    )
-INSERT INTO persist.note_map
-SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
-       old_id,
-       source_name
-FROM note_joined;
-
-WITH note_joined AS (
-    SELECT note_id AS old_id,
-           'ucsf' AS source_name
-    FROM ucsf.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'ucsf')
-    )
-INSERT INTO persist.note_map
-SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
-       old_id,
-       source_name
-FROM note_joined;
-
-WITH note_joined AS (
-    SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'florida' AS source_name
     FROM florida.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'florida')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'florida'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
+           'ucla' AS source_name
+    FROM ucla.note
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'ucla'
+    )
+INSERT INTO persist.note_map
+SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
+       old_id,
+       source_name
+FROM note_joined
+WHERE idexists IS NULL;
+
+WITH note_joined AS (
+    SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
+           'ucsf' AS source_name
+    FROM ucsf.note
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'ucsf'
+    )
+INSERT INTO persist.note_map
+SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
+       old_id,
+       source_name
+FROM note_joined
+WHERE idexists IS NULL;
+
+
+WITH note_joined AS (
+    SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'pittsburgh' AS source_name
     FROM pittsburgh.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'pittsburgh')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'pittsburgh'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'virginia' AS source_name
     FROM virginia.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'virginia')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'virginia'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'seattle' AS source_name
     FROM seattle.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'seattle')
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'seattle'
     )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;
 
 WITH note_joined AS (
     SELECT note_id AS old_id,
+		    nm.old_id AS idexists,
            'tufts' AS source_name
     FROM tufts.note
-    WHERE note_id NOT IN
-          (SELECT old_id FROM persist.note_map WHERE source_name = 'tufts')
-                    )
+    LEFT JOIN persist.note_map nm
+		ON note_id = old_id
+		WHERE source_name = 'tufts'
+    )
 INSERT INTO persist.note_map
 SELECT row_number() OVER (ORDER BY source_name, old_id) + (SELECT count(*) FROM persist.note_map) AS new_id,
        old_id,
        source_name
-FROM note_joined;
+FROM note_joined
+WHERE idexists IS NULL;

@@ -90,7 +90,7 @@
 
     WITH visit_detail_joined AS (
         SELECT visit_detail_id AS old_id,
-               'nationwide'
+               'nationwide' AS source_name
         FROM nationwide.visit_detail
         WHERE visit_detail_id NOT IN
               (SELECT old_id FROM persist.visit_detail_map WHERE source_name = 'nationwide')

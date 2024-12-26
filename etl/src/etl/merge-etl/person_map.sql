@@ -84,7 +84,7 @@
 
     WITH person_joined AS (
         SELECT person_id AS old_id,
-               'nationwide'
+               'nationwide' AS source_name
         FROM nationwide.person
         WHERE person_id NOT IN
               (SELECT old_id FROM persist.person_map WHERE source_name = 'nationwide')

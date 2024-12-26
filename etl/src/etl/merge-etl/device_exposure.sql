@@ -40,7 +40,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'columbia'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -82,7 +112,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'duke'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -124,7 +184,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'emory'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -166,7 +256,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'mgh'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -208,7 +328,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'mit'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -250,7 +400,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'mayo'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -292,7 +472,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'nationwide'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -334,7 +544,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'newmexico'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -376,7 +616,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'ucla'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -418,7 +688,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'ucsf'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -460,7 +760,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'florida'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -502,7 +832,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'pittsburgh'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -544,7 +904,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'virginia'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -586,7 +976,37 @@ WITH device_exposure_joined AS (
                                                           WHERE source_name = 'seattle'
                                                       ) vdm
                                                       ON vdm.old_id = de.visit_occurrence_id
-                                   UNION
+                               )
+INSERT
+INTO
+    device_exposure
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
+       device_concept_id,
+       device_exposure_start_date,
+       device_exposure_start_datetime,
+       device_exposure_end_date,
+       device_exposure_end_datetime,
+       device_type_concept_id,
+       unique_device_id,
+       production_id,
+       quantity,
+       NULL AS      provider_id,
+       visit_occurrence_id,
+       visit_detail_id,
+       device_source_value,
+       device_source_concept_id,
+       unit_concept_id,
+       unit_source_value,
+       unit_source_concept_id,
+       src_table_id,
+       src_person_id,
+       src_visit_occurrence_id,
+       src_visit_detail_id,
+       src_name
+FROM device_exposure_joined;
+
+
+WITH device_exposure_joined AS (
                                    SELECT device_exposure_id  AS src_table_id,
                                           person_id           AS src_person_id,
                                           visit_occurrence_id AS src_visit_occurrence_id,
@@ -632,7 +1052,7 @@ WITH device_exposure_joined AS (
 INSERT
 INTO
     device_exposure
-SELECT row_number() over (ORDER BY src_name, src_table_id) AS device_exposure_id, person_id,
+SELECT row_number() over (ORDER BY src_name, src_table_id) + (SELECT COUNT(*) FROM device_exposure) AS device_exposure_id, person_id,
        device_concept_id,
        device_exposure_start_date,
        device_exposure_start_datetime,

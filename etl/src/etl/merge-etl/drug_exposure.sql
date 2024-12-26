@@ -35,7 +35,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'columbia') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -71,7 +107,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'duke') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -107,7 +179,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'emory') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -143,7 +251,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mgh') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -179,7 +323,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mit') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -215,7 +395,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'mayo') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -251,7 +467,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'nationwide') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -287,7 +539,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'newmexico') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -323,7 +611,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucla') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -359,7 +683,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'ucsf') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -395,7 +755,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'florida') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -431,7 +827,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'pittsburgh') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -467,7 +899,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'virginia') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -503,7 +971,43 @@ WITH
             ON vom.old_id = de.visit_occurrence_id
         LEFT JOIN (SELECT * FROM persist.visit_detail_map WHERE source_name = 'seattle') vdm
             ON vdm.old_id = de.visit_occurrence_id
-        UNION
+        )
+INSERT INTO
+    drug_exposure
+SELECT
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
+    person_id,
+    drug_concept_id,
+    drug_exposure_start_date,
+    drug_exposure_start_datetime,
+    drug_exposure_end_date,
+    drug_exposure_end_datetime,
+    verbatim_end_date,
+    drug_type_concept_id,
+    stop_reason,
+    refills,
+    quantity,
+    days_supply,
+    sig,
+    route_concept_id,
+    lot_number,
+    NULL AS provider_id,
+    visit_occurrence_id,
+    visit_detail_id,
+    drug_source_value,
+    drug_source_concept_id,
+    route_source_value,
+    dose_unit_source_value,
+    src_table_id,
+    src_person_id,
+    src_visit_occurrence_id,
+    src_visit_detail_id,
+    src_name
+FROM
+    drug_exposure_joined;
+
+WITH
+    drug_exposure_joined AS (
         SELECT
             drug_exposure_id AS src_table_id,
             person_id AS src_person_id,
@@ -543,7 +1047,7 @@ WITH
 INSERT INTO
     drug_exposure
 SELECT
-    row_number() OVER (ORDER BY src_name, src_table_id) AS drug_exposure_id,
+    row_number() OVER (ORDER BY src_name, src_table_id) + (SELECT count(*) FROM drug_exposure) AS drug_exposure_id,
     person_id,
     drug_concept_id,
     drug_exposure_start_date,

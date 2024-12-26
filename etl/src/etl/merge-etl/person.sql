@@ -23,7 +23,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'columbia'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'duke' AS src_name,
@@ -47,7 +76,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'duke'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'emory' AS src_name,
@@ -71,7 +129,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'emory'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'mgh' AS src_name,
@@ -95,7 +182,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mgh'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'mit' AS src_name,
@@ -119,7 +235,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mit'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'mayo' AS src_name,
@@ -143,7 +288,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'mayo'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'nationwide' AS src_name,
@@ -167,7 +341,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'nationwide'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'newmexico' AS src_name,
@@ -191,7 +394,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'newmexico'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'ucla' AS src_name,
@@ -215,7 +447,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'ucla'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'ucsf' AS src_name,
@@ -239,7 +500,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'ucsf'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'florida' AS src_name,
@@ -263,7 +553,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'florida'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'pittsburgh' AS src_name,
@@ -287,7 +606,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'pittsburgh'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'virginia' AS src_name,
@@ -311,7 +659,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'virginia'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'seattle' AS src_name,
@@ -335,7 +712,36 @@ WITH
         INNER JOIN persist.person_map pm
                 ON pm.old_id = p.person_id
         WHERE pm.source_name = 'seattle'
-        UNION
+        )
+INSERT INTO
+    person
+SELECT
+    person_id,
+    gender_concept_id,
+    year_of_birth,
+    month_of_birth,
+    day_of_birth,
+    birth_datetime,
+    race_concept_id,
+    ethnicity_concept_id,
+    NULL AS location_id,
+    NULL AS provider_id,
+    NULL AS care_site_id,
+    person_source_value,
+    gender_source_value,
+    gender_source_concept_id,
+    race_source_value,
+    race_source_concept_id,
+    ethnicity_source_value,
+    ethnicity_source_concept_id,
+    src_person_id,
+    src_name
+FROM
+    person_joined;
+    
+
+WITH
+    person_joined AS (
         SELECT
             person_id AS src_person_id,
             'tufts' AS src_name,
@@ -385,4 +791,3 @@ SELECT
     src_name
 FROM
     person_joined;
-    

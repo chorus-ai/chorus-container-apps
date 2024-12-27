@@ -23,11 +23,11 @@ for site_name in blob_list:
                         if key in column_list:
                                 data_tmp.at[cnt, key] = value
                 cnt = cnt + 1
-                if (cnt == 1000):
-                    cnt2 += cnt
-                    cnt3 += cnt
-                    print(f'{cnt2} Blobs Parsed...')
-                    cnt = 0
+                cnt2 = cnt2 + 1
+                if (cnt2 == 1000):
+                    cnt3 += cnt2
+                    print(f'{cnt} Blobs Parsed...')
+                    cnt2 = 0
                 if (cnt3 == 100000):
                     print("Refreshing dataframe buffer...")
                     data_tmp['extension'] = data_tmp['name'].str.split(pat=".").str[-1]

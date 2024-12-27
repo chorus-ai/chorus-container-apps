@@ -7,11 +7,11 @@ blob_list = ["columbia","duke", "emory", "mayo", "mgh", "mit", "nationwide", "pi
 #blob_list = ["duke"]
 column_list = ["name", "container", "size", "last_modified", "creation_time"]
 data_all = pd.DataFrame(columns=column_list)
+cnt = 0
 
 for site_name in blob_list:
         site_cc = blob_svc.get_container_client(site_name)
         info = site_cc.list_blobs()
-        cnt = 0
         cnt2 = 0
         cnt3 = 0
         data_tmp = pd.DataFrame()

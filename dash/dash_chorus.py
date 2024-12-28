@@ -24,74 +24,10 @@ group_table_columns = [
         ]
 
 def data_load():
-    file = '/pilot_meta/data/all_metadata.csv'
-    df = pd.read_csv(file)
-    df['year_modified'] = pd.to_datetime(df['last_modified']).dt.year
-    df['month_modified'] = pd.to_datetime(df['last_modified']).dt.month
-    df['quarter_modified'] = (pd.to_datetime(df['last_modified']).dt.month - 1) // 3 + 1
-
-    df['year_created'] = pd.to_datetime(df['creation_time']).dt.year
-    df['month_created'] = pd.to_datetime(df['creation_time']).dt.month
-    df['quarter_created'] = (pd.to_datetime(df['creation_time']).dt.month - 1) // 3 + 1
-    df['mode'] = pd.Series('NONE', index=np.arange(len(df)))
-    df['OMOP'] = (df['name'].str.lower().str.contains("omop")) | (df['extension'] == 'csv')
-    df['WAVE'] = df['name'].str.lower().str.contains("wave")
-    df['IMAGE'] = df['name'].str.lower().str.contains("image")
-    df['NOTE'] = df['name'].str.lower().str.contains("note")
-    df['Loaded_At'] = datetime.now(pytz.timezone("US/Eastern")).strftime("%Y-%m-%d %H:%M:%S")
-
-    df.loc[df['OMOP'], 'mode'] = 'OMOP'
-    df.loc[df['WAVE'], 'mode'] = 'WAVEFORM'
-    df.loc[df['IMAGE'], 'mode'] = 'IMAGE'
-    df.loc[df['NOTE'], 'mode'] = 'NOTE'
-
-    TOTAL_SUM = df['size'].sum()
-
-    by_site = pd.DataFrame()
-    by_site['container'] = df['container'].unique()
-
-    for cont in by_site.container.to_list():
-        by_site.loc[by_site['container'] == cont, 'OMOP_SIZE'] = round(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'OMOP'), 'size'].sum() / 1000000000, 2)
-        by_site.loc[by_site['container'] == cont, 'WAVEFORM_SIZE'] = round(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'WAVEFORM'), 'size'].sum() / 1000000000, 2)
-        by_site.loc[by_site['container'] == cont, 'IMAGE_SIZE'] = round(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'IMAGE'), 'size'].sum() / 1000000000, 2)
-        by_site.loc[by_site['container'] == cont, 'NOTE_SIZE'] = round(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'NOTE'), 'size'].sum() / 1000000000, 2)
-        by_site.loc[by_site['container'] == cont, 'OMOP_FILES'] = df.loc[
-            (df['container'] == cont) & (df['mode'] == 'OMOP'), 'name'].nunique()
-        by_site.loc[by_site['container'] == cont, 'WAVEFORM_FILES'] = df.loc[
-            (df['container'] == cont) & (df['mode'] == 'WAVEFORM'), 'name'].nunique()
-        by_site.loc[by_site['container'] == cont, 'IMAGE_FILES'] = df.loc[
-            (df['container'] == cont) & (df['mode'] == 'IMAGE'), 'name'].nunique()
-        by_site.loc[by_site['container'] == cont, 'NOTE_FILES'] = df.loc[
-            (df['container'] == cont) & (df['mode'] == 'NOTE'), 'name'].nunique()
-        by_site.loc[by_site['container'] == cont, 'WAVEFORM_EXT'] = ';'.join(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'WAVEFORM'), 'extension'].unique())
-        by_site.loc[by_site['container'] == cont, 'IMAGE_EXT'] = ';'.join(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'IMAGE'), 'extension'].unique())
-        by_site.loc[by_site['container'] == cont, 'MOST_RECENT_UPLOAD'] = pd.to_datetime(
-            df.loc[(df['container'] == cont), 'last_modified']).max()
-        by_site.loc[by_site['container'] == cont, 'OMOP_REL'] = round((df.loc[(df['container'] == cont) & (
-                df['mode'] == 'OMOP'), 'size'].sum() / df.loc[(df['mode'] == 'OMOP'), 'size'].sum()) * 100, 2)
-        by_site.loc[by_site['container'] == cont, 'WAVEFORM_REL'] = round((df.loc[(df['container'] == cont) & (
-                df['mode'] == 'WAVEFORM'), 'size'].sum() / df.loc[(df['mode'] == 'WAVEFORM'), 'size'].sum()) * 100,
-                                                                          2)
-        by_site.loc[by_site['container'] == cont, 'IMAGE_REL'] = round((df.loc[(df['container'] == cont) & (
-                df['mode'] == 'IMAGE'), 'size'].sum() / df.loc[(df['mode'] == 'IMAGE'), 'size'].sum()) * 100, 2)
-        by_site.loc[by_site['container'] == cont, 'NOTE_REL'] = round((df.loc[(df['container'] == cont) & (
-                df['mode'] == 'NOTE'), 'size'].sum() / df.loc[(df['mode'] == 'NOTE'), 'size'].sum()) * 100, 2)
-        by_site.loc[by_site['container'] == cont, 'MOST_RECENT_OMOP'] = pd.to_datetime(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'OMOP'), 'last_modified']).max()
-        by_site.loc[by_site['container'] == cont, 'MOST_RECENT_WAVE'] = pd.to_datetime(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'WAVEFORM'), 'last_modified']).max()
-        by_site.loc[by_site['container'] == cont, 'MOST_RECENT_IMAGE'] = pd.to_datetime(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'IMAGE'), 'last_modified']).max()
-        by_site.loc[by_site['container'] == cont, 'MOST_RECENT_NOTE'] = pd.to_datetime(
-            df.loc[(df['container'] == cont) & (df['mode'] == 'NOTE'), 'last_modified']).max()
-        by_site['Loaded_At'] = df['Loaded_At'][0]
-
+    by_site_file = '/pilot_meta/data/by_site.csv'
+    by_site = pd.read_csv(by_site_file)
+    sample_file = '/pilot_meta/data/sample.csv'
+    df = pd.read_csv(sample_file)
     return df, by_site
 
 df, by_site = data_load()

@@ -5,7 +5,8 @@ RUN pip install azure-storage-blob \
                 pandas \
                 dash \
                 dash_bootstrap_components \
-                dash_ag_grid
+                dash_ag_grid \
+                postgresql-client
 
 COPY dash_chorus.py /app/dash_chorus.py
 COPY assets /app/assets

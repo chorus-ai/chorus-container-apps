@@ -15,12 +15,12 @@ def subprocess_run(command, input=None, cwd=None, env=None, check=True):
     return subprocess.run(command, input=input, cwd=cwd, env=env, check=check)
 
 
-def psql_send_csv (csv_name, table_name="all_metadata"):
-    tmp_file = f'/tmp/load_{csv_name}.sh'
+def psql_send_csv (csv_name, table_name, site_name):
+    tmp_file = f'/tmp/{site_name}.sh'
     tmp_shell = f"""
-        tail -q -n +2 {csv_name} | 
-        psql -d ohdsi -h {PGHOST} -U postgres -p 5432 
-        -c \"\copy public.{table_name} FROM STDIN CSV DELIMITER E','\"
+        tail -q -n +2 {csv_name} | \\
+        psql -d ohdsi -U postgres -p 5432 \\
+        -c \"\copy public.{table_name} FROM STDIN CSV DELIMITER E','\" \\
         && rm -rf {csv_name}
         """
     with open(tmp_file, 'w') as t:
@@ -29,6 +29,19 @@ def psql_send_csv (csv_name, table_name="all_metadata"):
     subprocess_run(['chmod', '+x', tmp_file], check=True)
     subprocess_run([tmp_file], check=True)
 
+def psql_run_file (file_name):
+    tmp_file = f'/tmp/{file_name}.sh'
+    tmp_shell = f"""
+        psql -d ohdsi -U postgres -p 5432 \\
+        -f {file_name}.sql
+        """
+    with open(tmp_file, 'w') as t:
+        t.write("#!/bin/bash\n")
+        t.write(tmp_shell)
+    subprocess_run(['chmod', '+x', tmp_file], check=True)
+    subprocess_run([tmp_file], check=True)
+
+psql_run_file("initialize")
 for site_name in blob_list:
         site_cc = blob_svc.get_container_client(site_name)
         info = site_cc.list_blobs()
@@ -54,7 +67,9 @@ for site_name in blob_list:
                 if cnt2 == 100000:
                     print(f'{cnt} Total Blobs Parsed...')
                     cnt2 = 0
-        #psql_send_csv(TMP_CSV, all_metadata)
+        psql_send_csv(TMP_CSV, "all_metadata", site_name)
         print(f"Finished with {site_name}")
 
-
+psql_run_file("prep_for_export")
+subprocess_run(["export_dash_src.sh"], check=True)
+subprocess_run(['rm', '-rf', "/tmp/*.sh"], check=True)

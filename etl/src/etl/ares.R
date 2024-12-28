@@ -33,7 +33,8 @@ Achilles::achilles(
     connectionDetails = connectionDetails,
     cdmDatabaseSchema = cdmDatabaseSchema,
     createIndices = createIndices,
-    numThreads = numThreads
+    numThreads = numThreads,
+    excludeAnalysisIds =  c(717, 815, 1815) # Exclude inefficient analyses for now https://github.com/OHDSI/Achilles/issues/717
 )
 
 releaseKey <- AresIndexer::getSourceReleaseKey(connectionDetails, cdmDatabaseSchema)

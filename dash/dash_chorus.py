@@ -166,7 +166,7 @@ def make_subtitle_1(data):
 )
 def make_subtitle_2(data):
     subtitle_2 = f"""
-    ### Overview of all files delivered
+    ### File delivery sample (max 1000 files per mode)
     """
     return subtitle_2
 

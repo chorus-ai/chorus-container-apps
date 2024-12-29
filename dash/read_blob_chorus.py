@@ -71,5 +71,5 @@ for site_name in blob_list:
         print(f"Finished with {site_name}")
 
 psql_run_file("prep_for_export")
-subprocess_run(["export_dash_src.sh"], check=True)
+subprocess_run(["/app/export_dash_src.sh"], check=True)
 subprocess_run(['rm', '-rf', "/tmp/*.sh"], check=True)

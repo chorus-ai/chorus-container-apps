@@ -14,6 +14,8 @@ RUN pip install azure-storage-blob \
 COPY dash_chorus.py /app/dash_chorus.py
 COPY assets /app/assets
 COPY read_blob_chorus.py /app/read_blob_chorus.py
+COPY *.sql /app
+COPY *.sh /app
 # COPY all_metadata.csv /pilot_meta/data/all_metadata.csv
 
 ENTRYPOINT ["python3", "/app/dash_chorus.py"]

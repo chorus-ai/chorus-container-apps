@@ -33,7 +33,7 @@ def psql_run_file (file_name):
     tmp_file = f'/tmp/{file_name}.sh'
     tmp_shell = f"""
         psql -d ohdsi -U postgres -p 5432 \\
-        -f {file_name}.sql
+        -f /app/{file_name}.sql
         """
     with open(tmp_file, 'w') as t:
         t.write("#!/bin/bash\n")

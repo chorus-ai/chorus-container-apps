@@ -19,8 +19,9 @@ all_table_columns = [
 ]
 
 group_table_columns = [
-        'container', 'OMOP_SIZE', 'WAVEFORM_SIZE', 'IMAGE_SIZE', 'NOTE_SIZE', 'OMOP_FILES', 'WAVEFORM_FILES', 'IMAGE_FILES', 'NOTE_FILES', 'WAVEFORM_EXT', 'IMAGE_EXT', 'MOST_RECENT_UPLOAD',
-        'OMOP_REL', 'WAVEFORM_REL', 'IMAGE_REL', 'NOTE_REL', 'MOST_RECENT_OMOP', 'MOST_RECENT_WAVE', 'MOST_RECENT_IMAGE', 'MOST_RECENT_NOTE'
+    'container','omop_size','wave_size','image_size','note_size','omop_files','wave_files','image_files','note_files',
+    'waveform_ext','image_ext','most_recent_upload','omop_rel','waveform_rel','image_rel','note_rel','most_recent_omop',
+    'most_recent_wave','most_recent_image','most_recent_note','loaded_at'
         ]
 
 def data_load():
@@ -142,7 +143,7 @@ def make_title(data):
         data = by_site[by_site["container"] == 'columbia'].to_dict("records")
     title = f"""
     ## Data Delivery Report for {data["container"]} 
-    *(Metadata refreshed at {data["Loaded_At"]})*
+    *(Metadata refreshed at {data["loaded_at"]})*
     
     ** For file-specific details, see the per-file grid at the bottom of the page **
     """
@@ -190,31 +191,31 @@ def make_mode_gap_card(data):
         ], style={"minWidth": 250}),
         dbc.Col([
             html.Div("Files (#)", className=" border-bottom border-3"),
-            html.Div( f"{data['OMOP_FILES']}"),
-            html.Div(f"{data['WAVEFORM_FILES']}"),
-            html.Div(f"{data['IMAGE_FILES']}"),
-            html.Div(f"{data['NOTE_FILES']}"),
+            html.Div( f"{data['omop_files']}"),
+            html.Div(f"{data['wave_files']}"),
+            html.Div(f"{data['image_files']}"),
+            html.Div(f"{data['note_files']}"),
         ]),
         dbc.Col([
             html.Div("Size (GB)", className=" border-bottom border-3"),
-            html.Div(f"{data['OMOP_SIZE']}"),
-            html.Div(f"{data['WAVEFORM_SIZE']}"),
-            html.Div(f"{data['IMAGE_SIZE']}"),
-            html.Div(f"{data['NOTE_SIZE']}"),
+            html.Div(f"{data['omop_size']}"),
+            html.Div(f"{data['wave_size']}"),
+            html.Div(f"{data['image_size']}"),
+            html.Div(f"{data['note_size']}"),
         ]),
         dbc.Col([
             html.Div("Recent Upload", className=" border-bottom border-3"),
-            html.Div(f"{data['MOST_RECENT_OMOP']}"),
-            html.Div(f"{data['MOST_RECENT_WAVE']}"),
-            html.Div(f"{data['MOST_RECENT_IMAGE']}"),
-            html.Div(f"{data['MOST_RECENT_NOTE']}"),
+            html.Div(f"{data['most_recent_omop']}"),
+            html.Div(f"{data['most_recent_wave']}"),
+            html.Div(f"{data['most_recent_image']}"),
+            html.Div(f"{data['most_recent_note']}"),
         ])
     ], style={"minWidth": 400})
 
     omop = dbc.Alert(dcc.Markdown(
         f"""
         ** OMOP Data Size **
-        ### {data['OMOP_REL']}%
+        ### {data['omop_rel']}%
         of total CHoRUS OMOP Data
         """,
     ), color="dark")
@@ -222,7 +223,7 @@ def make_mode_gap_card(data):
     wave = dbc.Alert(dcc.Markdown(
         f"""
         ** WAVEFORM Data Size **
-        ### {data['WAVEFORM_REL']}%
+        ### {data['waveform_rel']}%
         of total CHoRUS WAVEFORM Data
         """,
     ), color="dark")
@@ -230,7 +231,7 @@ def make_mode_gap_card(data):
     image = dbc.Alert(dcc.Markdown(
         f"""
         ** IMAGE Data Size **
-        ### {data['IMAGE_REL']}%
+        ### {data['image_rel']}%
         of total CHoRUS IMAGE Data
         """,
     ), color="dark")
@@ -238,7 +239,7 @@ def make_mode_gap_card(data):
     note = dbc.Alert(dcc.Markdown(
         f"""
         ** NOTE Data Size **
-        ### {data['NOTE_REL']}%
+        ### {data['note_rel']}%
         of total CHoRUS NOTE Data
         """,
     ), color="dark")

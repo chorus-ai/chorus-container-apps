@@ -13,7 +13,8 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -
         r-base \
         r-base-dev \
         r-cran-remotes \
-        tini && \
+        tini \
+        jq && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt/etl
 RUN Rscript -e 'remotes::install_version("renv", "1.0.2")'

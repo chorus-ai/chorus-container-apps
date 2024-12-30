@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cohortids=$(curl -s "${CHORUS_WEBAPI_BACKEND}cohortdefinition" | jq -r '.[].id')
-psql -d merge -c "ALTER ROLE postgres SET statement_timeout = '60s';" > /dev/null
+psql -d merge -c "ALTER ROLE postgres SET statement_timeout = '120s';" > /dev/null
 for id in $cohortids; do
   rm -rf mssql.sql
   rm -rf tmp.sql
@@ -20,7 +20,7 @@ for id in $cohortids; do
     --request POST \
     --data @- \
     "${CHORUS_WEBAPI_BACKEND}sqlrender/translate" | jq -r '.|.targetSQL' | sed 's/ cohort / omopcdm.cohort /g' >> tmp.sql
-  psql -d merge -f tmp.sql -v ON_ERROR_STOP=1  > /dev/null
+  psql -d merge -f tmp.sql  > /dev/null
   echo "Cohort ${id} generated!"
 done
 psql -d merge -c "ALTER ROLE postgres SET statement_timeout = '0';"  > /dev/null

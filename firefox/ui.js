@@ -17,7 +17,6 @@ import Keyboard from "../core/input/keyboard.js";
 import RFB from "../core/rfb.js";
 import * as WebUtil from "./webutil.js";
 import WebData from "./webdata.js";
-import { PCMPlayer } from "./pcm-player.min.js"
 
 // const PAGE_TITLE = "noVNC";
 
@@ -37,8 +36,6 @@ const UI = {
 
     lastKeyboardinput: null,
     defaultKeyboardinputLen: 100,
-
-    audioContext: null,
 
     prime() {
         return WebUtil.initSettings().then(() => {
@@ -91,30 +88,7 @@ const UI = {
 
         // Enable dark mode.
         if (WebData.darkMode) {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-
-        // Enable audio support.
-        if (!(window.AudioContext || window.webkitAudioContext)) {
-            Log.Info("Web audio not supported by browser.");
-        } else if (WebData.audioSupport) {
-            UI.audioContext = {
-                audioEnabled: false,
-                player: new PCMPlayer({
-                    encoding: '16bitIntLE',
-                    channels: 2,
-                    sampleRate: 44100,
-                }),
-            },
-            UI.addAudioHandlers();
-            UI.updateLogging();
-            document.getElementById('noVNC_audio_section')
-                .classList.remove("noVNC_hidden");
-        }
-
-        if (WebData.webAuthSupport) {
-            document.getElementById('noVNC_logout_button')
-                .classList.remove("noVNC_hidden");
+            document.documentElement.classList.add("dark");
         }
 
         // Adapt the interface for touch screen devices
@@ -374,8 +348,6 @@ const UI = {
         UI.addSettingChangeHandler('view_clip', UI.updateViewClip);
         UI.addSettingChangeHandler('logging');
         UI.addSettingChangeHandler('logging', UI.updateLogging);
-        UI.addSettingChangeHandler('audio_volume');
-        UI.addSettingChangeHandler('audio_volume', UI.updateAudioVolume);
     },
 
     addFullscreenHandlers() {
@@ -386,11 +358,6 @@ const UI = {
         window.addEventListener('mozfullscreenchange', UI.updateFullscreenButton);
         window.addEventListener('webkitfullscreenchange', UI.updateFullscreenButton);
         window.addEventListener('msfullscreenchange', UI.updateFullscreenButton);
-    },
-
-    addAudioHandlers() {
-        document.getElementById("noVNC_audio_button")
-            .addEventListener('click', UI.toggleAudio);
     },
 
 /* ------^-------
@@ -434,16 +401,10 @@ const UI = {
 
             document.getElementById('noVNC_control_bar_anchor')
                 .classList.remove("noVNC_hidden");
+            UI.openControlbar();
 
-            // On first run, show the control bar and automatically hide it
-            // after 2 seconds.
-            if (WebUtil.readSetting('first_run') != 'false') {
-                UI.openControlbar();
-
-                // Hide the control bar after 2 seconds
-                UI.closeControlbarTimeout = setTimeout(UI.closeControlbar, 2000);
-                WebUtil.writeSetting('first_run', 'false');
-            }
+            // Hide the control bar after 2 seconds
+            UI.closeControlbarTimeout = setTimeout(UI.closeControlbar, 2000);
         } else {
             UI.closeControlbar();
             document.getElementById('noVNC_control_bar_anchor')
@@ -910,19 +871,12 @@ const UI = {
         }
         url += '/' + window.location.pathname.substr(1) + path;
 
-        try {
-            UI.rfb = new RFB(document.getElementById('noVNC_container'), url,
-                             { shared: UI.getSetting('shared'),
-                               repeaterID: UI.getSetting('repeaterID'),
-                               credentials: { password: password },
-                               wsProtocols: ['binary']});
-        } catch (exc) {
-            Log.Error("Failed to connect to server: " + exc);
-            UI.updateVisualState('disconnected');
-            UI.showStatus("Failed to connect to server: " + exc, 'error');
-            return;
-        }
-
+        UI.rfb = new RFB(document.getElementById('noVNC_container'), url,
+                         { shared: UI.getSetting('shared'),
+                           repeaterID: UI.getSetting('repeaterID'),
+                           credentials: { password: password },
+                           wsProtocols: ['binary'],
+                         });
         UI.rfb.addEventListener("connect", UI.connectFinished);
         UI.rfb.addEventListener("disconnect", UI.disconnectFinished);
         UI.rfb.addEventListener("credentialsrequired", UI.credentials);
@@ -1000,12 +954,6 @@ const UI = {
         //UI.openControlbar();
         UI.closeControlbar()
         //UI.openConnectPanel();
-
-        // Make sure audio is also stopped.
-        if (UI.audioContext) {
-            UI.audioContext.audioEnabled = false;
-            UI.updateAudio();
-        }
     },
 
     securityFailed(e) {
@@ -1456,11 +1404,7 @@ const UI = {
     },
 
     updateLogging() {
-        const level = UI.getSetting('logging');
-        WebUtil.initLogging(level);
-        if (UI.audioContext) {
-            UI.audioContext.player.initLogging(level);
-        }
+        WebUtil.initLogging(UI.getSetting('logging'));
     },
 
     updateDesktopName(e) {
@@ -1472,136 +1416,7 @@ const UI = {
 /* ------^-------
  *    /MISC
  * ==============
- *     AUDIO
- * ------v------*/
-
-    toggleAudio() {
-        if (!UI.audioContext) return;
-        UI.audioContext.audioEnabled = !UI.audioContext.audioEnabled;
-
-        if (UI.audioContext.audioEnabled) {
-            // Get previous volume value.
-            let volume = parseInt(WebUtil.readSetting('audio_volume', '90'));
-            if (volume < 0) volume = 0;
-            if (volume > 100) volume = 100;
-
-            // Restore the volume slider to the previous value.
-            document.getElementById("noVNC_setting_audio_volume").value = Math.max(15, volume).toString();
-        } else {
-            // Mute audio: set the volume slider to 0.
-            document.getElementById("noVNC_setting_audio_volume").value = "0";
-        }
-
-        UI.updateAudio();
-    },
-
-    updateAudioVolume() {
-        if (!UI.audioContext) return;
-
-        // Get the current volume value from the slider.
-        let volume = parseInt(document.getElementById("noVNC_setting_audio_volume").value);
-        if (volume < 0) volume = 0;
-        if (volume > 100) volume = 100;
-
-        if (volume == 0) {
-            UI.audioContext.audioEnabled = false;
-        } else {
-            UI.audioContext.audioEnabled = true;
-        }
-
-        UI.updateAudio();
-    },
-
-    updateAudio() {
-        if (!UI.audioContext) return;
-
-        function connectWebSocket() {
-            var socketURL = (window.location.protocol == 'https:' ? 'wss:' : 'ws:')+'//'+document.location.hostname+':'+window.location.port+'/websockify-audio';
-
-            if (!UI.audioContext.audioEnabled) return;
-
-            Log.Info("Establishing WebSocket connection for audio...");
-            UI.audioContext.webSocket = new WebSocket(socketURL, ['binary']);
-            UI.audioContext.webSocket.binaryType = 'arraybuffer';
-
-            UI.audioContext.webSocket.onmessage = (event) => {
-                UI.audioContext.player.feed(event.data);
-            };
-
-            UI.audioContext.webSocket.onopen = function(e) {
-                Log.Info("WebSocket connection for audio established");
-            };
-
-            UI.audioContext.webSocket.onclose = function(event) {
-                if (event.wasClean) {
-                    Log.Info(`WebSocket connection for audio closed, code=${event.code} reason=${event.reason}`);
-                } else {
-                    // e.g. server process killed or network down
-                    // event.code is usually 1006 in this case
-                    Log.Info('WebSocket connection for audio died');
-                }
-
-                // Destroy the connection.
-                delete UI.audioContext.webSocket
-                UI.audioContext.webSocket = null
-
-                // Attempt to re-connect.
-                if (UI.audioContext.audioEnabled) {
-                    Log.Info('WebSocket reconnection for audio will be attempted');
-                    setTimeout(connectWebSocket, 1000);
-                }
-            };
-        }
-
-        const audioButtonIcon = document.getElementById("noVNC_audio_button_icon");
-        const audioVolumeSlider = document.getElementById("noVNC_setting_audio_volume");
-
-        if (UI.audioContext.audioEnabled && UI.connected) {
-            // Audio should be enabled.
-
-            // Get the current volume value.
-            let volume = parseInt(document.getElementById("noVNC_setting_audio_volume").value);
-            if (volume <= 0) volume = 1;  // We should not be muted.
-            if (volume > 100) volume = 100;
-
-            // Set the volume value.
-            UI.audioContext.player.volume(volume / 100);
-
-            // Make sure the PCM player is started.
-            UI.audioContext.player.start();
-
-            // Make sure the WebSocket connection is established.
-            if (!UI.audioContext.webSocket) {
-                connectWebSocket();
-            }
-
-            // Update the interface.
-            audioButtonIcon.classList.remove("fa-volume-mute");
-            audioButtonIcon.classList.add("fa-volume-up");
-        }
-        else {
-            // Audio should be disabled.
-
-            // Close the WebSocket connection.
-            if (UI.audioContext.webSocket) {
-                UI.audioContext.webSocket.close();
-                // The WebSocket close callback will destroy the object.
-            }
-
-            // Stop the PCM player.
-            UI.audioContext.player.stop();
-
-            // Update the interface.
-            audioButtonIcon.classList.remove("fa-volume-up");
-            audioButtonIcon.classList.add("fa-volume-mute");
-        }
-    },
-
-/* ------^-------
- *    /AUDIO
- * ==============
  */
-
 };
 
 UI.prime();

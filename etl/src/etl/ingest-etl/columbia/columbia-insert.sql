@@ -330,47 +330,6 @@ FROM
     omopcdm.src_drug_era AS de
     JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
 
-
-INSERT INTO omopcdm.note
-SELECT note_id::float::bigint,
-    n.person_id::float::bigint,
-    note_date::date + INTERVAL'1 day'*ds.days AS note_date,
-    note_datetime::timestamp + INTERVAL'1 day'*ds.days AS note_datetime,
-    note_type_concept_id::float::bigint,
-    NULLIF(note_class_concept_id, 'nan')::float::bigint,
-    note_title,
-    note_text,
-    NULLIF(encoding_concept_id, 'nan')::float::bigint,
-    NULLIF(language_concept_id, 'nan')::float::bigint,
-    NULLIF(provider_id, 'nan')::float::bigint,
-    NULLIF(visit_occurrence_id, 'nan')::float::bigint,
-    NULLIF(visit_detail_id, 'nan')::float::bigint,
-    note_source_value,
-    NULLIF(note_event_id, 'nan')::float::bigint,
-    NULLIF(note_event_field_concept_id, 'nan')::float::bigint
-FROM
-omopcdm.src_note AS n
-    JOIN persist.date_shift AS ds ON n.person_id::float::bigint = ds.person_id;
-
-INSERT INTO omopcdm.note_nlp
-SELECT note_nlp_id::float::bigint,
-    note_id::float::bigint,
-    NULLIF(section_concept_id, 'nan')::float::bigint,
-    snippet,
-    NULLIF("offset", 'nan')::float::bigint,
-    'REDACTED' AS lexical_variant,
-    NULLIF(note_nlp_concept_id, 'nan')::float::bigint,
-    NULLIF(note_nlp_source_concept_id, 'nan')::float::bigint,
-    nlp_system,
-    nlp_date::date,
-    nlp_datetime::timestamp,
-    term_exists,
-    term_temporal,
-    term_modifiers
-FROM
-omopcdm.src_note_nlp; -- no date shift for note nlp, date refers to nlp execution not clinical date
-
-
 INSERT INTO
     omopcdm.cdm_source (
         cdm_source_name,

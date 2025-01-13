@@ -32,4 +32,5 @@ ENV SERVER_PORT=8080 \
     CHORUS_LAB_BACKEND_TEMPLATE=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_PREFECT_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_WEBAPI_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
+    CHORUS_DASH_USERS_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1

@@ -50,6 +50,13 @@ server {
         proxy_pass ${CHORUS_WEBAPI_BACKEND};
     }
 
+    location /dash-users/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass ${CHORUS_DASH_USERS_BACKEND};
+    }
+
     location = /authorize {
         internal;
         js_content http.authorize;

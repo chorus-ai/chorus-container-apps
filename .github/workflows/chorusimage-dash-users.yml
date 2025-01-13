@@ -1,13 +1,11 @@
-name: chorus images portals
+name: chorus images dash personnel
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'www-admin/**'
-      - 'www-dgs/**'
-      - 'www-challenge/**'
+      - 'dash-users/**'
 
 env:
   REGISTRY: ghcr.io
@@ -20,15 +18,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./www-admin/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-admin
-            context: ./www-admin
-          - dockerfile: ./www-challenge/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-challenge
-            context: ./www-challenge
-          - dockerfile: ./www-dgs/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-dgs
-            context: ./www-dgs
+          - dockerfile: ./dash-users/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-dash-users
+            context: ./dash-users
     permissions:
       contents: read
       packages: write

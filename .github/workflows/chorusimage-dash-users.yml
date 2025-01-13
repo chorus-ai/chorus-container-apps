@@ -21,6 +21,9 @@ jobs:
           - dockerfile: ./dash-users/Dockerfile
             image: ghcr.io/chorus-ai/chorus-dash-users
             context: ./dash-users
+          - dockerfile: ./dash-users/job/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-dash-users-job
+            context: ./dash-users
     permissions:
       contents: read
       packages: write

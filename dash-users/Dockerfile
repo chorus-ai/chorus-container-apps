@@ -15,7 +15,6 @@ RUN pip install azure-identity \
 COPY app.py /app/app.py
 COPY assets /app/assets
 COPY read_access_chorus.py /app/read_access_chorus.py
-COPY test.csv /az_user/data/test.csv
 
 ENTRYPOINT ["python3", "/app/app.py"]
 

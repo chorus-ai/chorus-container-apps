@@ -135,4 +135,4 @@ for row in toIterate.itertuples():
 
 
 user_df['loaded_at'] = [datetime.datetime.now()] * user_df.shape[0]
-user_df.to_csv('/az_users/data/personnel_metadata.csv ', index=False)
+user_df.to_csv('/az_users/data/personnel_metadata.csv', index=False)

@@ -3,8 +3,8 @@ title: AimAhead Portal
 subtitle: CHoRUS Azure Data Enclave
 ---
 
-The CHoRUS AimAhead Portal currently offers a small collection of tools and services.
+The CHoRUS AimAhead Portal currently offers a small collection of tools and services, all of which can be
+accessed using through a jump-host-like Firefox browser allocated to each user.
 
-- Check **[Ares](/ares/)** to characterize data and assess data quality.
-- Use **[Atlas](/atlas/)** to conduct scientific analyses, create cohorts, and design models.
-- Open a **[User-Specific Portal](/lab/)** to access the ML workspace provisioned for the AimAhead Project
+- Open a **[User-Specific Environment](/lab/)** to access the ML workspace provisioned for the AimAhead Project
+  - Note that other tools like ARES and ATLAS can be reached using bookmarks in this environment.

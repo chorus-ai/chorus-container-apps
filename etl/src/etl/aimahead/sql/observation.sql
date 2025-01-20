@@ -1,16 +1,11 @@
 WITH
     observation_joined AS (
         SELECT
-            NULL AS src_table_id,
-            NULL AS src_person_id,
-            NULL AS src_visit_occurrence_id,
-            NULL AS src_visit_detail_id,
-            CASE WHEN src_name = 'mgh' THEN '1'
-                   WHEN src_name = 'mit' THEN '2'
-                   WHEN src_name = 'nationwide' THEN '3'
-                   WHEN src_name = 'pittsburgh' THEN '4'
-                   WHEN src_name = 'seattle' THEN '5'
-              END AS src_name,
+            NULL::bigint AS src_table_id,
+            NULL::bigint AS src_person_id,
+            NULL::bigint AS src_visit_occurrence_id,
+            NULL::bigint AS src_visit_detail_id,
+            sk.s_key AS src_name,
             observation_id,
             person_id,
             observation_concept_id,
@@ -31,11 +26,13 @@ WITH
             NULL  AS value_source_value,
             observation_event_id,
             obs_event_field_concept_id
-        FROM msft_challenge.observation o
-           WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+        FROM aimahead.observation o
+        JOIN persist.source_key sk ON o.src_name = sk.s_name
+           WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
+           AND observation_concept_id NOT IN (SELECT concept_id FROM persist.censored_concept)
     )
 INSERT INTO
-    msft_challenge_80.observation
+    aimahead_60.observation
 SELECT
     observation_id,
     person_id,

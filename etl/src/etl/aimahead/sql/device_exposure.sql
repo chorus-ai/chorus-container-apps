@@ -3,12 +3,7 @@ WITH device_exposure_joined AS (
                                           NULL::integer           AS src_person_id,
                                           NULL::integer AS src_visit_occurrence_id,
                                           NULL::integer     AS src_visit_detail_id,
-                                          CASE WHEN src_name = 'mgh' THEN '1'
-                                                   WHEN src_name = 'mit' THEN '2'
-                                                   WHEN src_name = 'nationwide' THEN '3'
-                                                   WHEN src_name = 'pittsburgh' THEN '4'
-                                                   WHEN src_name = 'seattle' THEN '5'
-                                              END AS src_name,
+                                          sk.s_key AS src_name,
                                           device_exposure_id,
                                           person_id,
                                           device_concept_id,
@@ -17,22 +12,24 @@ WITH device_exposure_joined AS (
                                           device_exposure_end_date,
                                           device_exposure_end_datetime,
                                           device_type_concept_id,
-                                          unique_device_id,
-                                          production_id,
+                                          NULL AS unique_device_id,
+                                          NULL AS production_id,
                                           quantity,
                                           visit_occurrence_id,
                                           visit_detail_id,
                                           NULL AS device_source_value,
                                           device_source_concept_id,
                                           unit_concept_id,
-                                          unit_source_value,
+                                          NULL AS unit_source_value,
                                           unit_source_concept_id
-                                   FROM msft_challenge.device_exposure de
-                                       WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+                                   FROM aimahead.device_exposure de
+                                   JOIN persist.source_key sk ON src_name = sk.s_name
+                                       WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
+                                       AND device_concept_id NOT IN (SELECT concept_id FROM persist.censored_concept)
                                )
 INSERT
 INTO
-    msft_challenge_80.device_exposure
+    aimahead_60.device_exposure
 SELECT device_exposure_id,
        person_id,
        device_concept_id,

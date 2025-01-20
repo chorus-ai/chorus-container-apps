@@ -4,12 +4,7 @@ WITH
                                               NULL::integer              AS src_person_id,
                                               NULL::integer     AS src_visit_occurrence_id,
                                               NULL::integer        AS src_visit_detail_id,
-                                              CASE WHEN src_name = 'mgh' THEN '1'
-                                                   WHEN src_name = 'mit' THEN '2'
-                                                   WHEN src_name = 'nationwide' THEN '3'
-                                                   WHEN src_name = 'pittsburgh' THEN '4'
-                                                   WHEN src_name = 'seattle' THEN '5'
-                                              END AS src_name,
+                                              sk.s_key AS src_name,
                                               condition_occurrence_id,
                                               person_id,
                                               condition_concept_id,
@@ -25,11 +20,13 @@ WITH
                                               NULL AS condition_source_value,
                                               condition_source_concept_id,
                                               NULL AS condition_status_source_value
-                                       FROM msft_challenge.condition_occurrence co
-                                       WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+                                       FROM aimahead.condition_occurrence co
+                                       JOIN persist.source_key sk ON co.src_name = sk.s_name
+                                       WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
+                                       AND condition_concept_id NOT IN (SELECT concept_id FROM persist.censored_concept)
                                    )
 INSERT INTO
-   msft_challenge_80.condition_occurrence
+   aimahead_60.condition_occurrence
 SELECT
     condition_occurrence_id,
     person_id,

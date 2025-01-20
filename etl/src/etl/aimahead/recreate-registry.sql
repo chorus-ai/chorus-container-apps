@@ -1,4 +1,4 @@
-CREATE TABLE msft_challenge_80.waveform_registry AS (
+CREATE TABLE aimahead_60.waveform_registry AS (
 WITH grouped_wfdb AS (
     SELECT person,
                array_to_string(((string_to_array(name, '/'))[1:3]), '/') AS path,
@@ -22,12 +22,12 @@ WITH grouped_wfdb AS (
 	AND NULLIF(split_part(name, '/', 3), '') IS NOT NULL
 	AND NULLIF(split_part(split_part(name, '/', 3), '.', 2), '') IS NOT NULL
 )
-SELECT * FROM grouped_wfdb WHERE person::integer IN (SELECT person_id FROM msft_challenge_80.person)
+SELECT * FROM grouped_wfdb WHERE person::integer IN (SELECT person_id FROM aimahead_60.person)
 UNION ALL
-SELECT * FROM parquet_paths WHERE person::integer IN (SELECT person_id FROM msft_challenge_80.person))
+SELECT * FROM parquet_paths WHERE person::integer IN (SELECT person_id FROM aimahead_60.person))
 ;
 
-INSERT INTO msft_challenge_80.procedure_occurrence
+INSERT INTO aimahead_60.procedure_occurrence
 SELECT row_number()                 over (ORDER BY person) + 2001000000 AS procedure_occurrence_id, person_id AS person_id,
        CAST(4141651 AS INTEGER)  AS procedure_concept_id, -- Measuring and Monitoring Procedure
        start_date::date AS procedure_date, start_date::timestamp AS procedure_datetime, CAST(NULL AS DATE) AS procedure_end_date,
@@ -46,14 +46,14 @@ SELECT row_number()                 over (ORDER BY person) + 2001000000 AS proce
        NULL                      AS src_visit_occurrence_id,
        CAST(NULL AS BIGINT)      AS src_visit_detail_id,
        c.src_name                AS src_name
-FROM msft_challenge_80.waveform_registry c
-         LEFT JOIN msft_challenge_80.visit_occurrence v
+FROM aimahead_60.waveform_registry c
+         LEFT JOIN aimahead_60.visit_occurrence v
                    ON c.person::bigint = v.person_id::bigint
 WHERE C.start_date:: TIMESTAMP BETWEEN visit_start_date - INTERVAL '1' DAY
   AND visit_end_date + INTERVAL '1' DAY;
 
-INSERT INTO msft_challenge_80.procedure_occurrence
-SELECT row_number()                 over (ORDER BY person) + (SELECT MAX(procedure_occurrence_id) FROM msft_challenge_80.procedure_occurrence) AS procedure_occurrence_id,
+INSERT INTO aimahead_60.procedure_occurrence
+SELECT row_number()                 over (ORDER BY person) + (SELECT MAX(procedure_occurrence_id) FROM aimahead_60.procedure_occurrence) AS procedure_occurrence_id,
         person::bigint AS person_id,
         CAST(4141651 AS INTEGER) AS procedure_concept_id, -- Measuring and Monitoring Procedure
        start_date::date AS procedure_date,
@@ -74,8 +74,8 @@ SELECT row_number()                 over (ORDER BY person) + (SELECT MAX(procedu
        NULL                      AS src_visit_occurrence_id,
        CAST(NULL AS BIGINT)      AS src_visit_detail_id,
        c.src_name                AS src_name
-FROM msft_challenge_80.waveform_registry c
+FROM aimahead_60.waveform_registry c
 WHERE PATH NOT IN (SELECT procedure_source_value
-    FROM msft_challenge_80.procedure_occurrence
+    FROM aimahead_60.procedure_occurrence
     WHERE procedure_concept_id = 4141651);
 

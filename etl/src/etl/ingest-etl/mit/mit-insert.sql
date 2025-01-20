@@ -1,370 +1,628 @@
-INSERT INTO
-    omopcdm.condition_occurrence
-SELECT
-    co.condition_occurrence_id::float::bigint,
-    co.person_id::float::bigint,
-    co.condition_concept_id::float::bigint,
-    co.condition_start_date::date + INTERVAL '1 day'*ds.days AS condition_start_date,
-    co.condition_start_datetime::timestamp + INTERVAL '1 day'*ds.days AS condition_start_datetime,
-    co.condition_end_date::date + INTERVAL '1 day'*ds.days AS condition_end_date,
-    co.condition_end_datetime::timestamp + INTERVAL '1 day'*ds.days AS condition_end_datetime,
-    co.condition_type_concept_id::float::bigint,
-    co.condition_status_concept_id::float::bigint,
-    co.stop_reason,
-    co.provider_id::float::bigint,
-    co.visit_occurrence_id::float::bigint,
-    co.visit_detail_id::float::bigint,
-    co.condition_source_value AS condition_source_value,
-    CASE WHEN co.condition_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE co.condition_source_concept_id::float::bigint
-    END AS condition_source_concept_id,
-    condition_status_source_value
-FROM
-    omopcdm.src_condition_occurrence AS co
-    JOIN persist.date_shift AS ds ON co.person_id::float::bigint = ds.person_id;
-
+-- INSERT INTO
+--     omopcdm.care_site
+-- SELECT
+--     CAST(care_site_id::FLOAT AS BIGINT),
+--     CAST(care_site_name AS TEXT),
+--     CAST(place_of_service_concept_id::FLOAT AS BIGINT),
+--     CAST(location_id::FLOAT AS BIGINT),
+--     CAST(care_site_source_value AS TEXT),
+--     CAST(place_of_service_source_value AS TEXT)
+-- FROM
+--     omopcdm.src_care_site;
 
 INSERT INTO
-    omopcdm.death
-SELECT
-    d.person_id::float::bigint,
-    d.death_date::date + INTERVAL '1 day'*ds.days AS death_date,
-    d.death_datetime::timestamp + INTERVAL '1 day'*ds.days AS death_datetime,
-    d.death_type_concept_id::float::bigint,
-    d.cause_concept_id::float::bigint,
-    cause_source_value,
-    CASE WHEN d.cause_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE d.cause_source_concept_id::float::bigint
-    END AS cause_source_concept_id
-FROM
-    omopcdm.src_death AS d
-    JOIN persist.date_shift AS ds ON d.person_id::float::bigint = ds.person_id;
-
-
-INSERT INTO
-    omopcdm.device_exposure
-SELECT
-    de.device_exposure_id::float::bigint,
-    de.person_id::float::bigint,
-    de.device_concept_id::float::bigint,
-    de.device_exposure_start_date::date + INTERVAL'1 day'*ds.days AS device_exposure_start_date,
-    de.device_exposure_start_datetime::timestamp + INTERVAL'1 day'*ds.days AS device_exposure_start_datetime,
-    de.device_exposure_end_date::date + INTERVAL'1 day'*ds.days  AS device_exposure_end_date,
-    de.device_exposure_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS device_exposure_end_datetime,
-    de.device_type_concept_id::float::bigint,
-    unique_device_id,
-    de.production_id::float::bigint,
-    de.quantity::float::bigint,
-    de.provider_id::float::bigint,
-    de.visit_occurrence_id::float::bigint,
-    de.visit_detail_id::float::bigint,
-    device_source_value,
-    CASE WHEN de.device_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE de.device_source_concept_id::float::bigint
-    END AS device_source_concept_id,
-    de.unit_concept_id::float::bigint,
-    unit_source_value,
-    unit_source_concept_id::float::bigint
-FROM
-    omopcdm.src_device_exposure AS de
-    JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
-
-INSERT INTO
-    omopcdm.drug_exposure
-SELECT
-    de.drug_exposure_id::float::bigint,
-    de.person_id::float::bigint,
-    de.drug_concept_id::float::bigint,
-    de.drug_exposure_start_date::date + INTERVAL'1 day'*ds.days  AS drug_exposure_start_date,
-    de.drug_exposure_start_datetime::timestamp + INTERVAL'1 day'*ds.days  AS drug_exposure_start_datetime,
-    COALESCE(de.drug_exposure_end_date::date,de.drug_exposure_start_date::date) + INTERVAL'1 day'*ds.days  AS drug_exposure_end_date,
-    de.drug_exposure_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS drug_exposure_end_datetime,
-    de.verbatim_end_date::date + INTERVAL'1 day'*ds.days  AS verbatim_end_date,
-    de.drug_type_concept_id::float::bigint,
-    de.stop_reason,
-    de.refills::float::integer,
-    de.quantity::float,
-    de.days_supply::float::integer,
-    de.sig,
-    de.route_concept_id::float::bigint,
-    de.lot_number,
-    de.provider_id::float::bigint,
-    de.visit_occurrence_id::float::bigint,
-    de.visit_detail_id::float::bigint,
-    drug_source_value,
-    CASE WHEN de.drug_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE de.drug_source_concept_id::float::bigint
-    END AS drug_source_concept_id,
-    route_source_value,
-    dose_unit_source_value
-FROM
-    omopcdm.src_drug_exposure AS de
-    JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id
-WHERE drug_exposure_start_date IS NOT NULL;
-
-
-INSERT INTO
-    omopcdm.measurement
-SELECT
-    m.measurement_id::float::bigint,
-    m.person_id::float::bigint,
-    m.measurement_concept_id::float::bigint,
-    m.measurement_date::date + INTERVAL'1 day'*ds.days  AS measurement_date,
-    m.measurement_datetime::timestamp + INTERVAL'1 day'*ds.days  AS measurement_datetime,
-    m.measurement_time,
-    m.measurement_type_concept_id::float::bigint,
-    m.operator_concept_id::float::bigint,
-    m.value_as_number::float,
-    m.value_as_concept_id::float::bigint,
-    m.unit_concept_id::float::bigint,
-    m.range_low::float,
-    m.range_high::float,
-    m.provider_id::float::bigint,
-    m.visit_occurrence_id::float::bigint,
-    m.visit_detail_id::float::bigint,
-    measurement_source_value,
-    CASE WHEN m.measurement_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE m.measurement_source_concept_id::float::bigint
-    END AS measurement_source_concept_id,
-    unit_source_value,
-    unit_source_concept_id::bigint,
-    value_source_value,
-    m.measurement_event_id::bigint,
-    m.meas_event_field_concept_id::bigint
-FROM
-    omopcdm.src_measurement AS m
-    JOIN persist.date_shift AS ds ON m.person_id::float::bigint = ds.person_id;
-
-
-INSERT INTO
-    omopcdm.observation
-SELECT
-    o.observation_id::float::bigint,
-    o.person_id::float::bigint,
-    o.observation_concept_id::float::bigint,
-    o.observation_date::date + INTERVAL'1 day'*ds.days AS observation_date,
-    o.observation_datetime::timestamp + INTERVAL'1 day'*ds.days AS observation_datetime,
-    o.observation_type_concept_id::float::bigint,
-    o.value_as_number::float,
-    o.value_as_string,
-    o.value_as_concept_id::float::bigint,
-    o.qualifier_concept_id::float::bigint,
-    o.unit_concept_id::float::bigint,
-    o.provider_id::float::bigint,
-    o.visit_occurrence_id::float::bigint,
-    o.visit_detail_id::float::bigint,
-    o.observation_source_value,
-    CASE WHEN o.observation_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE o.observation_source_concept_id::float::bigint
-    END AS observation_source_concept_id,
-    o.unit_source_value,
-    o.qualifier_source_value,
-    o.value_source_value,
-    o.observation_event_id::float::bigint,
-    o.obs_event_field_concept_id::float::bigint
-FROM
-    omopcdm.src_observation AS o
-    JOIN persist.date_shift AS ds ON o.person_id::float::bigint = ds.person_id;
-
-INSERT INTO
-    omopcdm.observation_period
-SELECT
-    op.observation_period_id::float::bigint,
-    op.person_id::float::bigint,
-    op.observation_period_start_date::date + INTERVAL'1 day'*ds.days AS observation_period_start_date,
-    op.observation_period_end_date::date + INTERVAL'1 day'*ds.days AS observation_period_end_date,
-    op.period_type_concept_id::float::bigint
-FROM omopcdm.src_observation_period AS op
-JOIN persist.date_shift AS ds ON op.person_id::float::bigint = ds.person_id;
-
-
-WITH
-    person_shifted AS (
-        SELECT
-            p.person_id::float::bigint,
-            p.gender_concept_id::float::bigint,
-            p.birth_datetime::timestamp + INTERVAL'1 day'*ds.days AS birth_datetime,
-            p.race_concept_id::float::bigint,
-            p.ethnicity_concept_id::float::bigint,
-            p.location_id::float::bigint,
-            p.provider_id::float::bigint,
-            p.care_site_id::float::bigint,
-            p.gender_source_concept_id::float::bigint,
-            p.race_source_concept_id::float::bigint,
-            p.ethnicity_source_concept_id::float::bigint,
-            p.person_source_value,
-            p.gender_source_value,
-            p.race_source_value,
-            p.ethnicity_source_value
-        FROM omopcdm.src_person AS p
-        JOIN persist.date_shift AS ds ON p.person_id::float::bigint = ds.person_id
+    omopcdm.condition_era (
+        condition_era_id,
+        person_id,
+        condition_concept_id,
+        condition_era_start_date,
+        condition_era_end_date,
+        condition_occurrence_count
     )
-INSERT INTO
-    omopcdm.person
 SELECT
-    person_id,
-    gender_concept_id,
-    date_part('year', birth_datetime) AS year_of_birth,
-    date_part('month', birth_datetime) AS month_of_birth,
-    date_part('day', birth_datetime) AS day_of_birth,
-    birth_datetime,
-    race_concept_id,
-    ethnicity_concept_id,
-    location_id,
-    provider_id,
-    care_site_id,
-    person_source_value,
-    gender_source_value,
-    gender_source_concept_id,
-    race_source_value,
-    race_source_concept_id,
-    ethnicity_source_value,
-    ethnicity_source_concept_id
+    CAST(condition_era_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(condition_concept_id::FLOAT AS BIGINT),
+    CAST(condition_era_start_date AS DATE),
+    CAST(condition_era_end_date AS DATE),
+    CAST(condition_occurrence_count::FLOAT AS BIGINT)
 FROM
-    person_shifted
-WHERE birth_datetime IS NOT NULL;
+    omopcdm.src_condition_era;
 
 INSERT INTO
-    omopcdm.procedure_occurrence
+    omopcdm.condition_occurrence (
+        condition_occurrence_id,
+        person_id,
+        condition_concept_id,
+        condition_start_date,
+        condition_start_datetime,
+        condition_end_date,
+        condition_end_datetime,
+        condition_type_concept_id,
+        condition_status_concept_id,
+        stop_reason,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        condition_source_value,
+        condition_source_concept_id,
+        condition_status_source_value
+    )
 SELECT
-    po.procedure_occurrence_id::float::bigint,
-    po.person_id::float::bigint,
-    po.procedure_concept_id::float::bigint,
-    po.procedure_date::date + INTERVAL'1 day'*ds.days AS procedure_date,
-    po.procedure_datetime::timestamp + INTERVAL'1 day'*ds.days AS procedure_datetime,
-    po.procedure_end_date::date + INTERVAL'1 day'*ds.days AS procedure_end_date,
-    po.procedure_end_datetime::timestamp + INTERVAL'1 day'*ds.days AS procedure_end_datetime,
-    po.procedure_type_concept_id::float::bigint,
-    po.modifier_concept_id::float::bigint,
-    po.quantity::integer,
-    po.provider_id::float::bigint,
-    po.visit_occurrence_id::float::bigint,
-    po.visit_detail_id::float::bigint,
-    po.procedure_source_value,
-    CASE WHEN po.procedure_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE po.procedure_source_concept_id::float::bigint
-    END AS procedure_source_concept_id,
-    po.modifier_source_value
+    CAST(condition_occurrence_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(condition_concept_id::FLOAT AS BIGINT),
+    CAST(condition_start_date AS DATE),
+    CAST(condition_start_datetime AS TIMESTAMP),
+    CAST(condition_end_date AS DATE),
+    CAST(condition_end_datetime AS TIMESTAMP),
+    CAST(condition_type_concept_id::FLOAT AS BIGINT),
+    CAST(condition_status_concept_id::FLOAT AS BIGINT),
+    CAST(stop_reason AS TEXT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(condition_source_value AS TEXT),
+    CAST(condition_source_concept_id::FLOAT AS BIGINT),
+    CAST(condition_status_source_value AS TEXT)
 FROM
-    omopcdm.src_procedure_occurrence AS po
-    JOIN persist.date_shift AS ds ON po.person_id::float::bigint = ds.person_id;
+    omopcdm.src_condition_occurrence;
+
+INSERT INTO
+    omopcdm.death (
+        person_id,
+        death_date,
+        death_datetime,
+        death_type_concept_id,
+        cause_concept_id,
+        cause_source_value,
+        cause_source_concept_id
+    )
+SELECT
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(death_date AS DATE),
+    CAST(death_datetime AS TIMESTAMP),
+    CAST(death_type_concept_id::FLOAT AS BIGINT),
+    CAST(cause_concept_id::FLOAT AS BIGINT),
+    CAST(cause_source_value AS TEXT),
+    CAST(cause_source_concept_id::FLOAT AS BIGINT)
+FROM
+    omopcdm.src_death;
+
+INSERT INTO
+    omopcdm.device_exposure (
+        device_exposure_id,
+        person_id,
+        device_concept_id,
+        device_exposure_start_date,
+        device_exposure_start_datetime,
+        device_exposure_end_date,
+        device_exposure_end_datetime,
+        device_type_concept_id,
+        unique_device_id,
+        production_id,
+        quantity,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        device_source_value,
+        device_source_concept_id,
+        unit_concept_id,
+        unit_source_value,
+        unit_source_concept_id
+    )
+SELECT
+    CAST(device_exposure_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(device_concept_id::FLOAT AS BIGINT),
+    CAST(device_exposure_start_date AS DATE),
+    CAST(device_exposure_start_datetime AS TIMESTAMP),
+    CAST(device_exposure_end_date AS DATE),
+    CAST(device_exposure_end_datetime AS TIMESTAMP),
+    CAST(device_type_concept_id::FLOAT AS BIGINT),
+    CAST(unique_device_id AS TEXT),
+    CAST(NULL AS TEXT) AS production_id,
+    CAST(quantity::FLOAT AS BIGINT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(device_source_value::FLOAT AS BIGINT),
+    CAST(device_source_concept_id::FLOAT AS BIGINT),
+    CAST(NULL::FLOAT AS BIGINT) AS unit_concept_id,
+    CAST(NULL AS TEXT) AS unit_source_value,
+    CAST(NULL::FLOAT AS BIGINT) AS unit_source_concept_id
+FROM
+    omopcdm.src_device_exposure;
+
+INSERT INTO
+    omopcdm.dose_era (
+        dose_era_id,
+        person_id,
+        drug_concept_id,
+        unit_concept_id,
+        dose_value,
+        dose_era_start_date,
+        dose_era_end_date
+    )
+SELECT
+    CAST(dose_era_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(drug_concept_id::FLOAT AS BIGINT),
+    CAST(unit_concept_id::FLOAT AS BIGINT),
+    CAST(dose_value AS FLOAT),
+    CAST(dose_era_start_date AS DATE),
+    CAST(dose_era_end_date AS DATE)
+FROM
+    omopcdm.src_dose_era;
+
+INSERT INTO
+    omopcdm.drug_era (
+        drug_era_id,
+        person_id,
+        drug_concept_id,
+        drug_era_start_date,
+        drug_era_end_date,
+        drug_exposure_count,
+        gap_days
+    )
+SELECT
+    CAST(drug_era_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(drug_concept_id::FLOAT AS BIGINT),
+    CAST(drug_era_start_date AS DATE),
+    CAST(drug_era_end_date AS DATE),
+    CAST(drug_exposure_count::FLOAT AS BIGINT),
+    CAST(gap_days::FLOAT AS BIGINT)
+FROM
+    omopcdm.src_drug_era;
+
+INSERT INTO
+    omopcdm.drug_exposure (
+        drug_exposure_id,
+        person_id,
+        drug_concept_id,
+        drug_exposure_start_date,
+        drug_exposure_start_datetime,
+        drug_exposure_end_date,
+        drug_exposure_end_datetime,
+        verbatim_end_date,
+        drug_type_concept_id,
+        stop_reason,
+        refills,
+        quantity,
+        days_supply,
+        sig,
+        route_concept_id,
+        lot_number,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        drug_source_value,
+        drug_source_concept_id,
+        route_source_value,
+        dose_unit_source_value
+    )
+SELECT
+    CAST(drug_exposure_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(drug_concept_id::FLOAT AS BIGINT),
+    CAST(drug_exposure_start_date AS DATE),
+    CAST(drug_exposure_start_datetime AS TIMESTAMP),
+    CAST(drug_exposure_end_date AS DATE),
+    CAST(drug_exposure_end_datetime AS TIMESTAMP),
+    CAST(verbatim_end_date AS DATE),
+    CAST(drug_type_concept_id::FLOAT AS BIGINT),
+    CAST(stop_reason AS TEXT),
+    CAST(refills::FLOAT AS BIGINT),
+    CAST(quantity AS FLOAT),
+    CAST(days_supply::FLOAT AS BIGINT),
+    CAST(sig AS TEXT),
+    CAST(route_concept_id::FLOAT AS BIGINT),
+    CAST(lot_number AS TEXT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(drug_source_value AS TEXT),
+    CAST(drug_source_concept_id::FLOAT AS BIGINT),
+    CAST(route_source_value AS TEXT),
+    CAST(dose_unit_source_value AS TEXT)
+FROM
+    omopcdm.src_drug_exposure;
+
+INSERT INTO
+    omopcdm.measurement (
+        measurement_id,
+        person_id,
+        measurement_concept_id,
+        measurement_date,
+        measurement_datetime,
+        measurement_time,
+        measurement_type_concept_id,
+        operator_concept_id,
+        value_as_number,
+        value_as_concept_id,
+        unit_concept_id,
+        range_low,
+        range_high,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        measurement_source_value,
+        measurement_source_concept_id,
+        unit_source_value,
+        unit_source_concept_id,
+        value_source_value,
+        measurement_event_id,
+        meas_event_field_concept_id
+                )
+SELECT
+    CAST(measurement_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(measurement_concept_id::FLOAT AS BIGINT),
+    CAST(measurement_date AS DATE),
+    CAST(measurement_datetime AS TIMESTAMP),
+    CAST(measurement_time AS TEXT),
+    CAST(measurement_type_concept_id::FLOAT AS BIGINT),
+    CAST(operator_concept_id::FLOAT AS BIGINT),
+    CAST(value_as_number AS FLOAT),
+    CAST(value_as_concept_id::FLOAT AS BIGINT),
+    CAST(unit_concept_id::FLOAT AS BIGINT),
+    CAST(range_low AS FLOAT),
+    CAST(range_high AS FLOAT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(measurement_source_value AS TEXT),
+    CAST(measurement_source_concept_id::FLOAT AS BIGINT),
+    CAST(unit_source_value AS TEXT),
+    CAST(NULL::FLOAT AS BIGINT) AS unit_source_concept_id,
+    CAST(value_source_value AS TEXT),
+    CAST(NULL::FLOAT AS BIGINT) AS measurement_event_id,
+    CAST(NULL::FLOAT AS BIGINT) AS meas_event_field_concept_id
+FROM
+    omopcdm.src_measurement;
+
+INSERT INTO
+    omopcdm.note (
+        note_id,
+        person_id,
+        note_date,
+        note_datetime,
+        note_type_concept_id,
+        note_class_concept_id,
+        note_title,
+        note_text,
+        encoding_concept_id,
+        language_concept_id,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        note_source_value,
+        note_event_id,
+        note_event_field_concept_id
+         )
+SELECT CAST(note_id::FLOAT AS BIGINT),
+       CAST(person_id::FLOAT AS BIGINT),
+       CAST(note_date AS DATE),
+       CAST(note_datetime AS TIMESTAMP),
+       CAST(note_type_concept_id::FLOAT AS BIGINT),
+       CAST(note_class_concept_id::FLOAT AS BIGINT),
+       CAST(note_title AS TEXT),
+       CAST(note_text AS TEXT),
+       CAST(encoding_concept_id::FLOAT AS BIGINT),
+       CAST(language_concept_id::FLOAT AS BIGINT),
+       CAST(provider_id::FLOAT AS BIGINT),
+       CAST(visit_occurrence_id::FLOAT AS BIGINT),
+       CAST(visit_detail_id::FLOAT AS BIGINT),
+       CAST(note_source_value AS TEXT),
+       CAST(NULL::FLOAT AS BIGINT) AS note_event_id,
+       CAST(NULL::FLOAT AS BIGINT) AS note_event_field_concept_id
+FROM omopcdm.src_note;
 
 
 INSERT INTO
-    omopcdm.visit_detail
-SELECT
-    vd.visit_detail_id::float::bigint,
-    vd.person_id::float::bigint,
-    vd.visit_detail_concept_id::float::bigint,
-    vd.visit_detail_start_date::date + INTERVAL'1 day'*ds.days AS visit_detail_start_date,
-    vd.visit_detail_start_datetime::timestamp + INTERVAL'1 day'*ds.days AS visit_detail_start_datetime,
-    vd.visit_detail_end_date::date + INTERVAL'1 day'*ds.days AS visit_detail_end_date,
-    vd.visit_detail_end_datetime::timestamp + INTERVAL'1 day'*ds.days AS visit_detail_end_datetime,
-    vd.visit_detail_type_concept_id::float::bigint,
-    vd.provider_id::float::bigint,
-    vd.care_site_id::float::bigint,
-    visit_detail_source_value,
-    CASE WHEN vd.visit_detail_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE vd.visit_detail_source_concept_id::float::bigint
-    END AS visit_detail_source_concept_id,
-    vd.admitted_from_concept_id::float::bigint,
-    vd.admitted_from_source_value,
-    vd.discharged_to_concept_id::float::bigint,
-    vd.discharged_to_source_value,
-    vd.preceding_visit_detail_id::float::bigint,
-    vd.parent_visit_detail_id::float::bigint,
-    vd.visit_occurrence_id::float::bigint
-FROM
-    omopcdm.src_visit_detail AS vd
-    JOIN persist.date_shift AS ds ON vd.person_id::float::bigint = ds.person_id;
+    omopcdm.note_nlp (
+                 note_nlp_id,
+                 note_id,
+                 section_concept_id,
+                 snippet,
+                 offset,
+                 lexical_variant,
+                 note_nlp_concept_id,
+                 note_nlp_source_concept_id,
+                 nlp_system,
+                 nlp_date,
+                 nlp_datetime,
+                 term_exists,
+                 term_temporal,
+                 term_modifiers
+             )
+SELECT CAST(note_nlp_id AS INTEGER),
+       CAST(note_id AS INTEGER),
+       CAST(section_concept_id AS INTEGER),
+       CAST(snippet AS TEXT),
+       CAST(offset AS TEXT),
+       CAST(lexical_variant AS TEXT),
+       CAST(note_nlp_concept_id AS INTEGER),
+       CAST(note_nlp_source_concept_id AS INTEGER),
+       CAST(nlp_system AS TEXT),
+       CAST(nlp_date AS DATE),
+       CAST(nlp_datetime AS TIMESTAMP),
+       CAST(term_exists AS TEXT),
+       CAST(term_temporal AS TEXT),
+       CAST(term_modifiers AS TEXT)
+FROM omopcdm.src_note_nlp;
 
 INSERT INTO
-    omopcdm.visit_occurrence
+    omopcdm.observation (
+        observation_id,
+        person_id,
+        observation_concept_id,
+        observation_date,
+        observation_datetime,
+        observation_type_concept_id,
+        value_as_number,
+        value_as_string,
+        value_as_concept_id,
+        qualifier_concept_id,
+        unit_concept_id,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        observation_source_value,
+        observation_source_concept_id,
+        unit_source_value,
+        qualifier_source_value,
+        value_source_value,
+        observation_event_id,
+        obs_event_field_concept_id
+    )
 SELECT
-    vo.visit_occurrence_id::float::bigint,
-    vo.person_id::float::bigint,
-    vo.visit_concept_id::float::bigint,
-    vo.visit_start_date::date + INTERVAL'1 day'*ds.days AS visit_start_date,
-    vo.visit_start_datetime::timestamp + INTERVAL'1 day'*ds.days  AS visit_start_datetime,
-    vo.visit_end_date::date + INTERVAL'1 day'*ds.days AS visit_end_date,
-    vo.visit_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS visit_end_datetime,
-    vo.visit_type_concept_id::float::bigint,
-    vo.provider_id::float::bigint,
-    vo.care_site_id::float::bigint,
-    visit_source_value,
-    CASE WHEN vo.visit_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE vo.visit_source_concept_id::float::bigint
-    END AS visit_source_concept_id,
-    vo.admitted_from_concept_id::float::bigint,
-    admitted_from_source_value,
-    vo.discharged_to_concept_id::float::bigint,
-    discharged_to_source_value,
-    vo.preceding_visit_occurrence_id::float::bigint
+    CAST(observation_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(observation_concept_id::FLOAT AS BIGINT),
+    CAST(observation_date AS DATE),
+    CAST(observation_datetime AS TIMESTAMP),
+    CAST(observation_type_concept_id::FLOAT AS BIGINT),
+    CAST(value_as_number AS FLOAT),
+    CAST(NULL AS TEXT) AS value_as_string,
+    CAST(value_as_concept_id::FLOAT AS BIGINT),
+    CAST(qualifier_concept_id::FLOAT AS BIGINT),
+    CAST(unit_concept_id::FLOAT AS BIGINT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(observation_source_value AS TEXT),
+    CAST(observation_source_concept_id::FLOAT AS BIGINT),
+    CAST(unit_source_value AS TEXT),
+    CAST(qualifier_source_value AS TEXT),
+    CAST(NULL AS TEXT) AS value_source_value,
+    CAST(NULL::FLOAT AS BIGINT) AS observation_event_id,
+    CAST(NULL::FLOAT AS BIGINT) AS obs_event_field_concept_id
 FROM
-    omopcdm.src_visit_occurrence AS vo
-    JOIN persist.date_shift AS ds ON vo.person_id::float::bigint = ds.person_id;
+    omopcdm.src_observation;
 
 INSERT INTO
-    omopcdm.condition_era
+    omopcdm.observation_period (
+        observation_period_id,
+        person_id,
+        observation_period_start_date,
+        observation_period_end_date,
+        period_type_concept_id
+    )
 SELECT
-    ce.condition_era_id::float::bigint,
-    ce.person_id::float::bigint,
-    ce.condition_concept_id::float::bigint,
-    ce.condition_era_start_date::date + INTERVAL'1 day'*ds.days  AS condition_era_start_date,
-    ce.condition_era_end_date::date + INTERVAL'1 day'*ds.days  AS condition_era_end_date,
-    ce.condition_occurrence_count::float::bigint
+    CAST(observation_period_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(observation_period_start_date AS DATE),
+    CAST(observation_period_end_date AS DATE),
+    CAST(period_type_concept_id::FLOAT AS BIGINT)
 FROM
-    omopcdm.src_condition_era AS ce
-    JOIN persist.date_shift AS ds ON ce.person_id::float::bigint = ds.person_id;
+    omopcdm.src_observation_period;
 
 INSERT INTO
-    omopcdm.drug_era
+    omopcdm.person (
+        person_id,
+        gender_concept_id,
+        year_of_birth,
+        month_of_birth,
+        day_of_birth,
+        birth_datetime,
+        race_concept_id,
+        ethnicity_concept_id,
+        location_id,
+        provider_id,
+        care_site_id,
+        person_source_value,
+        gender_source_value,
+        gender_source_concept_id,
+        race_source_value,
+        race_source_concept_id,
+        ethnicity_source_value,
+        ethnicity_source_concept_id
+    )
 SELECT
-    de.drug_era_id::float::bigint,
-    de.person_id::float::bigint,
-    de.drug_concept_id::float::bigint,
-    de.drug_era_start_date::date + INTERVAL'1 day'*ds.days  AS drug_era_start_date,
-    de.drug_era_end_date::date + INTERVAL'1 day'*ds.days  AS drug_era_end_date,
-    de.drug_exposure_count::float::bigint,
-    de.gap_days::float::bigint
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(gender_concept_id::FLOAT AS BIGINT),
+    CAST(year_of_birth::FLOAT AS BIGINT),
+    CAST(month_of_birth::FLOAT AS BIGINT),
+    CAST(day_of_birth::FLOAT AS BIGINT),
+    CAST(birth_datetime AS TIMESTAMP),
+    CAST(race_concept_id::FLOAT AS BIGINT),
+    CAST(ethnicity_concept_id::FLOAT AS BIGINT),
+    CAST(location_id::FLOAT AS BIGINT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(care_site_id::FLOAT AS BIGINT),
+    CAST(person_source_value AS TEXT),
+    CAST(gender_source_value AS TEXT),
+    CAST(gender_source_concept_id::FLOAT AS BIGINT),
+    CAST(race_source_value AS TEXT),
+    CAST(race_source_concept_id::FLOAT AS BIGINT),
+    CAST(ethnicity_source_value AS TEXT),
+    CAST(ethnicity_source_concept_id::FLOAT AS BIGINT)
 FROM
-    omopcdm.src_drug_era AS de
-    JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
+   omopcdm.src_person;
 
-INSERT INTO omopcdm.specimen
+INSERT INTO
+    omopcdm.procedure_occurrence (
+        procedure_occurrence_id,
+        person_id,
+        procedure_concept_id,
+        procedure_date,
+        procedure_datetime,
+        procedure_end_date,
+        procedure_end_datetime,
+        procedure_type_concept_id,
+        modifier_concept_id,
+        quantity,
+        provider_id,
+        visit_occurrence_id,
+        visit_detail_id,
+        procedure_source_value,
+        procedure_source_concept_id,
+        modifier_source_value
+    )
 SELECT
-  s.specimen_id::float::bigint,
-  s.person_id::float::bigint,
-  s.specimen_concept_id::float::bigint,
-  s.specimen_type_concept_id::float::bigint,
-  s.specimen_date::date + INTERVAL'1 day'*ds.days,
-  s.specimen_datetime::timestamp + INTERVAL'1 day'*ds.days,
-  s.quantity::float,
-  s.unit_concept_id::float::bigint,
-  s.anatomic_site_concept_id::float::bigint,
-  s.disease_status_concept_id::float::bigint,
-  s.specimen_source_id,
-  s.specimen_source_value,
-  s.unit_source_value,
-  s.anatomic_site_source_value,
-  s.disease_status_source_value
+    CAST(procedure_occurrence_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(procedure_concept_id::FLOAT AS BIGINT),
+    CAST(procedure_date AS DATE),
+    CAST(procedure_datetime AS TIMESTAMP),
+    CAST(NULL AS DATE) AS procedure_end_date,
+    CAST(NULL AS TIMESTAMP) AS procedure_end_datetime,
+    CAST(procedure_type_concept_id::FLOAT AS BIGINT),
+    CAST(modifier_concept_id::FLOAT AS BIGINT),
+    CAST(quantity AS FLOAT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(procedure_source_value AS TEXT),
+    CAST(procedure_source_concept_id::FLOAT AS BIGINT),
+    CAST(modifier_source_value AS TEXT)
 FROM
-    omopcdm.src_specimen AS s
-    JOIN persist.date_shift AS ds ON s.person_id::float::bigint = ds.person_id;
+    omopcdm.src_procedure_occurrence;
 
-
-INSERT INTO omopcdm.dose_era
+INSERT INTO
+    omopcdm.specimen (
+        specimen_id,
+        person_id,
+        specimen_concept_id,
+        specimen_type_concept_id,
+        specimen_date,
+        specimen_datetime,
+        quantity,
+        unit_concept_id,
+        anatomic_site_concept_id,
+        disease_status_concept_id,
+        specimen_source_id,
+        specimen_source_value,
+        unit_source_value,
+        anatomic_site_source_value,
+        disease_status_source_value
+    )
 SELECT
-  de.dose_era_id::float::bigint,
-  de.person_id::float::bigint,
-  de.drug_concept_id::float::bigint,
-  de.unit_concept_id::float::bigint,
-  de.dose_value::float,
-  de.dose_era_start_date::date + INTERVAL'1 day'*ds.days,
-  de.dose_era_end_date::date + INTERVAL'1 day'*ds.days
+    CAST(specimen_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(specimen_concept_id::FLOAT AS BIGINT),
+    CAST(specimen_type_concept_id::FLOAT AS BIGINT),
+    CAST(specimen_date AS DATE),
+    CAST(specimen_datetime AS TIMESTAMP),
+    CAST(quantity AS FLOAT),
+    CAST(unit_concept_id::FLOAT AS BIGINT),
+    CAST(anatomic_site_concept_id::FLOAT AS BIGINT),
+    CAST(disease_status_concept_id::FLOAT AS BIGINT),
+    CAST(NULL::FLOAT AS BIGINT) AS specimen_source_id,
+    CAST(specimen_source_value AS TEXT),
+    CAST(unit_source_value AS TEXT),
+    CAST(anatomic_site_source_value AS TEXT),
+    CAST(disease_status_source_value AS TEXT)
 FROM
-    omopcdm.src_dose_era AS de
-    JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
+    omopcdm.src_specimen;
+
+INSERT INTO
+    omopcdm.visit_detail (
+        visit_detail_id,
+        person_id,
+        visit_detail_concept_id,
+        visit_detail_start_date,
+        visit_detail_start_datetime,
+        visit_detail_end_date,
+        visit_detail_end_datetime,
+        visit_detail_type_concept_id,
+        provider_id,
+        care_site_id,
+        visit_detail_source_value,
+        visit_detail_source_concept_id,
+        admitted_from_concept_id,
+        admitted_from_source_value,
+        discharged_to_concept_id,
+        discharged_to_source_value,
+        preceding_visit_detail_id,
+        parent_visit_detail_id,
+        visit_occurrence_id
+    )
+SELECT
+    CAST(visit_detail_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(visit_detail_concept_id::FLOAT AS BIGINT),
+    CAST(visit_detail_start_date AS DATE),
+    CAST(visit_detail_start_datetime AS TIMESTAMP),
+    CAST(visit_detail_end_date AS DATE),
+    CAST(visit_detail_end_datetime AS TIMESTAMP),
+    CAST(visit_detail_type_concept_id::FLOAT AS BIGINT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(care_site_id::FLOAT AS BIGINT),
+    CAST(visit_detail_source_value AS TEXT),
+    CAST(visit_detail_source_concept_id::FLOAT AS BIGINT),
+    CAST(admitting_source_concept_id::FLOAT AS BIGINT),
+    CAST(admitting_source_value AS TEXT),
+    CAST(discharge_to_concept_id::FLOAT AS BIGINT),
+    CAST(discharge_to_source_value AS TEXT),
+    CAST(preceding_visit_detail_id::FLOAT AS BIGINT),
+    CAST(visit_detail_parent_id::FLOAT AS BIGINT),
+    CAST(visit_occurrence_id::FLOAT AS BIGINT)
+FROM
+    omopcdm.src_visit_detail;
+
+INSERT INTO
+    omopcdm.visit_occurrence (
+        visit_occurrence_id,
+        person_id,
+        visit_concept_id,
+        visit_start_date,
+        visit_start_datetime,
+        visit_end_date,
+        visit_end_datetime,
+        visit_type_concept_id,
+        provider_id,
+        care_site_id,
+        visit_source_value,
+        visit_source_concept_id,
+        admitted_from_concept_id,
+        admitted_from_source_value,
+        discharged_to_concept_id,
+        discharged_to_source_value,
+        preceding_visit_occurrence_id
+    )
+SELECT
+    CAST(visit_occurrence_id::FLOAT AS BIGINT),
+    CAST(person_id::FLOAT AS BIGINT),
+    CAST(visit_concept_id::FLOAT AS BIGINT),
+    CAST(visit_start_date AS DATE),
+    CAST(visit_start_datetime AS TIMESTAMP),
+    CAST(visit_end_date AS DATE),
+    CAST(visit_end_datetime AS TIMESTAMP),
+    CAST(visit_type_concept_id::FLOAT AS BIGINT),
+    CAST(provider_id::FLOAT AS BIGINT),
+    CAST(care_site_id::FLOAT AS BIGINT),
+    CAST(visit_source_value AS TEXT),
+    CAST(visit_source_concept_id::FLOAT AS BIGINT),
+    CAST(admitting_source_concept_id::FLOAT AS BIGINT),
+    CAST(admitting_source_value AS TEXT),
+    CAST(discharge_to_concept_id::FLOAT AS BIGINT),
+    CAST(discharge_to_source_value AS TEXT),
+    CAST(preceding_visit_occurrence_id::FLOAT AS BIGINT)
+FROM
+    omopcdm.src_visit_occurrence;
 
 
 INSERT INTO

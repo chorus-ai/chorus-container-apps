@@ -1,12 +1,7 @@
 WITH specimen_joined AS (
-                            SELECT NULL AS src_table_id,
-                                   NULL   AS src_person_id,
-                                   CASE WHEN src_name = 'mgh' THEN '1'
-                                           WHEN src_name = 'mit' THEN '2'
-                                           WHEN src_name = 'nationwide' THEN '3'
-                                           WHEN src_name = 'pittsburgh' THEN '4'
-                                           WHEN src_name = 'seattle' THEN '5'
-                                      END AS src_name,
+                            SELECT NULL::bigint AS src_table_id,
+                                   NULL::bigint   AS src_person_id,
+                                   sk.s_key AS src_name,
                                    specimen_id,
                                    person_id,
                                    specimen_concept_id,
@@ -22,12 +17,14 @@ WITH specimen_joined AS (
                                    unit_source_value,
                                    NULL AS anatomic_site_source_value,
                                    NULL AS disease_status_source_value
-                            FROM msft_challenge.specimen s
-                                       WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+                            FROM aimahead.specimen s
+                                JOIN persist.source_key sk ON src_name = sk.s_name
+                                WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
+                                AND specimen_concept_id NOT IN (SELECT concept_id FROM persist.censored_concept)
                         )
 INSERT
 INTO
-    msft_challenge_80.specimen
+    aimahead_60.specimen
 SELECT specimen_id,
        person_id,
        specimen_concept_id,

@@ -1,17 +1,12 @@
 WITH
     visit_detail_joined AS (
         SELECT
-            NULL AS src_visit_detail_id,
-            NULL AS src_visit_occurrence_id,
-            NULL AS src_person_id,
-            NULL AS src_prec_visit_detail_id,
-            NULL AS src_parent_visit_detail_id,
-            CASE WHEN src_name = 'mgh' THEN '1'
-                   WHEN src_name = 'mit' THEN '2'
-                   WHEN src_name = 'nationwide' THEN '3'
-                   WHEN src_name = 'pittsburgh' THEN '4'
-                   WHEN src_name = 'seattle' THEN '5'
-              END AS src_name,
+            NULL::bigint AS src_visit_detail_id,
+            NULL::bigint AS src_visit_occurrence_id,
+            NULL::bigint AS src_person_id,
+            NULL::bigint::bigint AS src_prec_visit_detail_id,
+            NULL::bigint AS src_parent_visit_detail_id,
+            sk.s_key AS src_name,
             visit_detail_id,
             person_id,
             visit_detail_concept_id,
@@ -29,11 +24,12 @@ WITH
             preceding_visit_detail_id,
             parent_visit_detail_id,
             visit_occurrence_id
-        FROM msft_challenge.visit_detail v
-        WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+        FROM aimahead.visit_detail v
+        JOIN persist.source_key sk ON src_name = sk.s_name
+        WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
     )
 INSERT INTO
-msft_challenge_80.visit_detail
+aimahead_60.visit_detail
 SELECT
     visit_detail_id,
     person_id,

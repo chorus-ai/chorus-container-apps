@@ -88,7 +88,6 @@ CREATE TABLE omopcdm.src_measurement
     measurement_concept_id        TEXT,
     measurement_date              TEXT,
     measurement_datetime          TEXT,
-    measurement_result_datetime   TEXT,
     measurement_time              TEXT,
     measurement_type_concept_id   TEXT,
     operator_concept_id           TEXT,

@@ -5,12 +5,7 @@ WITH
             NULL::integer AS src_person_id,
             NULL::integer AS src_visit_occurrence_id,
             NULL::integer AS src_visit_detail_id,
-            CASE WHEN src_name = 'mgh' THEN '1'
-                   WHEN src_name = 'mit' THEN '2'
-                   WHEN src_name = 'nationwide' THEN '3'
-                   WHEN src_name = 'pittsburgh' THEN '4'
-                   WHEN src_name = 'seattle' THEN '5'
-              END AS src_name,
+            sk.s_key AS src_name,
             measurement_id,
             person_id,
             measurement_concept_id,
@@ -28,16 +23,18 @@ WITH
             visit_detail_id,
             NULL AS measurement_source_value,
             measurement_source_concept_id,
-            unit_source_value,
+            NULL AS unit_source_value,
             unit_source_concept_id,
             NULL AS value_source_value,
             measurement_event_id,
             meas_event_field_concept_id
-        FROM msft_challenge.measurement m
-        WHERE person_id IN (SELECT person_id FROM msft_challenge_80.person)
+        FROM aimahead.measurement m
+        JOIN persist.source_key sk ON m.src_name = sk.s_name
+        WHERE person_id IN (SELECT person_id FROM aimahead_60.person)
+        AND measurement_concept_id NOT IN (SELECT concept_id FROM persist.censored_concept)
     )
 INSERT INTO
-    msft_challenge_80.measurement
+    aimahead_60.measurement
 SELECT
     measurement_id,
     person_id,

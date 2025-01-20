@@ -6,17 +6,17 @@ SELECT
     co.condition_concept_id::float::bigint,
     co.condition_start_date::date + INTERVAL '1 day'*ds.days AS condition_start_date,
     co.condition_start_datetime::timestamp + INTERVAL '1 day'*ds.days AS condition_start_datetime,
-    co.condition_end_date::date + INTERVAL '1 day'*ds.days AS condition_end_date,
-    co.condition_end_datetime::timestamp + INTERVAL '1 day'*ds.days AS condition_end_datetime,
-    co.condition_type_concept_id::float::bigint,
-    co.condition_status_concept_id::float::bigint,
+    NULLIF(co.condition_end_date, 'NULL')::date + INTERVAL '1 day'*ds.days AS condition_end_date,
+    NULLIF(co.condition_end_datetime, 'NULL')::timestamp + INTERVAL '1 day'*ds.days AS condition_end_datetime,
+    NULLIF(co.condition_type_concept_id, 'NULL')::float::bigint,
+    NULLIF(co.condition_status_concept_id, 'NULL')::float::bigint,
     co.stop_reason,
-    co.provider_id::float::bigint,
-    co.visit_occurrence_id::float::bigint,
-    co.visit_detail_id::float::bigint,
+    NULLIF(co.provider_id, 'NULL')::float::bigint,
+    NULLIF(co.visit_occurrence_id, 'NULL')::float::bigint,
+    NULLIF(co.visit_detail_id, 'NULL')::float::bigint,
     co.condition_source_value AS condition_source_value,
-    CASE WHEN co.condition_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE co.condition_source_concept_id::float::bigint
+    CASE WHEN NULLIF(co.condition_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(co.condition_source_concept_id, 'NULL')::float::bigint
     END AS condition_source_concept_id,
     condition_status_source_value
 FROM
@@ -30,11 +30,11 @@ SELECT
     d.person_id::float::bigint,
     d.death_date::date + INTERVAL '1 day'*ds.days AS death_date,
     d.death_datetime::timestamp + INTERVAL '1 day'*ds.days AS death_datetime,
-    d.death_type_concept_id::float::bigint,
-    d.cause_concept_id::float::bigint,
+    NULLIF(d.death_type_concept_id, 'NULL')::float::bigint,
+    NULLIF(d.cause_concept_id, 'NULL')::float::bigint,
     cause_source_value,
-    CASE WHEN d.cause_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE d.cause_source_concept_id::float::bigint
+    CASE WHEN NULLIF(d.cause_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(d.cause_source_concept_id, 'NULL')::float::bigint
     END AS cause_source_concept_id
 FROM
     omopcdm.src_death AS d
@@ -49,22 +49,22 @@ SELECT
     de.device_concept_id::float::bigint,
     de.device_exposure_start_date::date + INTERVAL'1 day'*ds.days AS device_exposure_start_date,
     de.device_exposure_start_datetime::timestamp + INTERVAL'1 day'*ds.days AS device_exposure_start_datetime,
-    de.device_exposure_end_date::date + INTERVAL'1 day'*ds.days  AS device_exposure_end_date,
-    de.device_exposure_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS device_exposure_end_datetime,
-    de.device_type_concept_id::float::bigint,
+    NULLIF(de.device_exposure_end_date, 'NULL')::date + INTERVAL'1 day'*ds.days  AS device_exposure_end_date,
+    NULLIF(de.device_exposure_end_datetime, 'NULL')::timestamp + INTERVAL'1 day'*ds.days  AS device_exposure_end_datetime,
+    NULLIF(de.device_type_concept_id, 'NULL')::float::bigint,
     unique_device_id,
-    de.production_id::float::bigint,
-    de.quantity::float::bigint,
-    de.provider_id::float::bigint,
-    de.visit_occurrence_id::float::bigint,
-    de.visit_detail_id::float::bigint,
+    NULLIF(de.production_id, 'NULL')::float::bigint,
+    NULLIF(de.quantity, 'NULL')::float::bigint,
+    NULLIF(de.provider_id, 'NULL')::float::bigint,
+    NULLIF(de.visit_occurrence_id, 'NULL')::float::bigint,
+    NULLIF(de.visit_detail_id, 'NULL')::float::bigint,
     device_source_value,
-    CASE WHEN de.device_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE de.device_source_concept_id::float::bigint
+    CASE WHEN NULLIF(de.device_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(de.device_source_concept_id, 'NULL')::float::bigint
     END AS device_source_concept_id,
-    de.unit_concept_id::float::bigint,
+    NULLIF(de.unit_concept_id, 'NULL')::float::bigint,
     unit_source_value,
-    unit_source_concept_id::float::bigint
+    NULLIF(unit_source_concept_id, 'NULL')::float::bigint
 FROM
     omopcdm.src_device_exposure AS de
     JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
@@ -77,23 +77,23 @@ SELECT
     de.drug_concept_id::float::bigint,
     de.drug_exposure_start_date::date + INTERVAL'1 day'*ds.days  AS drug_exposure_start_date,
     de.drug_exposure_start_datetime::timestamp + INTERVAL'1 day'*ds.days  AS drug_exposure_start_datetime,
-    COALESCE(de.drug_exposure_end_date::date,de.drug_exposure_start_date::date) + INTERVAL'1 day'*ds.days  AS drug_exposure_end_date,
-    de.drug_exposure_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS drug_exposure_end_datetime,
-    de.verbatim_end_date::date + INTERVAL'1 day'*ds.days  AS verbatim_end_date,
-    de.drug_type_concept_id::float::bigint,
+    COALESCE(NULLIF(NULLIF(de.drug_exposure_end_date, 'NULL'), '')::date,de.drug_exposure_start_date::date) + INTERVAL'1 day'*ds.days  AS drug_exposure_end_date,
+    NULLIF(NULLIF(de.drug_exposure_end_datetime, 'NULL'), '')::timestamp + INTERVAL'1 day'*ds.days  AS drug_exposure_end_datetime,
+    NULLIF(NULLIF(de.verbatim_end_date, 'NULL'), '')::date + INTERVAL'1 day'*ds.days  AS verbatim_end_date,
+    NULLIF(NULLIF(de.drug_type_concept_id, 'NULL'), '')::float::bigint,
     de.stop_reason,
-    de.refills::float::integer,
-    de.quantity::float,
-    de.days_supply::float::integer,
+    NULLIF(NULLIF(de.refills, 'NULL'), '')::float::integer,
+    NULLIF(NULLIF(de.quantity, 'NULL'), '')::float,
+    NULLIF(NULLIF(de.days_supply, 'NULL'), '')::float::integer,
     de.sig,
-    de.route_concept_id::float::bigint,
+    NULLIF(NULLIF(de.route_concept_id, 'NULL'), '')::float::bigint,
     de.lot_number,
-    de.provider_id::float::bigint,
-    de.visit_occurrence_id::float::bigint,
-    de.visit_detail_id::float::bigint,
+    NULLIF(NULLIF(de.provider_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(de.visit_occurrence_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(de.visit_detail_id, 'NULL'), '')::float::bigint,
     drug_source_value,
-    CASE WHEN de.drug_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE de.drug_source_concept_id::float::bigint
+    CASE WHEN NULLIF(NULLIF(de.drug_source_concept_id, 'NULL'), '')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(NULLIF(de.drug_source_concept_id, 'NULL'), '')::float::bigint
     END AS drug_source_concept_id,
     route_source_value,
     dose_unit_source_value
@@ -110,27 +110,27 @@ SELECT
     m.person_id::float::bigint,
     m.measurement_concept_id::float::bigint,
     m.measurement_date::date + INTERVAL'1 day'*ds.days  AS measurement_date,
-    m.measurement_datetime::timestamp + INTERVAL'1 day'*ds.days  AS measurement_datetime,
+    NULLIF(m.measurement_datetime, 'NULL')::timestamp + INTERVAL'1 day'*ds.days  AS measurement_datetime,
     m.measurement_time,
-    m.measurement_type_concept_id::float::bigint,
-    m.operator_concept_id::float::bigint,
-    m.value_as_number::float,
-    m.value_as_concept_id::float::bigint,
-    m.unit_concept_id::float::bigint,
-    m.range_low::float,
-    m.range_high::float,
-    m.provider_id::float::bigint,
-    m.visit_occurrence_id::float::bigint,
-    m.visit_detail_id::float::bigint,
+    NULLIF(NULLIF(m.measurement_type_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(m.operator_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(m.value_as_number, 'NULL'), '')::float,
+    NULLIF(NULLIF(m.value_as_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF( m.unit_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(m.range_low, 'NULL'), '')::float,
+    NULLIF(NULLIF(m.range_high, 'NULL'), '')::float,
+    NULLIF(NULLIF(m.provider_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(m.visit_occurrence_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(m.visit_detail_id, 'NULL'), '')::float::bigint,
     measurement_source_value,
-    CASE WHEN m.measurement_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE m.measurement_source_concept_id::float::bigint
+    CASE WHEN NULLIF(NULLIF(m.measurement_source_concept_id, 'NULL'), '')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(NULLIF(m.measurement_source_concept_id, 'NULL'), '')::float::bigint
     END AS measurement_source_concept_id,
     unit_source_value,
-    unit_source_concept_id::bigint,
+    NULLIF(NULLIF(unit_source_concept_id, 'NULL'), '')::bigint,
     value_source_value,
-    m.measurement_event_id::bigint,
-    m.meas_event_field_concept_id::bigint
+    NULLIF(NULLIF(m.measurement_event_id, 'NULL'), '')::bigint,
+    NULLIF(NULLIF(m.meas_event_field_concept_id, 'NULL'), '')::bigint
 FROM
     omopcdm.src_measurement AS m
     JOIN persist.date_shift AS ds ON m.person_id::float::bigint = ds.person_id;
@@ -143,25 +143,25 @@ SELECT
     o.person_id::float::bigint,
     o.observation_concept_id::float::bigint,
     o.observation_date::date + INTERVAL'1 day'*ds.days AS observation_date,
-    o.observation_datetime::timestamp + INTERVAL'1 day'*ds.days AS observation_datetime,
-    o.observation_type_concept_id::float::bigint,
-    o.value_as_number::float,
+    NULLIF(o.observation_datetime, 'NULL')::timestamp + INTERVAL'1 day'*ds.days AS observation_datetime,
+    NULLIF(NULLIF(o.observation_type_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.value_as_number, 'NULL'), '')::float,
     o.value_as_string,
-    o.value_as_concept_id::float::bigint,
-    o.qualifier_concept_id::float::bigint,
-    o.unit_concept_id::float::bigint,
-    o.provider_id::float::bigint,
-    o.visit_occurrence_id::float::bigint,
-    o.visit_detail_id::float::bigint,
+    NULLIF(NULLIF(o.value_as_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.qualifier_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.unit_concept_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.provider_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.visit_occurrence_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.visit_detail_id, 'NULL'), '')::float::bigint,
     o.observation_source_value,
-    CASE WHEN o.observation_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE o.observation_source_concept_id::float::bigint
+    CASE WHEN NULLIF(NULLIF(o.observation_source_concept_id, 'NULL'), '')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(NULLIF(o.observation_source_concept_id, 'NULL'), '')::float::bigint
     END AS observation_source_concept_id,
     o.unit_source_value,
     o.qualifier_source_value,
     o.value_source_value,
-    o.observation_event_id::float::bigint,
-    o.obs_event_field_concept_id::float::bigint
+   NULLIF(NULLIF( o.observation_event_id, 'NULL'), '')::float::bigint,
+    NULLIF(NULLIF(o.obs_event_field_concept_id, 'NULL'), '')::float::bigint
 FROM
     omopcdm.src_observation AS o
     JOIN persist.date_shift AS ds ON o.person_id::float::bigint = ds.person_id;
@@ -183,15 +183,15 @@ WITH
         SELECT
             p.person_id::float::bigint,
             p.gender_concept_id::float::bigint,
-            p.birth_datetime::timestamp + INTERVAL'1 day'*ds.days AS birth_datetime,
-            p.race_concept_id::float::bigint,
-            p.ethnicity_concept_id::float::bigint,
-            p.location_id::float::bigint,
-            p.provider_id::float::bigint,
-            p.care_site_id::float::bigint,
-            p.gender_source_concept_id::float::bigint,
-            p.race_source_concept_id::float::bigint,
-            p.ethnicity_source_concept_id::float::bigint,
+            NULLIF(p.birth_datetime, 'NULL')::timestamp + INTERVAL'1 day'*ds.days AS birth_datetime,
+            NULLIF(p.race_concept_id, 'NULL')::float::bigint race_concept_id,
+            NULLIF(p.ethnicity_concept_id, 'NULL')::float::bigint ethnicity_concept_id,
+            NULLIF(p.location_id, 'NULL')::float::bigint location_id,
+            NULLIF(p.provider_id, 'NULL')::float::bigint provider_id,
+            NULLIF(p.care_site_id, 'NULL')::float::bigint care_site_id,
+            NULLIF(p.gender_source_concept_id, 'NULL')::float::bigint gender_source_concept_id,
+            NULLIF(p.race_source_concept_id, 'NULL')::float::bigint race_source_concept_id,
+            NULLIF(p.ethnicity_source_concept_id, 'NULL')::float::bigint ethnicity_source_concept_id,
             p.person_source_value,
             p.gender_source_value,
             p.race_source_value,
@@ -231,17 +231,17 @@ SELECT
     po.procedure_concept_id::float::bigint,
     po.procedure_date::date + INTERVAL'1 day'*ds.days AS procedure_date,
     po.procedure_datetime::timestamp + INTERVAL'1 day'*ds.days AS procedure_datetime,
-    po.procedure_end_date::date + INTERVAL'1 day'*ds.days AS procedure_end_date,
-    po.procedure_end_datetime::timestamp + INTERVAL'1 day'*ds.days AS procedure_end_datetime,
-    po.procedure_type_concept_id::float::bigint,
-    po.modifier_concept_id::float::bigint,
-    po.quantity::integer,
-    po.provider_id::float::bigint,
-    po.visit_occurrence_id::float::bigint,
-    po.visit_detail_id::float::bigint,
+    NULLIF(po.procedure_end_date, 'NULL')::date + INTERVAL'1 day'*ds.days AS procedure_end_date,
+    NULLIF(po.procedure_end_datetime, 'NULL')::timestamp + INTERVAL'1 day'*ds.days AS procedure_end_datetime,
+    NULLIF(po.procedure_type_concept_id, 'NULL')::float::bigint,
+    NULLIF(po.modifier_concept_id, 'NULL')::float::bigint,
+    NULLIF(po.quantity, 'NULL')::integer,
+    NULLIF(po.provider_id, 'NULL')::float::bigint,
+    NULLIF(po.visit_occurrence_id, 'NULL')::float::bigint,
+    NULLIF(po.visit_detail_id, 'NULL')::float::bigint,
     po.procedure_source_value,
-    CASE WHEN po.procedure_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE po.procedure_source_concept_id::float::bigint
+    CASE WHEN NULLIF(po.procedure_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(po.procedure_source_concept_id, 'NULL')::float::bigint
     END AS procedure_source_concept_id,
     po.modifier_source_value
 FROM
@@ -259,20 +259,20 @@ SELECT
     vd.visit_detail_start_datetime::timestamp + INTERVAL'1 day'*ds.days AS visit_detail_start_datetime,
     vd.visit_detail_end_date::date + INTERVAL'1 day'*ds.days AS visit_detail_end_date,
     vd.visit_detail_end_datetime::timestamp + INTERVAL'1 day'*ds.days AS visit_detail_end_datetime,
-    vd.visit_detail_type_concept_id::float::bigint,
-    vd.provider_id::float::bigint,
-    vd.care_site_id::float::bigint,
+    NULLIF(vd.visit_detail_type_concept_id, 'NULL')::float::bigint,
+    NULLIF(vd.provider_id, 'NULL')::float::bigint,
+    NULLIF(vd.care_site_id, 'NULL')::float::bigint,
     visit_detail_source_value,
-    CASE WHEN vd.visit_detail_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE vd.visit_detail_source_concept_id::float::bigint
+    CASE WHEN NULLIF(vd.visit_detail_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(vd.visit_detail_source_concept_id, 'NULL')::float::bigint
     END AS visit_detail_source_concept_id,
-    vd.admitted_from_concept_id::float::bigint,
+    NULLIF(vd.admitted_from_concept_id, 'NULL')::float::bigint,
     vd.admitted_from_source_value,
-    vd.discharged_to_concept_id::float::bigint,
+    NULLIF(vd.discharged_to_concept_id, 'NULL')::float::bigint,
     vd.discharged_to_source_value,
-    vd.preceding_visit_detail_id::float::bigint,
-    vd.parent_visit_detail_id::float::bigint,
-    vd.visit_occurrence_id::float::bigint
+    NULLIF(vd.preceding_visit_detail_id, 'NULL')::float::bigint,
+    NULLIF(vd.parent_visit_detail_id, 'NULL')::float::bigint,
+    NULLIF(vd.visit_occurrence_id, 'NULL')::float::bigint
 FROM
     omopcdm.src_visit_detail AS vd
     JOIN persist.date_shift AS ds ON vd.person_id::float::bigint = ds.person_id;
@@ -288,20 +288,88 @@ SELECT
     vo.visit_end_date::date + INTERVAL'1 day'*ds.days AS visit_end_date,
     vo.visit_end_datetime::timestamp + INTERVAL'1 day'*ds.days  AS visit_end_datetime,
     vo.visit_type_concept_id::float::bigint,
-    vo.provider_id::float::bigint,
-    vo.care_site_id::float::bigint,
+    NULLIF(vo.provider_id, 'NULL')::float::bigint,
+    NULLIF(vo.care_site_id, 'NULL')::float::bigint,
     visit_source_value,
-    CASE WHEN vo.visit_source_concept_id::float::bigint = 0 THEN NULL
-        ELSE vo.visit_source_concept_id::float::bigint
+    CASE WHEN NULLIF(vo.visit_source_concept_id, 'NULL')::float::bigint = 0 THEN NULL
+        ELSE NULLIF(vo.visit_source_concept_id, 'NULL')::float::bigint
     END AS visit_source_concept_id,
-    vo.admitted_from_concept_id::float::bigint,
+    NULLIF(vo.admitted_from_concept_id, 'NULL')::float::bigint,
     admitted_from_source_value,
-    vo.discharged_to_concept_id::float::bigint,
+    NULLIF(vo.discharged_to_concept_id, 'NULL')::float::bigint,
     discharged_to_source_value,
-    vo.preceding_visit_occurrence_id::float::bigint
+    NULLIF(vo.preceding_visit_occurrence_id, 'NULL')::float::bigint
 FROM
     omopcdm.src_visit_occurrence AS vo
     JOIN persist.date_shift AS ds ON vo.person_id::float::bigint = ds.person_id;
+
+INSERT INTO
+    omopcdm.condition_era
+SELECT
+    ce.condition_era_id::float::bigint,
+    ce.person_id::float::bigint,
+    ce.condition_concept_id::float::bigint,
+    ce.condition_era_start_date::date + INTERVAL'1 day'*ds.days  AS condition_era_start_date,
+    ce.condition_era_end_date::date + INTERVAL'1 day'*ds.days  AS condition_era_end_date,
+    ce.condition_occurrence_count::float::bigint
+FROM
+    omopcdm.src_condition_era AS ce
+    JOIN persist.date_shift AS ds ON ce.person_id::float::bigint = ds.person_id;
+
+INSERT INTO
+    omopcdm.drug_era
+SELECT
+    de.drug_era_id::float::bigint,
+    de.person_id::float::bigint,
+    de.drug_concept_id::float::bigint,
+    de.drug_era_start_date::date + INTERVAL'1 day'*ds.days  AS drug_era_start_date,
+    de.drug_era_end_date::date + INTERVAL'1 day'*ds.days  AS drug_era_end_date,
+    de.drug_exposure_count::float::bigint,
+    de.gap_days::float::bigint
+FROM
+    omopcdm.src_drug_era AS de
+    JOIN persist.date_shift AS ds ON de.person_id::float::bigint = ds.person_id;
+
+
+INSERT INTO omopcdm.note
+SELECT note_id::float::bigint,
+    n.person_id::float::bigint,
+    note_date::date + INTERVAL'1 day'*ds.days AS note_date,
+    note_datetime::timestamp + INTERVAL'1 day'*ds.days AS note_datetime,
+    note_type_concept_id::float::bigint,
+    NULLIF(note_class_concept_id, 'nan')::float::bigint,
+    note_title,
+    note_text,
+    NULLIF(encoding_concept_id, 'nan')::float::bigint,
+    NULLIF(language_concept_id, 'nan')::float::bigint,
+    NULLIF(provider_id, 'nan')::float::bigint,
+    NULLIF(visit_occurrence_id, 'nan')::float::bigint,
+    NULLIF(visit_detail_id, 'nan')::float::bigint,
+    note_source_value,
+    NULLIF(note_event_id, 'nan')::float::bigint,
+    NULLIF(note_event_field_concept_id, 'nan')::float::bigint
+FROM
+omopcdm.src_note AS n
+    JOIN persist.date_shift AS ds ON n.person_id::float::bigint = ds.person_id;
+
+INSERT INTO omopcdm.note_nlp
+SELECT note_nlp_id::float::bigint,
+    note_id::float::bigint,
+    NULLIF(section_concept_id, 'nan')::float::bigint,
+    snippet,
+    NULLIF("offset", 'nan')::float::bigint,
+    'REDACTED' AS lexical_variant,
+    NULLIF(note_nlp_concept_id, 'nan')::float::bigint,
+    NULLIF(note_nlp_source_concept_id, 'nan')::float::bigint,
+    nlp_system,
+    nlp_date::date,
+    nlp_datetime::timestamp,
+    term_exists,
+    term_temporal,
+    term_modifiers
+FROM
+omopcdm.src_note_nlp; -- no date shift for note nlp, date refers to nlp execution not clinical date
+
 
 INSERT INTO
     omopcdm.cdm_source (

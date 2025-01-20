@@ -19,7 +19,7 @@ do
   PERSON_ID="${idlink[$i]}"
   TRG_NAME="${filelink[$i]}"
   SRC_URL="https://choruspilotstorage.blob.core.windows.net/mgh/${i}?<SAS TOKEN>"
-  TRG_URL="https://choruspilotstorage.blob.core.windows.net/msft-challenge/1/${PERSON_ID}/${TRG_NAME}?<SAS TOKEN>"
+  TRG_URL="https://choruspilotstorage.blob.core.windows.net/aimahead/1/${PERSON_ID}/${TRG_NAME}?<SAS TOKEN>"
   echo "patient  : $PERSON_ID"
   echo "source: $i"
   echo "target: 1/$PERSON_ID/$TRG_NAME"

@@ -1,14 +1,9 @@
 WITH
     person_joined AS (
         SELECT
-            NULL AS src_person_id,
-            CASE WHEN src_name = 'mgh' THEN '1'
-                   WHEN src_name = 'mit' THEN '2'
-                   WHEN src_name = 'nationwide' THEN '3'
-                   WHEN src_name = 'pittsburgh' THEN '4'
-                   WHEN src_name = 'seattle' THEN '5'
-              END AS src_name,
-            person_id,
+            NULL::bigint AS src_person_id,
+            sk.s_key AS src_name,
+            p.person_id,
             gender_concept_id,
             year_of_birth,
             month_of_birth,
@@ -23,12 +18,13 @@ WITH
             race_source_concept_id,
             NULL AS ethnicity_source_value,
             ethnicity_source_concept_id
-        FROM msft_challenge.person p
-        INNER JOIN public.sample_80 s
+        FROM aimahead.person p
+        INNER JOIN public.aimahead_sample_60 s
         ON p.person_id = s.person_id
+        JOIN persist.source_key sk ON src_name = sk.s_name
     )
 INSERT INTO
-    msft_challenge_80.person
+    aimahead_60.person
 SELECT
     person_id,
     gender_concept_id,

@@ -34,7 +34,7 @@ WITH visit_calc AS (
                        GROUP BY person_id
                    )
 INSERT
-INTO msft_challenge (
+INTO aimahead (
     src_table_id,
     src_person_id,
     src_visit_occurrence_id,
@@ -69,7 +69,7 @@ SELECT NULL                             AS src_table_id,
        NULL                             AS src_visit_occurrence_id,
        NULL                             AS src_visit_detail_id,
        NULL                             AS src_name,
-       row_number()                        over () + (SELECT COUNT(*) FROM msft_challenge.measurement) AS measurement_id,
+       row_number()                        over () + (SELECT COUNT(*) FROM aimahead.measurement) AS measurement_id,
        person_id AS person_id,
        44786857                         AS measurement_concept_id, -- days on ventilator
        derived_date::date AS measurement_date, derived_date::timestamp AS measurement_datetime, NULL AS measurement_time,

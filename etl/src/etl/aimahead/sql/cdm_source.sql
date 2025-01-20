@@ -1,5 +1,5 @@
 INSERT INTO
-    cdm_source (
+    aimahead_60.cdm_source (
         cdm_source_name,
         cdm_source_abbreviation,
         cdm_holder,
@@ -13,8 +13,8 @@ INSERT INTO
         vocabulary_version
     )
 SELECT
-    'Microsoft Data Challenge' AS cdm_source_name,
-    'MSFT-CHALLENGE' AS cdm_source_abbreviation,
+    'AIMAHEAD-60' AS cdm_source_name,
+    'AIMAHEAD-60' AS cdm_source_abbreviation,
     'CHoRUS' AS cdm_holder,
     NULL AS source_description,
     NULL AS source_documentation_reference,
@@ -25,4 +25,4 @@ SELECT
     756265
     /* OMOP CDM Version 5.4.0 */
     AS cdm_version_concept_id,
-    (SELECT vocabulary_version FROM vocabulary WHERE vocabulary_id = 'None') AS vocabulary_version;
+    (SELECT vocabulary_version FROM vocabulary.vocabulary WHERE vocabulary_id = 'None') AS vocabulary_version;

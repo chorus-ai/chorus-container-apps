@@ -88,7 +88,6 @@ CREATE TABLE omopcdm.src_measurement
     measurement_concept_id        TEXT,
     measurement_date              TEXT,
     measurement_datetime          TEXT,
-    measurement_result_datetime   TEXT,
     measurement_time              TEXT,
     measurement_type_concept_id   TEXT,
     operator_concept_id           TEXT,
@@ -108,6 +107,29 @@ CREATE TABLE omopcdm.src_measurement
     measurement_event_id          TEXT,
     meas_event_field_concept_id   TEXT
 );
+MEASUREMENT_ID,
+PERSON_ID,
+MEASUREMENT_CONCEPT_ID,
+MEASUREMENT_DATE,
+MEASUREMENT_DATETIME,
+MEASUREMENT_TIME,
+MEASUREMENT_TYPE_CONCEPT_ID,
+OPERATOR_CONCEPT_ID,
+VALUE_AS_NUMBER,
+VALUE_AS_CONCEPT_ID,
+UNIT_CONCEPT_ID,
+RANGE_LOW,
+RANGE_HIGH,
+PROVIDER_ID,
+VISIT_OCCURRENCE_ID,
+VISIT_DETAIL_ID,
+MEASUREMENT_SOURCE_VALUE,
+MEASUREMENT_SOURCE_CONCEPT_ID,
+UNIT_SOURCE_VALUE,
+UNIT_SOURCE_CONCEPT_ID,
+VALUE_SOURCE_VALUE,
+MEASUREMENT_EVENT_ID,
+MEAS_EVENT_FIELD_CONCEPT_ID
 
 
 CREATE TABLE omopcdm.src_observation

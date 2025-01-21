@@ -39,10 +39,10 @@ SELECT
     co.condition_occurrence_id::float::bigint,
     co.person_id::float::bigint,
     co.condition_concept_id::float::bigint,
-    co.condition_start_date::dateAS condition_start_date,
-    co.condition_start_datetime::timestampAS condition_start_datetime,
-    co.condition_end_date::dateAS condition_end_date,
-    co.condition_end_datetime::timestampAS condition_end_datetime,
+    co.condition_start_date::date AS condition_start_date,
+    co.condition_start_datetime::timestamp AS condition_start_datetime,
+    co.condition_end_date::date AS condition_end_date,
+    co.condition_end_datetime::timestamp AS condition_end_datetime,
     co.condition_type_concept_id::float::bigint,
     co.condition_status_concept_id::float::bigint,
     co.stop_reason,
@@ -56,7 +56,6 @@ SELECT
     condition_status_source_value
 FROM
     omopcdm_20250103_20250116.src_condition_occurrence AS co
-        INNER JOIN persist.valid_persons vp ON person_id::bigint = pid::bigint
 ;
 
 
@@ -74,7 +73,6 @@ SELECT
     END AS cause_source_concept_id
 FROM
     omopcdm_20250103_20250116.src_death AS d
-        INNER JOIN persist.valid_persons vp ON person_id::bigint = pid::bigint
 ;
 
 
@@ -364,7 +362,7 @@ INSERT INTO omopcdm.note_nlp
 SELECT note_nlp_id::float::bigint,
     note_id::float::bigint,
     NULLIF(section_concept_id, 'nan')::float::bigint,
-    snippet,
+    'REDACTED' AS snippet,
     NULLIF("offset", 'nan')::float::bigint,
     'REDACTED' AS lexical_variant,
     NULLIF(note_nlp_concept_id, 'nan')::float::bigint,

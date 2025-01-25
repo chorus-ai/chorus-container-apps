@@ -22,6 +22,7 @@ from azure.mgmt.resource import ResourceManagementClient
 #os.environ['DATATH_GROUP_ID']
 #os.environ['CHLNG_GROUP_ID']
 #os.environ['SFTLNCH_GROUP_ID']
+#os.environ['AIMAHEAD_GROUP_ID']
 #os.environ['B2AI_RES_GRP_ID']
 #os.environ['AIM_RES_GRP_ID']
 
@@ -31,7 +32,8 @@ group_dict = {"CHORUS": os.environ['CHORUS_GROUP_ID'],
                      "AWSR_G": os.environ['AWSR_G_GROUP_ID'],
                      "DATATH": os.environ['DATATH_GROUP_ID'],
                      "CHLNG" : os.environ['CHLNG_GROUP_ID'],
-                     "SFTLNCH": os.environ['SFTLNCH_GROUP_ID']}
+                     "SFTLNCH": os.environ['SFTLNCH_GROUP_ID'],
+                     "AIMAHEAD": os.environ['AIMAHEAD_GROUP_ID']}
 
 # Create a credential object. Used to authenticate requests
 credential = ClientSecretCredential(
@@ -83,6 +85,9 @@ access_b2ai_list = [access_b2ai['roles'][role][0] for role in access_b2ai['roles
 access_aim = json.load(open('/aim_access/data/access.json'))
 access_aim_list = [access_aim['roles'][role][0] for role in access_aim['roles']]
 
+access_dgs = json.load(open('/dgs_access/data/access.json'))
+access_dgs_list = [access_dgs['roles'][role][0] for role in access_dgs['roles']]
+
 for row in toIterate.itertuples():
     if row.email in access_b2ai_list:
         user_df.at[row.Index, 'b2ai_landing'] = 'TRUE'
@@ -92,6 +97,10 @@ for row in toIterate.itertuples():
         user_df.at[row.Index, 'aim_landing'] = 'TRUE'
     else:
         user_df.at[row.Index, 'aim_landing'] = 'FALSE'
+    if row.email in access_dgs_list:
+        user_df.at[row.Index, 'dgs_landing'] = 'TRUE'
+    else:
+        user_df.at[row.Index, 'dgs_landing'] = 'FALSE'
 
 
 # STAGE 3 - read resources in resource groups and check for lab instances

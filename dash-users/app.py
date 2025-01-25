@@ -17,15 +17,15 @@ app.title = 'User Access'
 perm_table_columns = [
     'name','email','principal_name','user_group',
     'app_user_name','entra_groups','b2ai_landing',
-    'aim_landing', 'b2ai_firefox',
+    'aim_landing', 'dgs_landing', 'b2ai_firefox',
     'aim_firefox','b2ai_firefox_created',
     'aim_firefox_created','loaded_at'
 ]
 
 limit_column_list = [
-'name','email','user_group', 'entra_groups',
+'name','email','user_group', 'entra_groups', 'dgs_landing',
     'b2ai_landing', 'b2ai_firefox', 'aim_landing',
-    'aim_firefox','b2ai_firefox_created',
+    'aim_firefox', 'b2ai_firefox_created',
     'aim_firefox_created'
 ]
 

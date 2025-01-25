@@ -86,7 +86,7 @@ access_aim = json.load(open('/aim_access/data/access.json'))
 access_aim_list = [access_aim['roles'][role][0] for role in access_aim['roles']]
 
 access_dgs = json.load(open('/dgs_access/data/access.json'))
-access_dgs_list = [access_dgs['roles'][role][0] for role in access_dgs['roles']]
+access_dgs_list = list(access_dgs['roles'].keys())
 
 for row in toIterate.itertuples():
     if row.email in access_b2ai_list:
@@ -97,7 +97,7 @@ for row in toIterate.itertuples():
         user_df.at[row.Index, 'aim_landing'] = 'TRUE'
     else:
         user_df.at[row.Index, 'aim_landing'] = 'FALSE'
-    if row.email in access_dgs_list:
+    if row.principal_name in access_dgs_list:
         user_df.at[row.Index, 'dgs_landing'] = 'TRUE'
     else:
         user_df.at[row.Index, 'dgs_landing'] = 'FALSE'

@@ -14,9 +14,9 @@ WITH ctePreDrugTarget(drug_exposure_id, person_id, ingredient_concept_id, drug_e
             (drug_exposure_start_date + 1*INTERVAL'1 day')
             ---Add 1 day to the drug_exposure_start_date since there is no end_date or INTERVAL for the days_supply
         ) AS drug_exposure_end_date
-    FROM omopcdm.drug_exposure d
-        JOIN omopcdm.concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
-        JOIN omopcdm.concept c ON ca.ancestor_concept_id = c.concept_id
+    FROM drug_exposure d
+        JOIN concept_ancestor ca ON ca.descendant_concept_id = d.drug_concept_id
+        JOIN concept c ON ca.ancestor_concept_id = c.concept_id
         WHERE c.vocabulary_id =  CAST('RxNorm' as TEXT) AND c.concept_class_id = 'Ingredient'
         AND d.drug_concept_id != 0 ---Our unmapped drug_concept_id's are set to 0, so we don't want different drugs wrapped up in the same era
         AND coalesce(d.days_supply,0) >= 0 ---We have cases where days_supply is negative, and this can set the end_date before the start_date, which we don't want. So we're just looking over those rows. This is a data-quality issue.
@@ -142,7 +142,7 @@ cteDrugEraEnds dee
 GROUP BY person_id, drug_concept_id, drug_era_end_date;
 ANALYZE tmp_de
 ;
-INSERT INTO omopcdm.drug_era(drug_era_id,person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days)
+INSERT INTO drug_era(drug_era_id,person_id, drug_concept_id, drug_era_start_date, drug_era_end_date, drug_exposure_count, gap_days)
 SELECT * FROM tmp_de;
 
 

@@ -13,62 +13,75 @@ format: html
         padding: 0;
         background-color: #fdfdff;
         opacity: 1;
-        background-image:  linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77);
+        background-image: linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77),
+                          linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77);
         background-size: 50px 88px;
         background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px;
     }
 
     .container {
-        max-width: 1500px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 10px;
     }
 
     header {
-        background-color: #003366;
+        background-color: #00274D;
         color: #ffffff;
-        padding: 20px 0;
+        padding: 20px;
         text-align: center;
+        border-bottom: 4px solid #FFA500;
     }
 
     header h1 {
         margin: 0;
-        font-size: 2.5em;
+        font-size: 2.2em;
     }
 
     header h2 {
         margin: 0;
-        font-size: 1.5em;
+        font-size: 1.3em;
         font-weight: 300;
     }
 
-    section {
+    .section {
         margin: 20px 0;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .cta {
         display: inline-block;
-        padding: 5px 10px;
-        background-color: #0066cc;
-        color: #fff;
+        padding: 8px 15px;
+        background-color: #FFA500;
+        color: #ffffff;
         border-radius: 5px;
-        margin-top: -20px;
+        text-decoration: none;
+        font-weight: bold;
         float: right;
+        margin-bottom: 10px;
     }
 
     .cta:hover {
-        background-color: #004999;
+        background-color: #cc8400;
     }
 
     footer {
-        background-color: #003366;
+        background-color: #00274D;
         color: #ffffff;
         text-align: center;
-        padding: 10px 0;
+        padding: 15px 0;
+        margin-top: 30px;
     }
 
     a {
-        color: #0066cc;
+        color: #FFA500;
         text-decoration: none;
     }
 
@@ -79,50 +92,41 @@ format: html
 
 <div class="container">
 
-## Welcome to the AimAhead Portal
-
-Your entry point to a suite of specialized tools and services designed to facilitate research within the CHoRUS Azure Data Enclave.
-
-<section id="tools" class="tools">
+<section class="section" id="tools">
     <h2>Explore Our Tools and Services</h2>
 
-### [User-Specific Environment](/lab/)
+    <h3><a href="/lab/">User-Specific Environment</a></h3>
+    <p>Access the ML workspace provisioned for the AimAhead Project.</p>
+    <ul>
+        <li><strong>Secure Access:</strong> A jump-host-like Firefox browser ensures safe and controlled access.</li>
+        <li><strong>Integrated Tools:</strong> Access ARES, ATLAS, and other resources through bookmarks in this environment.</li>
+    </ul>
+    <p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
+    <p>ℹ️ This link will only work within the private CHoRUS network.</p>
+    <a href="/lab/" class="cta">Get Started</a>
+    </br>
 
-Open your dedicated **User-Specific Environment** to access the ML workspace provisioned for the AimAhead Project.
+    <h3><a href="/ares/">Ares</a></h3>
+    <p>Explore and evaluate the quality of your OMOP data with Ares.</p>
+    <ul>
+        <li><strong>Data Quality Checks:</strong> Ensure data integrity.</li>
+        <li><strong>Interactive Dashboards:</strong> Visualize data quality metrics.</li>
+    </ul>
+    <a href="/ares/" class="cta">Get Started</a>
+    </br>
 
-- **Secure Access**: A jump-host-like Firefox browser ensures safe and controlled access.
-- **Integrated Tools**: Access ARES, ATLAS, and other resources through bookmarks in this environment.
-
-<p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
-<p>ℹ️ This link will only work within the private CHoRUS network.</p>
-
-<a href="/lab/" class="cta">Get Started</a>
-</br>
-
-
-### [Ares](/ares/) 
-
-Effortlessly explore and evaluate the quality of your OMOP data with **Ares**, ensuring your datasets are robust and ready for analysis.
-
-- **Data Quality Checks**: Ensure the integrity and quality of your data.
-- **Interactive Dashboards**: Visualize data quality metrics.
-
-<a href="/ares/" class="cta">Get Started</a>
-</br>
-
-### [Atlas](/atlas/)
-
-Harness the power of **Atlas** to conduct in-depth scientific analyses. Create cohorts, develop comprehensive models, and unlock insights from your OMOP data.
-
-- **Cohort Builder**: Define and create patient cohorts.
-- **Advanced Analytics**: Perform complex data analyses and visualizations.
-
-<a href="/atlas/" class="cta">Get Started</a>
-</br>
-
+    <h3><a href="/atlas/">Atlas</a></h3>
+    <p>Conduct in-depth scientific analyses with Atlas.</p>
+    <ul>
+        <li><strong>Cohort Builder:</strong> Define and create patient cohorts.</li>
+        <li><strong>Advanced Analytics:</strong> Perform complex data analyses.</li>
+    </ul>
+    <a href="/atlas/" class="cta">Get Started</a>
+    </br>
+    </br>
 </section>
 
-<section id="report-issues" class="report-issues">
+<section class="section" id="report-issues">
     <h2>Report Issues</h2>
     <p>If you encounter any issues while using the AimAhead Portal, please report them on our GitHub repository:</p>
     <p><a href="https://github.com/orgs/chorus-ai/discussions/new?category=issues" target="_blank">🔗 Report an Issue</a></p>
@@ -131,6 +135,6 @@ Harness the power of **Atlas** to conduct in-depth scientific analyses. Create c
 </div>
 
 <footer>
-    <p>© 2025 AimAhead CHoRUS Portal. All rights reserved.</p>
+    <p>© 2025 AIM-AHEAD CHoRUS Portal. All rights reserved.</p>
     <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
 </footer>

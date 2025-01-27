@@ -1,10 +1,136 @@
 ---
 title: AimAhead Portal
 subtitle: CHoRUS Azure Data Enclave
+format: html
 ---
 
-The CHoRUS AimAhead Portal currently offers a small collection of tools and services, all of which can be
-accessed using through a jump-host-like Firefox browser allocated to each user.
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
 
-- Open a **[User-Specific Environment](/lab/)** to access the ML workspace provisioned for the AimAhead Project
-  - Note that other tools like ARES and ATLAS can be reached using bookmarks in this environment.
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fdfdff;
+        opacity: 1;
+        background-image:  linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77), linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77);
+        background-size: 50px 88px;
+        background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px;
+    }
+
+    .container {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    header {
+        background-color: #003366;
+        color: #ffffff;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.5em;
+    }
+
+    header h2 {
+        margin: 0;
+        font-size: 1.5em;
+        font-weight: 300;
+    }
+
+    section {
+        margin: 20px 0;
+    }
+
+    .cta {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #0066cc;
+        color: #fff;
+        border-radius: 5px;
+        margin-top: -20px;
+        float: right;
+    }
+
+    .cta:hover {
+        background-color: #004999;
+    }
+
+    footer {
+        background-color: #003366;
+        color: #ffffff;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    a {
+        color: #0066cc;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+
+## Welcome to the AimAhead Portal
+
+Your entry point to a suite of specialized tools and services designed to facilitate research within the CHoRUS Azure Data Enclave.
+
+<section id="tools" class="tools">
+    <h2>Explore Our Tools and Services</h2>
+
+### [User-Specific Environment](/lab/)
+
+Open your dedicated **User-Specific Environment** to access the ML workspace provisioned for the AimAhead Project.
+
+- **Secure Access**: A jump-host-like Firefox browser ensures safe and controlled access.
+- **Integrated Tools**: Access ARES, ATLAS, and other resources through bookmarks in this environment.
+
+<p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
+<p>ℹ️ This link will only work within the private CHoRUS network.</p>
+
+<a href="/lab/" class="cta">Get Started</a>
+</br>
+
+
+### [Ares](/ares/) 
+
+Effortlessly explore and evaluate the quality of your OMOP data with **Ares**, ensuring your datasets are robust and ready for analysis.
+
+- **Data Quality Checks**: Ensure the integrity and quality of your data.
+- **Interactive Dashboards**: Visualize data quality metrics.
+
+<a href="/ares/" class="cta">Get Started</a>
+</br>
+
+### [Atlas](/atlas/)
+
+Harness the power of **Atlas** to conduct in-depth scientific analyses. Create cohorts, develop comprehensive models, and unlock insights from your OMOP data.
+
+- **Cohort Builder**: Define and create patient cohorts.
+- **Advanced Analytics**: Perform complex data analyses and visualizations.
+
+<a href="/atlas/" class="cta">Get Started</a>
+</br>
+
+</section>
+
+<section id="report-issues" class="report-issues">
+    <h2>Report Issues</h2>
+    <p>If you encounter any issues while using the AimAhead Portal, please report them on our GitHub repository:</p>
+    <p><a href="https://github.com/orgs/chorus-ai/discussions/new?category=issues" target="_blank">🔗 Report an Issue</a></p>
+</section>
+
+</div>
+
+<footer>
+    <p>© 2025 AimAhead CHoRUS Portal. All rights reserved.</p>
+    <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
+</footer>

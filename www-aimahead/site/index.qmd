@@ -1,5 +1,5 @@
 ---
-title: AimAhead Portal
+title: AIM-AHEAD Portal
 subtitle: CHoRUS Azure Data Enclave
 format: html
 ---

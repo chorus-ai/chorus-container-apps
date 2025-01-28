@@ -105,24 +105,6 @@ format: html
     <p>ℹ️ This link will only work within the private CHoRUS network.</p>
     <a href="/lab/" class="cta">Get Started</a>
     </br>
-
-    <h3><a href="/ares/">Ares</a></h3>
-    <p>Explore and evaluate the quality of your OMOP data with Ares.</p>
-    <ul>
-        <li><strong>Data Quality Checks:</strong> Ensure data integrity.</li>
-        <li><strong>Interactive Dashboards:</strong> Visualize data quality metrics.</li>
-    </ul>
-    <a href="/ares/" class="cta">Get Started</a>
-    </br>
-
-    <h3><a href="/atlas/">Atlas</a></h3>
-    <p>Conduct in-depth scientific analyses with Atlas.</p>
-    <ul>
-        <li><strong>Cohort Builder:</strong> Define and create patient cohorts.</li>
-        <li><strong>Advanced Analytics:</strong> Perform complex data analyses.</li>
-    </ul>
-    <a href="/atlas/" class="cta">Get Started</a>
-    </br>
     </br>
 </section>
 

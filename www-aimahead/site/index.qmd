@@ -88,6 +88,7 @@ format: html
     a:hover {
         text-decoration: underline;
     }
+
 </style>
 
 <div class="container">
@@ -101,7 +102,7 @@ format: html
         <li><strong>Secure Access:</strong> A jump-host-like Firefox browser ensures safe and controlled access.</li>
         <li><strong>Integrated Tools:</strong> Access ARES, ATLAS, and other resources through bookmarks in this environment.</li>
     </ul>
-    <p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
+    ℹ️ Your environment may take a few seconds to initialize on first access.
     <p>ℹ️ This link will only work within the private CHoRUS network.</p>
     <a href="/lab/" class="cta">Get Started</a>
     </br>

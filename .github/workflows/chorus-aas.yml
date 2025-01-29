@@ -22,6 +22,9 @@ jobs:
           - dockerfile: ./azure-app-service/rstudio/Dockerfile
             image: ghcr.io/chorus-ai/chorus-aas-rstudio
             context: ./azure-app-service/rstudio
+          - dockerfile: ./azure-app-service/jupyterhub/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-aas-jupyter
+            context: ./azure-app-service/jupyter
     permissions:
       contents: read
       packages: write

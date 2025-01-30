@@ -29,6 +29,9 @@ server {
         js_content http.whoami;
     }
 
+    location /reports/ {
+        autoindex on;
+    }
 
     location /uploads/ {
         client_body_in_file_only clean;

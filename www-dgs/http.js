@@ -55,16 +55,6 @@ function whoami(r) {
     r.return(200, user);
 }
 
-const notebooks_path = "/usr/share/nginx/html/notebooks";
-
-function readdir_notebooks(r) {
-    let user = r.variables.authenticated_user,
-        files = fs.readdirSync(notebooks_path);
-    let result = files.filter((file) => has_access(user, `/notebooks/${file}`));
-    r.headersOut["Content-Type"] = "application/json";
-    r.return(200, JSON.stringify({ result: result }));
-}
-
 const uploads_path = "/uploads";
 
 function get_user_uploads_path(r) {
@@ -188,4 +178,27 @@ function uploads_delete(r, name) {
     return uploads_get(r);
 }
 
-export default { authorize, whoami, readdir_notebooks, uploads };
+const reports_path = "/usr/share/nginx/html/reports";
+
+function readdir_reports(r) {
+    let user = r.variables.authenticated_user,
+        files = fs.readdirSync(reports_path);
+    let result = files.map((filename) => {
+        if (!has_access(user, `/reports/${filename}/index.html`)) {
+            return;
+        }
+        let stat = fs.statSync(`${reports_path}/${filename}`, {throwIfNoEntry: false});
+        if (!stat) {
+            return;
+        }
+        return {
+            name: filename,
+            time: stat.mtimeMs,
+        };
+    }).filter((entry) => entry);
+    result.sort((a, b) => b.time - a.time);
+    r.headersOut["Content-Type"] = "application/json";
+    r.return(200, JSON.stringify({ user: user, result: result }));
+}
+
+export default { authorize, whoami, readdir_reports, uploads };

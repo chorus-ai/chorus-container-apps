@@ -1,8 +1,79 @@
 ---
-title: Data Generating Sites Ares Index Upload Portal
+title: Data Generating Sites CHoRUS Portal
 subtitle: CHoRUS
 ---
 
 - Check **[Ares](/ares/)** to characterize data and assess data quality.
 - Visit the **[Documents Upload Portal](uploads.qmd)** to securely share Ares Indices with the CHoRUS Admin Team.
-- Review **[Feedback Reports](/reports/)** for your site generated following data ingestion.
+
+```{=html}
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("data", () => ({
+      busy: false,
+      user: null,
+      reports: [],
+      latestError: null,
+
+      init() {
+        this.refreshReportList();
+      },
+
+      hasReports() {
+        return this.reports.length > 0;
+      },
+
+      refreshReportList() {
+        this.busy = true;
+        let p = Promise.resolve(null);
+        p = p.then(() => fetch("/readdir/reports"));
+        p = p.then((response) => response.ok ? response.json() : Promise.reject(Error(response.statusText)) );
+        p = p.then((json) => {
+          this.user = json.user;
+          this.reports = json.result;
+        });
+        p = p.catch((e) => this.latestError = e);
+        p = p.finally(() => this.busy = false);
+        return p;
+      },
+    }));
+  });
+</script>
+
+<div
+  x-cloak
+  x-data="data"
+  :style="{ cursor: busy && 'wait' }">
+
+  <template x-if="latestError">
+    <div
+      class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div
+        class="toast align-items-center text-white bg-danger border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        x-effect="if (latestError) { bootstrap.Toast.getOrCreateInstance($el).show() }">
+        <div class="d-flex">
+          <div class="toast-body" x-text="latestError.message"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <p x-show="user">You are currently logged in as <b x-text="user"></b>.</p>
+
+  <p x-show="!busy && !hasReports()">No results are available to you.</p>
+
+  <p x-show="hasReports()">The following reports are available to you:</p>
+
+  <template x-if="hasReports()">
+    <ul>
+      <template x-for="report in reports">
+        <li><a :href="`/reports/${report.name}`" x-text="report.name"></a></li>
+      </template>
+    </ul>
+  </template>
+</div>
+```

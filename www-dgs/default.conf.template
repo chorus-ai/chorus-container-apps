@@ -17,6 +17,7 @@ server {
     location / {
         root /usr/share/nginx/html;
         index index.html;
+        autoindex on;
         expires epoch;
     }
 
@@ -27,10 +28,6 @@ server {
 
     location = /whoami {
         js_content http.whoami;
-    }
-
-    location /reports/ {
-        autoindex on;
     }
 
     location /uploads/ {

@@ -8,6 +8,11 @@ RUN mkdir /etc/jupyterhub && \
   python3 -m pip install --no-cache-dir --upgrade pip setuptools && \
   python3 -m pip install --no-cache-dir -r requirements.txt
 
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends \
+        git-all \
+        unzip
+
 COPY jupyterhub_config.py /etc/jupyterhub/jupyterhub_config.py
 
 RUN --mount=type=secret,id=USER_CREDS /tmp/secret.sh "$(cat /run/secrets/USER_CREDS)"

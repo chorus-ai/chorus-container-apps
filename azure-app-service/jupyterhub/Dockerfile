@@ -10,7 +10,8 @@ RUN mkdir /etc/jupyterhub && \
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
-        git-all
+        git-all \
+        unzip
 
 COPY jupyterhub_config.py /etc/jupyterhub/jupyterhub_config.py
 

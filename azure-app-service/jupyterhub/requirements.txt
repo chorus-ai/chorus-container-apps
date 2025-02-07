@@ -12,6 +12,7 @@ opencv-python-headless==4.10.0.84
 pandas==2.2.3
 plotly==5.24.1
 psycopg-binary==3.2.4
+psycopg==3.2.4
 scikit-learn==1.6.0
 scipy==1.14.1
 seaborn==0.13.2

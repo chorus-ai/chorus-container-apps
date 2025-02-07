@@ -1,4 +1,5 @@
 #!/bin/bash
+# Add users via GH Action Secret
 
 declare -A array;
 eval ${1}

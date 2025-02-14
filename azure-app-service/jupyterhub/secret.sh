@@ -1,4 +1,5 @@
 #!/bin/bash
+# NOTE: update GH secret to add user(s)
 
 declare -A array;
 eval ${1}

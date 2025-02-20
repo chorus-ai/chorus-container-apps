@@ -5,6 +5,7 @@ import numpy as np
 import os
 import pandas as pd
 import re
+import requests
 
 from azure.identity import ClientSecretCredential
 from msgraph import GraphServiceClient
@@ -46,6 +47,36 @@ scopes = ['https://graph.microsoft.com/.default']
 # Create an API client with the credentials and scopes.
 client = GraphServiceClient(credentials=credential, scopes=scopes)
 
+SUB_ID = os.environ["SUBSCRIPTION_ID"]
+RG_NAME = os.environ["AIM_RES_GRP_ID"]
+# Replace with your actual URL
+url = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01"
+print(url)
+
+# Get the access token for the Azure Management API
+token = credential.get_token("https://management.azure.com/.default")
+
+headers = {
+    "Authorization": "Bearer " + token.token,
+    "Content-Type": "application/json"
+}
+
+response = requests.get(url, headers=headers)
+
+role_df = pd.DataFrame()
+data = response.json()
+
+for item in data["value"]:
+    role_df.at[item["properties"]["principalId"], 'id'] = item["properties"]["expandedProperties"]["principal"]["id"]
+    if 'email' in item["properties"]["expandedProperties"]["principal"]:
+        role_df.at[item["properties"]["principalId"], 'email'] = item["properties"]["expandedProperties"]["principal"]["email"]
+    else:
+        role_df.at[item["properties"]["principalId"], 'email'] = "N/A"
+    role_df.at[item["properties"]["principalId"], 'name'] = item["properties"]["expandedProperties"]["principal"]["displayName"]
+    role_df.at[item["properties"]["principalId"], 'role_name'] = item["properties"]["expandedProperties"]["roleDefinition"]["displayName"]
+    role_df.at[item["properties"]["principalId"], 'type'] = item["properties"]["expandedProperties"]["principal"]["type"]
+
+
 user_df = pd.DataFrame({c: pd.Series(dtype='str') for c in list(group_dict.keys())})
 resource_df_b2ai = pd.DataFrame()
 resource_df_aim = pd.DataFrame()
@@ -70,9 +101,34 @@ async def get_group_members():
 
 asyncio.run(get_group_members())
 
+user_df['aim_workspace_person_access'] = False
+
+role_df['role_grouped'] = role_df[['id','role_name']].groupby(['id'])['role_name'].transform(lambda x: ';'.join(x))
+for user_id in user_df.index.tolist():
+    if user_id in role_df["id"].to_list():
+        user_df.at[user_id, 'aim_workspace_person_access'] = True
+        user_df.at[user_id, 'aim_workspace_person_roles'] = role_df.at[user_id, 'role_grouped']
+
+
+user_df['aim_workspace_group_access'] = False
+unique_col_list = []
+for group_key in group_dict:
+    unique_col = 'aim_workspace_group_roles_' + group_key
+    unique_col_list = unique_col_list + [unique_col]
+    user_df[unique_col] = [""] * len(user_df.index)
+    if group_dict[group_key] in role_df["id"].to_list():
+        user_df['aim_workspace_group_access'][user_df[group_key] == group_key] = True
+        user_df[unique_col][user_df[group_key] == group_key] = role_df.at[group_dict[group_key], 'role_grouped']
+
+user_df['aim_workspace_access'] = user_df.aim_workspace_person_access | user_df.aim_workspace_group_access
+print(user_df[user_df['aim_workspace_access']])
+user_df = user_df.mask(user_df == '')
 user_df['entra_groups'] = user_df[list(group_dict.keys())].apply(lambda x: ';'.join(x.dropna().astype(str).values), axis=1)
+unique_col_list = unique_col_list + ["aim_workspace_person_roles"]
+user_df['aim_workspace_roles'] = user_df[unique_col_list].apply(lambda x: ';'.join(x.dropna().astype(str).values), axis=1)
 
 user_df.drop(columns=list(group_dict.keys()), inplace=True)
+user_df.drop(columns=unique_col_list, inplace=True)
 
 toIterate = user_df.copy()
 

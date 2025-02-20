@@ -25,8 +25,8 @@ perm_table_columns = [
 limit_column_list = [
 'name','email','user_group', 'entra_groups', 'dgs_landing',
     'b2ai_landing', 'b2ai_firefox', 'aim_landing',
-    'aim_firefox', 'b2ai_firefox_created',
-    'aim_firefox_created'
+    'aim_firefox', 'aim_workspace_access', 'aim_workspace_roles',
+    'b2ai_firefox_created', 'aim_firefox_created'
 ]
 
 

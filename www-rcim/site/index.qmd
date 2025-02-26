@@ -110,7 +110,7 @@ format: html
 
 <section class="section" id="report-issues">
     <h2>Report Issues</h2>
-    <p>If you encounter any issues while using the AimAhead Portal, please report them on our GitHub repository:</p>
+    <p>If you encounter any issues while using the RCIM Portal, please report them on our GitHub repository:</p>
     <p><a href="https://github.com/orgs/chorus-ai/discussions/new?category=issues" target="_blank">🔗 Report an Issue</a></p>
 </section>
 

@@ -19,7 +19,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./www-aimahead/Dockerfile
+          - dockerfile: ./www-rcim/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-rcim
             context: ./www-rcim
     permissions:

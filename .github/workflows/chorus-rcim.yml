@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'www-rcim/**'
+      - 'firefox-rcim/**'
       - '.github/workflows/chorus-rcim.yml'
 
 env:
@@ -22,6 +23,9 @@ jobs:
           - dockerfile: ./www-rcim/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-rcim
             context: ./www-rcim
+          - dockerfile: ./firefox-rcim/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-firefox-rcim
+            context: ./firefox-rcim
     permissions:
       contents: read
       packages: write

@@ -28,9 +28,9 @@ server {
 
     location /lab {
         resolver ${NGINX_LOCAL_RESOLVERS};
-        js_set $rcim_backend http.get_rcim_backend;
+        js_set $rcmi_backend http.get_rcmi_backend;
         rewrite /lab/(.*) /$1 break;
-        proxy_pass $rcim_backend/$1$is_args$args;
+        proxy_pass $rcmi_backend/$1$is_args$args;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;

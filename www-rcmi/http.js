@@ -53,7 +53,7 @@ function whoami(r) {
     r.return(200, user);
 }
 
-function get_rcim_backend(r) {
+function get_rcmi_backend(r) {
     let user = r.variables.authenticated_user;
     let lab = user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
     let template = r.variables.chorus_lab_backend_template;
@@ -62,4 +62,4 @@ function get_rcim_backend(r) {
 }
 
 
-export default { authorize, whoami, get_rcim_backend };
+export default { authorize, whoami, get_rcmi_backend };

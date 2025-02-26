@@ -1,13 +1,13 @@
-name: chorus images rcim
+name: chorus images rcmi
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'www-rcim/**'
-      - 'firefox-rcim/**'
-      - '.github/workflows/chorus-rcim.yml'
+      - 'www-rcmi/**'
+      - 'firefox-rcmi/**'
+      - '.github/workflows/chorus-rcmi.yml'
 
 env:
   REGISTRY: ghcr.io
@@ -20,12 +20,12 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./www-rcim/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-www-rcim
-            context: ./www-rcim
-          - dockerfile: ./firefox-rcim/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-firefox-rcim
-            context: ./firefox-rcim
+          - dockerfile: ./www-rcmi/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-www-rcmi
+            context: ./www-rcmi
+          - dockerfile: ./firefox-rcmi/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-firefox-rcmi
+            context: ./firefox-rcmi
     permissions:
       contents: read
       packages: write

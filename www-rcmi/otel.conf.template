@@ -1,6 +1,6 @@
 otel_exporter {
     endpoint ${OTEL_ENDPOINT};
 }
-otel_service_name  www-rcim;
+otel_service_name  www-rcmi;
 otel_trace         on;
 otel_trace_context inject;

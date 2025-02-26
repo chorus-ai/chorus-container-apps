@@ -1,0 +1,10 @@
+project:
+  type: website
+
+website:
+  title: CHoRUS RCIM
+
+format:
+  html:
+    theme: morph
+    toc: true

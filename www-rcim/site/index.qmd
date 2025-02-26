@@ -1,5 +1,5 @@
 ---
-title: RCIM Portal
+title: RCMI Portal
 subtitle: CHoRUS Azure Data Enclave
 format: html
 ---
@@ -96,7 +96,7 @@ format: html
     <h2>Explore Our Tools and Services</h2>
 
     <h3><a href="/lab/">User-Specific Environment</a></h3>
-    <p>Access the ML workspace provisioned for the RCIM Project.</p>
+    <p>Access the ML workspace provisioned for the RCMI Project.</p>
     <ul>
         <li><strong>Secure Access:</strong> A jump-host-like Firefox browser ensures safe and controlled access.</li>
         <li><strong>Integrated Tools:</strong> Access ARES, ATLAS, and other resources through bookmarks in this environment.</li>
@@ -110,13 +110,13 @@ format: html
 
 <section class="section" id="report-issues">
     <h2>Report Issues</h2>
-    <p>If you encounter any issues while using the RCIM Portal, please report them on our GitHub repository:</p>
+    <p>If you encounter any issues while using the RCMI Portal, please report them on our GitHub repository:</p>
     <p><a href="https://github.com/orgs/chorus-ai/discussions/new?category=issues" target="_blank">🔗 Report an Issue</a></p>
 </section>
 
 </div>
 
 <footer>
-    <p>© 2025 RCIM CHoRUS Portal. All rights reserved.</p>
+    <p>© 2025 RCMI CHoRUS Portal. All rights reserved.</p>
     <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
 </footer>

@@ -25,6 +25,9 @@ jobs:
           - dockerfile: ./azure-app-service/jupyterhub/Dockerfile
             image: ghcr.io/chorus-ai/chorus-aas-jupyter
             context: ./azure-app-service/jupyterhub
+          - dockerfile: ./azure-app-service/jupyterhub-eng/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-aas-jupyter-eng
+            context: ./azure-app-service/jupyterhub-eng
     permissions:
       contents: read
       packages: write
@@ -68,4 +71,5 @@ jobs:
           cache-to: type=gha,mode=max
           secrets: |
             "USER_CREDS=${{ secrets.USER_CREDS }}"
+            "USER_CREDS_ENG=${{ secrets.USER_CREDS_ENG }}"
 

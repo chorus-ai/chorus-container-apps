@@ -102,7 +102,7 @@ RUN \
 
 # Generate and install favicons.
 RUN \
-    APP_ICON_URL=https://avatars.githubusercontent.com/u/124108676?s=200&v=4 && \
+    APP_ICON_URL=https://raw.githubusercontent.com/chorus-ai/chorus-container-apps/refs/heads/main/athena/favicon.png && \
     install_app_icon.sh "$APP_ICON_URL"
 
 # Add files.

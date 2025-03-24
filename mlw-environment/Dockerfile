@@ -25,4 +25,8 @@ RUN Rscript -e 'DatabaseConnector::downloadJdbcDrivers("all")'
 RUN pip install pip==23.2.1 setuptools==68.1.2
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt install fuse3 libfuse3-dev gcc
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends \ 
+    fuse3 \
+    libfuse3-dev \
+    gcc

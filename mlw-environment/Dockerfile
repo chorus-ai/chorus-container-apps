@@ -1,4 +1,4 @@
-from ubuntu/python:latest
+from ubuntu/python:3.12-24.04_stable
 
 COPY requirements.txt .
 

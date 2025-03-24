@@ -1,4 +1,4 @@
-CREATE TABLE concept (
+CREATE TABLE vocab.concept (
   concept_id integer NOT NULL,
   concept_name text NOT NULL,
   domain_id text NOT NULL,

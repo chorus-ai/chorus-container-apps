@@ -1,16 +1,6 @@
-from ubuntu/python:3.12-24.04_stable
+FROM ghcr.io/chorus-ai/chorus-etl:main
 
 COPY requirements.txt .
 
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
-        git-all \
-        unzip \
-        python3-pip
-
-RUN python3 -m pip install --no-cache-dir --upgrade pip setuptools && \
-  python3 -m pip install --no-cache-dir -r requirements.txt
-
-
-
-CMD ["jupyterhub", "-f", "/etc/jupyterhub/jupyterhub_config.py"]
+RUN python3 -m pip3 install --no-cache-dir --upgrade pip setuptools && \
+  python3 -m pip3 install --no-cache-dir -r requirements.txt

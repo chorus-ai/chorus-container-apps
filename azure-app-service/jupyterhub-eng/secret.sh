@@ -1,6 +1,6 @@
 #!/bin/bash
 # NOTE: update GH secret to add user(s)
-# Added users: 2025-03-28
+# Added users: 2025-03-28 (b)
 
 declare -A array;
 eval ${1}

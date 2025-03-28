@@ -4,4 +4,4 @@ FROM jlesage/firefox:v24.12.1
 COPY bookmarks/places.sqlite /config/profile/places.sqlite
 
 # Fix DNS resolution of Duke shibboleth
-RUN echo "\n152.3.72.35     shib.oit.duke.edu\n" >> /etc/hosts
+COPY 10-add-hosts.sh /etc/cont-init.d/10-add-hosts.sh

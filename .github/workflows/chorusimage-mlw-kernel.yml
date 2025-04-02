@@ -28,13 +28,13 @@ jobs:
             context: ./mlw-jupyter-kernel/python
             tag: python
           - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-mlw-kernel:R-hades
+            image: ghcr.io/chorus-ai/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/R
-            tag: R-hades
+            tag: r-hades
           - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
             image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/R
-            tag: R-hades
+            tag: r-hades
     permissions:
       contents: read
       packages: write

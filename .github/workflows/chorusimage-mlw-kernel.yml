@@ -50,7 +50,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: cr0aimaheadmlw.azurecr.io
-          username: admin
+          username: cr0aimaheadmlw
           password: ${{ secrets.ACR_TOKEN }}
 
       - name: Extract Docker metadata

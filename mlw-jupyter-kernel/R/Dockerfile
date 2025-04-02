@@ -11,9 +11,9 @@ RUN apt-get update && \
         tini \
         jq && \
     rm -rf /var/lib/apt/lists/*
-RUN Rscript -e 'remotes::install_github("OHDSI/Hades")'
-RUN Rscript -e 'remotes::install_github("OHDSI/DataQualityDashboard")'
-RUN Rscript -e 'remotes::install_github("OHDSI/Achilles")'
-RUN Rscript -e 'remotes::install_github("IRkernel/IRkernel")'
+RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_github("OHDSI/Hades")'
+RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_github("OHDSI/DataQualityDashboard")'
+RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_github("OHDSI/Achilles")'
+RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_github("IRkernel/IRkernel")'
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers
 RUN Rscript -e 'DatabaseConnector::downloadJdbcDrivers("all")'

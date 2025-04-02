@@ -10,8 +10,7 @@ RUN apt-get update && \
         r-cran-remotes \
         tini \
         jq && \
-    rm -rf /var/lib/apt/lists/* \
-
+    rm -rf /var/lib/apt/lists/*
 RUN Rscript -e 'remotes::install_github("OHDSI/Hades")'
 RUN Rscript -e 'remotes::install_github("OHDSI/DataQualityDashboard")'
 RUN Rscript -e 'remotes::install_github("OHDSI/Achilles")'

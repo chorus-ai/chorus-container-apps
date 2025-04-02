@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'mlw-jupyter-kernel/**'
+      - '.github/workflows/chorusimage-mlw-kernel.yml'
 
 env:
   REGISTRY: ghcr.io

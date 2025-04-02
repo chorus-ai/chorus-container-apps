@@ -15,5 +15,6 @@ RUN apt-get update && \
 RUN Rscript -e 'remotes::install_github("OHDSI/Hades")'
 RUN Rscript -e 'remotes::install_github("OHDSI/DataQualityDashboard")'
 RUN Rscript -e 'remotes::install_github("OHDSI/Achilles")'
+RUN Rscript -e 'remotes::install_github("IRkernel/IRkernel")'
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers
 RUN Rscript -e 'DatabaseConnector::downloadJdbcDrivers("all")'

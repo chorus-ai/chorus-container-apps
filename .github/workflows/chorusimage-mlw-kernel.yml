@@ -20,17 +20,21 @@ jobs:
       matrix:
         include:
           - dockerfile: ./mlw-jupyter-kernel/python/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-mlw-kernel:python
-            context: ./mlw-jupyter-kernel
-          - dockerfile: ./mlw-jupyter-kernel/python/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel:python
+            image: ghcr.io/chorus-ai/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/python
+            tag: python
+          - dockerfile: ./mlw-jupyter-kernel/python/Dockerfile
+            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            context: ./mlw-jupyter-kernel/python
+            tag: python
           - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
             image: ghcr.io/chorus-ai/chorus-mlw-kernel:R-hades
-            context: ./mlw-jupyter-kernel
-          - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel:R-hades
             context: ./mlw-jupyter-kernel/R
+            tag: R-hades
+          - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
+            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            context: ./mlw-jupyter-kernel/R
+            tag: R-hades
     permissions:
       contents: read
       packages: write
@@ -72,7 +76,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ${{ steps.meta.outputs.tags }}
+            ${{ matrix.tag }}
           labels: |
             ${{ steps.meta.outputs.labels }}
           platforms: |

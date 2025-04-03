@@ -17,3 +17,16 @@ RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_gith
 RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'remotes::install_github("IRkernel/IRkernel")'
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers
 RUN Rscript -e 'DatabaseConnector::downloadJdbcDrivers("all")'
+
+# Handle all kernel launcher deps below
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends \
+        python-is-python3 \
+        python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=secret,id=GPAT,env=GITHUB_PAT Rscript -e 'install.packages("SparkR")'
+RUN pip install --upgrade jupyter_enterprise_gateway
+RUN git clone https://github.com/jupyter-server/enterprise_gateway.git /enterprise_gateway
+
+

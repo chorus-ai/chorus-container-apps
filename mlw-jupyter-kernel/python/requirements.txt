@@ -22,5 +22,5 @@ torchaudio==2.5.1
 torchvision==0.20.1
 tqdm==4.67.1
 tsfresh==0.20.3
-wfdb==4.2.0
+wfdb==4.3.0
 xgboost==2.1.3

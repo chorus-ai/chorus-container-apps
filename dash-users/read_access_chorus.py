@@ -49,9 +49,8 @@ client = GraphServiceClient(credentials=credential, scopes=scopes)
 
 SUB_ID = os.environ["SUBSCRIPTION_ID"]
 RG_NAME = os.environ["AIM_RES_GRP_ID"]
-# Replace with your actual URL
-url = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleAssignmentScheduleInstances?api-version=2020-10-01"
-print(url)
+url = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01"
+url2 = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-04-01"
 
 # Get the access token for the Azure Management API
 token = credential.get_token("https://management.azure.com/.default")
@@ -61,21 +60,20 @@ headers = {
     "Content-Type": "application/json"
 }
 
+
 response = requests.get(url, headers=headers)
+response2 = requests.get(url2, headers=headers)
+
 
 role_df = pd.DataFrame()
 data = response.json()
+data2 = response2.json()
 
 for item in data["value"]:
-    role_df.at[item["properties"]["principalId"], 'id'] = item["properties"]["expandedProperties"]["principal"]["id"]
-    if 'email' in item["properties"]["expandedProperties"]["principal"]:
-        role_df.at[item["properties"]["principalId"], 'email'] = item["properties"]["expandedProperties"]["principal"]["email"]
-    else:
-        role_df.at[item["properties"]["principalId"], 'email'] = "N/A"
-    role_df.at[item["properties"]["principalId"], 'name'] = item["properties"]["expandedProperties"]["principal"]["displayName"]
-    role_df.at[item["properties"]["principalId"], 'role_name'] = item["properties"]["expandedProperties"]["roleDefinition"]["displayName"]
-    role_df.at[item["properties"]["principalId"], 'type'] = item["properties"]["expandedProperties"]["principal"]["type"]
-
+    role_data = [x for x in data2["value"] if x['id'] == item["properties"]["roleDefinitionId"]]
+    role_df.at[item["properties"]["principalId"], 'id'] = item["properties"]["principalId"]
+    role_df.at[item["properties"]["principalId"], 'role_name'] = role_data[0]["properties"]["roleName"]
+    role_df.at[item["properties"]["principalId"], 'type'] = item["properties"]["principalType"]
 
 user_df = pd.DataFrame({c: pd.Series(dtype='str') for c in list(group_dict.keys())})
 resource_df_b2ai = pd.DataFrame()

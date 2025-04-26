@@ -55,7 +55,7 @@ function whoami(r) {
 
 function get_rcmi_backend(r) {
     let user = r.variables.authenticated_user;
-    let lab = user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
+    let lab = user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,12);
     let template = r.variables.chorus_lab_backend_template;
     let end_uri =  template.replaceAll("*", lab).concat("/");
     return end_uri;

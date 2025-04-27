@@ -9,6 +9,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -
         postgresql-client \
         python-is-python3 \
         python3-pip \
+        python3-dev \
         tini \
         fuse3 \
         libfuse3-dev \

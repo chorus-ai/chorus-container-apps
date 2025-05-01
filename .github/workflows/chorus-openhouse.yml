@@ -25,7 +25,7 @@ jobs:
             context: ./www-openhouse
           - dockerfile: ./firefox-openhouse/Dockerfile
             image: ghcr.io/chorus-ai/chorus-firefox-opho
-            context: ./chorus-firefox-opho
+            context: ./firefox-openhouse
     permissions:
       contents: read
       packages: write

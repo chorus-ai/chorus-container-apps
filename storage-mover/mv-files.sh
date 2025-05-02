@@ -6,7 +6,7 @@ L2M=$(azcopy cp --recursive "${LANDING_KEY}" "/midpoint")
 
 if [[ $L2M == *"Final Job Status: Completed"* ]] && [[ $L2M != *"Final Job Status: CompletedWithErrors"* ]]; then
   echo "Copy to midpoint completed successfully! Removing files in landing storage..."
-  RML=$(azcopy remove --recursive "${LANDING_KEY}")
+  RML=$(azcopy remove --recursive --exclude-pattern="*.db" "${LANDING_KEY}")
   if [[ $RML == *"Final Job Status: Completed"* ]] && [[ $RML != *"Final Job Status: CompletedWithErrors"* ]]; then
     echo "Landing file(s) removed! Launching copy from midpoint to secure storage..."
     else

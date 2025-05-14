@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'firefox/**'
-      - '.github/workflows/chorus-firefox.yml'
+      - '.github/workflows/chorusimage-firefox.yml'
 
 env:
   REGISTRY: ghcr.io

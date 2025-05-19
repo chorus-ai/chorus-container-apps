@@ -2,7 +2,7 @@
 
 echo "Copying files from landing storage to midpoint FS"
 
-L2M=$(azcopy cp --recursive "${LANDING_KEY}" "/midpoint")
+L2M=$(azcopy cp --recursive --check-md5=NoCheck "${LANDING_KEY}" "/midpoint")
 
 if [[ $L2M == *"Final Job Status: Completed"* ]] && [[ $L2M != *"Final Job Status: CompletedWithErrors"* ]]; then
   echo "Copy to midpoint completed successfully! Removing files in landing storage..."
@@ -18,7 +18,7 @@ if [[ $L2M == *"Final Job Status: Completed"* ]] && [[ $L2M != *"Final Job Statu
     exit 1
 fi
 
-M2P=$(azcopy cp --recursive "/midpoint/*" "${PILOT_KEY}")
+M2P=$(azcopy cp --recursive --check-md5=NoCheck "/midpoint/*" "${PILOT_KEY}")
 
 if [[ $M2P == *"Final Job Status: Completed"* ]] && [[ $M2P != *"Final Job Status: CompletedWithErrors"* ]]; then
   echo "Copy from midpoint completed successfully! Removing files in midpoint..."

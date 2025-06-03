@@ -35,6 +35,14 @@ jobs:
             image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/R
             tag: r-hades
+          - dockerfile: ./mlw-jupyter-kernel/omop-alchemy/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-mlw-kernel
+            context: ./mlw-jupyter-kernel/omop-alchemy
+            tag: omop-alchemy
+          - dockerfile: ./mlw-jupyter-kernel/omop-alchemy/Dockerfile
+            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            context: ./mlw-jupyter-kernel/omop-alchemy
+            tag: omop-alchemy
     permissions:
       contents: read
       packages: write

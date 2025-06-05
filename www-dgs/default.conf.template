@@ -39,4 +39,9 @@ server {
         client_body_temp_path /uploads/client_temp;
         js_content http.uploads;
     }
+
+    location /webapi/ {
+        proxy_pass ${CHORUS_WEBAPI_BACKEND};
+    }
+
 }

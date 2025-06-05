@@ -6,7 +6,7 @@ subtitle: CHoRUS
 - Check **[Ares](/ares/)** to characterize data and assess data quality.
 - Visit the **[Documents Upload Portal](uploads.qmd)** to securely share Ares Indices with the CHoRUS Admin Team.
 - Explore **[Atlas](/atlas/)** to create and characterize concept sets, cohorts, and models.
-
+- Browse to the consortium-wide **[Data Dashboard](/dash/)** to see the latest updates on central data processing.
 ```{=html}
 <script>
   document.addEventListener("alpine:init", () => {

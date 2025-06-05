@@ -32,4 +32,5 @@ ENV SERVER_PORT=8080 \
     REMOTE_USER=- \
     OTEL_ENDPOINT=127.0.0.1:4317 \
     CHORUS_WEBAPI_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
+    CHORUS_DASH_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     UPLOADS_CLIENT_MAX_BODY_SIZE=1g

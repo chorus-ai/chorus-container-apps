@@ -1,0 +1,122 @@
+---
+title: SCCM Portal
+subtitle: CHoRUS Azure Data Enclave
+format: html
+---
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fdfdff;
+        opacity: 1;
+        background-image: linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(30deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(150deg, #f7f7fe 12%, transparent 12.5%, transparent 87%, #f7f7fe 87.5%, #f7f7fe),
+                          linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77),
+                          linear-gradient(60deg, #f7f7fe77 25%, transparent 25.5%, transparent 75%, #f7f7fe77 75%, #f7f7fe77);
+        background-size: 50px 88px;
+        background-position: 0 0, 0 0, 25px 44px, 25px 44px, 0 0, 25px 44px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    header {
+        background-color: #00274D;
+        color: #ffffff;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 4px solid #FFA500;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 2.2em;
+    }
+
+    header h2 {
+        margin: 0;
+        font-size: 1.3em;
+        font-weight: 300;
+    }
+
+    .section {
+        margin: 20px 0;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #FFA500;
+        color: #ffffff;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        float: right;
+        margin-bottom: 10px;
+    }
+
+    .cta:hover {
+        background-color: #cc8400;
+    }
+
+    footer {
+        background-color: #00274D;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px 0;
+        margin-top: 30px;
+    }
+
+    a {
+        color: #FFA500;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+
+<section class="section" id="tools">
+    <h2>Explore Our Tools and Services</h2>
+
+    <h3><a href="/lab/">User-Specific Environment</a></h3>
+    <p>Access the ML workspace provisioned for the 2025 SCCM Datathon.</p>
+    <ul>
+        <li><strong>Secure Access:</strong> A jump-host-like Firefox browser ensures safe and controlled access.</li>
+        <li><strong>Integrated Tools:</strong> Access ARES, ATLAS, and other resources through bookmarks in this environment.</li>
+    </ul>
+    <p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
+    <p>ℹ️ This link will only work within the private CHoRUS network.</p>
+    <a href="/lab/" class="cta">Get Started</a>
+    </br>
+    </br>
+</section>
+
+<section class="section" id="report-issues">
+    <h2>Report Issues</h2>
+    <p>If you encounter any issues while using the SCCM Portal, please report them on our GitHub repository:</p>
+    <p><a href="https://github.com/orgs/chorus-ai/discussions/new?category=issues" target="_blank">🔗 Report an Issue</a></p>
+</section>
+
+</div>
+
+<footer>
+    <p>© 2025 SCCM CHoRUS Portal. All rights reserved.</p>
+    <p><a href="mailto:chorus@b2ai.com">Contact Support</a></p>
+</footer>

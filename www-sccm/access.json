@@ -1,0 +1,9 @@
+{
+  "paths": {
+    "": [
+      "jhoughtaling@mgh.harvard.edu"
+    ],
+    "/whoami": ["*"]
+  },
+  "roles": {}
+}

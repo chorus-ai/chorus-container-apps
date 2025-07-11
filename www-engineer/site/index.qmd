@@ -1,0 +1,10 @@
+---
+title: Engineer Portal
+subtitle: CHoRUS Azure Data Enclave
+---
+
+The CHoRUS Engineer Portal currently offers a small collection of tools and services.
+
+- Check **[Ares](/ares/)** to characterize data and assess data quality.
+- Use **[Atlas](/atlas/)** to conduct scientific analyses.
+- Open your own personal **[Jupyter Lab](/lab/)** to write code in Python, and R.

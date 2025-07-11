@@ -8,6 +8,7 @@ on:
       - 'www-admin/**'
       - 'www-dgs/**'
       - 'www-challenge/**'
+      - 'www-engineer/**'
 
 env:
   REGISTRY: ghcr.io
@@ -29,6 +30,9 @@ jobs:
           - dockerfile: ./www-dgs/Dockerfile
             image: ghcr.io/chorus-ai/chorus-www-dgs
             context: ./www-dgs
+          - dockerfile: ./www-engineer/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-www-engineer
+            context: ./www-engineer
     permissions:
       contents: read
       packages: write

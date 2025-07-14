@@ -21,7 +21,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://
       tar -xvzf oauth2-proxy-v7.9.0.linux-amd64.tar.gz && mv oauth2-proxy-v7.9.0.linux-amd64/oauth2-proxy /usr/bin/ && \
       rm -rf /var/lib/apt/lists/*
 COPY nginx.conf http.js /etc/nginx/
-COPY *.template /etc/nginx/templates/
+COPY default.conf.template /etc/nginx/conf.d/default.conf
 COPY --from=verse /site/html /usr/share/nginx/html
 COPY --from=busybox /ares /usr/share/nginx/html/ares
 WORKDIR /app/

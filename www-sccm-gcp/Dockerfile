@@ -17,8 +17,8 @@ RUN apt-get update && \
 RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/debian/ bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install --yes --no-install-recommends wget && \
-      wget https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.9.0/oauth2-proxy-v7.9.0.darwin-amd64.tar.gz && \
-      tar -xvzf oauth2-proxy-v7.9.0.darwin-amd64.tar.gz && mv oauth2-proxy-v7.9.0.darwin-amd64/oauth2-proxy /usr/bin/ && \
+      wget https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.9.0/oauth2-proxy-v7.9.0.linux-amd64.tar.gz && \
+      tar -xvzf oauth2-proxy-v7.9.0.linux-amd64.tar.gz && mv oauth2-proxy-v7.9.0.linux-amd64/oauth2-proxy /usr/bin/ && \
       rm -rf /var/lib/apt/lists/*
 COPY nginx.conf http.js /etc/nginx/
 COPY *.template /etc/nginx/templates/

@@ -35,6 +35,7 @@ elif [[ $ENTRY_COMMAND == "web" ]]; then
               -cookie-secret="${OAUTH2_COOKIE_SECRET}" \
               ${FORCE_HTTPS} \
               -set-xauthrequest=true \
+              -redirect-url=${OAUTH2_REDIRECT_URL} \
               -email-domain="${OAUTH2_EMAIL_DOMAIN}" -upstream file:///dev/null &
 
 else

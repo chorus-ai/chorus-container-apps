@@ -26,6 +26,7 @@ COPY --from=verse /site/html /usr/share/nginx/html
 COPY --from=busybox /ares /usr/share/nginx/html/ares
 WORKDIR /app/
 COPY ./entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
 #COPY --from=atlas /etc/nginx/conf.d/optimization.conf /etc/nginx/conf.d/optimization.conf
 #COPY --from=atlas /usr/share/nginx/html/atlas /usr/share/nginx/html/atlas
@@ -37,4 +38,5 @@ ENV SERVER_PORT=8080 \
     OAUTH2_PROVIDER=- \
     OAUTH2_COOKIE_SECRET=- \
     FORCE_HTTPS=- \
-    OAUTH2_EMAIL_DOMAIN=-
+    OAUTH2_EMAIL_DOMAIN=- \
+    OAUTH2_REDIRECT_URL=127.0.0.1:\$server_port/undefined/

@@ -14,10 +14,11 @@ FROM nginx:1.25.3
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends gpg && \
     curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
-RUN apt-get update && \
+RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/debian/ bookworm nginx" > /etc/apt/sources.list.d/nginx.list && \
+    apt-get update && \
     apt-get install --yes --no-install-recommends wget && \
       wget https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.9.0/oauth2-proxy-v7.9.0.darwin-amd64.tar.gz && \
-      tar -xvzf oauth2-proxy-v7.9.0.darwin-amd64.tar.gz && mv oauth2-proxy-v7.9.0.darwin-amd64/oauth2_proxy /usr/bin/ && \
+      tar -xvzf oauth2-proxy-v7.9.0.darwin-amd64.tar.gz && mv oauth2-proxy-v7.9.0.darwin-amd64/oauth2-proxy /usr/bin/ && \
       rm -rf /var/lib/apt/lists/*
 COPY nginx.conf http.js /etc/nginx/
 COPY *.template /etc/nginx/templates/
@@ -33,7 +34,6 @@ ENV SERVER_PORT=8080 \
     REMOTE_USER=- \
     NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1 \
     OAUTH2_CLIENT_ID=- \
-    OAUTH2_CLIENT_SECRET=- \
     OAUTH2_PROVIDER=- \
     OAUTH2_COOKIE_SECRET=- \
     FORCE_HTTPS=- \

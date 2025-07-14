@@ -23,7 +23,7 @@ elif [[ $ENTRY_COMMAND == "web" ]]; then
   fi
   service nginx start
   # https://oauth2-proxy.github.io/oauth2-proxy/configuration
-  oauth2_proxy -client-id="${OAUTH2_CLIENT_ID}" \
+  /usr/bin/oauth2-proxy -client-id="${OAUTH2_CLIENT_ID}" \
               -client-secret="${OAUTH2_CLIENT_SECRET}" \
               -provider="${OAUTH2_PROVIDER}" \
               -cookie-secret="${OAUTH2_COOKIE_SECRET}" \

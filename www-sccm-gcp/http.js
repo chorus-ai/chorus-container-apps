@@ -40,13 +40,10 @@ function has_access(user, uri) {
     return user_roles.some(r => uri_roles.includes(r));
 }
 
-function deny_user(r) {
+function authorize(r) {
     let user = r.variables.email,
         uri = r.variables.protected_uri;
-    if (has_access(user, uri)) {
-        return "";
-    }
-    return "DENY";
+     r.return(has_access(user, uri) ? 200 : 403);
 }
 
 function whoami(r) {
@@ -56,4 +53,4 @@ function whoami(r) {
     r.return(200, user);
 }
 
-export default { deny_user, whoami };
+export default { authorize, whoami };

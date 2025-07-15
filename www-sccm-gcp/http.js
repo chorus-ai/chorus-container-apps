@@ -43,7 +43,10 @@ function has_access(user, uri) {
 function deny_user(r) {
     let user = r.variables.authenticated_user,
         uri = r.variables.protected_uri;
-    r.return(has_access(user, uri) ? "0" : "DENY");
+    if (has_access(user, uri)) {
+        return ""
+    }
+    return "DENY";
 }
 
 function whoami(r) {

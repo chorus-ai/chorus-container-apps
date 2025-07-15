@@ -41,7 +41,7 @@ function has_access(user, uri) {
 }
 
 function authorize(r) {
-    let user = r.variables.email,
+    let user = r.variables.potential_user,
         uri = r.variables.protected_uri;
     if (!has_access(user, uri)) {
         r.return(403)
@@ -50,7 +50,7 @@ function authorize(r) {
 }
 
 function whoami(r) {
-    let user = r.variables.email;
+    let user = r.variables.potential_user;
     r.warn(`/whoami: ${user}`);
     r.headersOut["Content-Type"] = "text/plain"
     r.return(200, user);

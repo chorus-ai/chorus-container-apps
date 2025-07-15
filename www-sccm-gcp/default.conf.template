@@ -10,6 +10,14 @@ server {
   js_var $protected_uri $uri;
   if ($protected_uri) {
   }
+  auth_request /authorize
+
+  location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        autoindex on;
+        expires epoch;
+  }
 
   location /oauth2/ {
     proxy_pass       http://127.0.0.1:4180;
@@ -28,7 +36,7 @@ server {
     proxy_pass_request_body           off;
   }
 
-  location / {
+  location /authorize {
     auth_request /oauth2/auth;
     error_page 401 =403 /oauth2/sign_in;
     auth_request_set $user   $upstream_http_x_auth_request_user;
@@ -49,11 +57,7 @@ server {
         add_header Set-Cookie $auth_cookie_name_1;
     }
 
-    root /usr/share/nginx/html;
-    index index.html;
-    autoindex on;
-
-    # js_content http.authorize;
+    js_content http.authorize;
 
   }
 

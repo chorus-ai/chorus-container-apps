@@ -21,16 +21,17 @@ server {
   auth_request_set $token  $upstream_http_x_auth_request_access_token;
   proxy_set_header X-Access-Token $token;
   auth_request_set $auth_cookie $upstream_http_set_cookie;
-  add_header Set-Cookie $auth_cookie;
+  #add_header Set-Cookie $auth_cookie;
+  proxy_pass_header Set-Cookie;
   auth_request_set $auth_cookie_name_upstream_1 $upstream_cookie_auth_cookie_name_1;
-  if ($auth_cookie ~* "(; .*)") {
-      set $auth_cookie_name_0 $auth_cookie;
-      set $auth_cookie_name_1 "auth_cookie_name_1=$auth_cookie_name_upstream_1$1";
-  }
-  if ($auth_cookie_name_upstream_1) {
-      add_header Set-Cookie $auth_cookie_name_0;
-      add_header Set-Cookie $auth_cookie_name_1;
-  }
+  #if ($auth_cookie ~* "(; .*)") {
+  #    set $auth_cookie_name_0 $auth_cookie;
+  #    set $auth_cookie_name_1 "auth_cookie_name_1=$auth_cookie_name_upstream_1$1";
+  #}
+  #if ($auth_cookie_name_upstream_1) {
+  #    add_header Set-Cookie $auth_cookie_name_0;
+  #    add_header Set-Cookie $auth_cookie_name_1;
+  #}
 
 
   location /oauth2/ {

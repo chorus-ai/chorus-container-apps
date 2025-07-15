@@ -23,10 +23,16 @@ elif [[ $ENTRY_COMMAND == "web" ]]; then
              --provider="${OAUTH2_PROVIDER}" \
              --cookie-secret="${OAUTH2_COOKIE_SECRET}" \
              --cookie-secure=false \
+             --cookie-refresh=27m \
+             --cookie-expire=8h \
              --force-https=false \
+             --custom-sign-in-logo="https://www.sccm.org/images/SCCM-Logo.png" \
+             --banner=- \
+             --footer=- \
              --set-xauthrequest=true \
              --redirect-url="${OAUTH2_REDIRECT_URL}" \
-             --email-domain="${OAUTH2_EMAIL_DOMAIN}" --upstream file:///dev/null &
+             --authenticated-emails-file=/etc/oauth2_proxy/auth_users \
+             --upstream file:///dev/null &
 
   sleep infinity
 else

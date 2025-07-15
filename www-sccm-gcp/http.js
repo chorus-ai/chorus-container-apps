@@ -49,7 +49,7 @@ function authorize(r) {
 }
 
 function whoami(r) {
-    let user = r.variables.email;
+    let user = r.variables.authenticated_user;
     r.warn(`/whoami: ${user}`);
     r.headersOut["Content-Type"] = "text/plain"
     r.return(200, user);

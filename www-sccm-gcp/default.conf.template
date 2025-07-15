@@ -49,11 +49,12 @@ server {
         add_header Set-Cookie $auth_cookie_name_1;
     }
 
-    js_content http.authorize;
-
     root /usr/share/nginx/html;
     index index.html;
     autoindex on;
+
+    js_content http.authorize;
+
   }
 
   location = /whoami {

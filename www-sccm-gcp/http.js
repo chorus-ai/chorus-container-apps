@@ -46,10 +46,11 @@ function authorize(r) {
     if (!has_access(user, uri)) {
         r.return(403)
     }
+    r.return(200)
 }
 
 function whoami(r) {
-    let user = r.variables.authenticated_user;
+    let user = r.variables.email;
     r.warn(`/whoami: ${user}`);
     r.headersOut["Content-Type"] = "text/plain"
     r.return(200, user);

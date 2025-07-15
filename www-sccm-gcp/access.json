@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "": [
+      "jaredsh@umich.edu"
+    ],
+    "/whoami": ["*"]
+  },
+  "roles": {
+    "jaredsh@umich.edu": ["jaredsh@umich.edu"]
+  }
+}

@@ -7,6 +7,9 @@ server {
   listen 8080;
   proxy_http_version 1.1;
   proxy_ssl_server_name on;
+  js_var $protected_uri $uri;
+  if ($protected_uri) {
+  }
 
   location /oauth2/ {
     proxy_pass       http://127.0.0.1:4180;
@@ -60,7 +63,13 @@ server {
         add_header Set-Cookie $auth_cookie_name_0;
         add_header Set-Cookie $auth_cookie_name_1;
     }
+    set $authenticated_user $upstream_http_x_auth_request_email;
 
+    js_set $denied http.deny_user;
+
+    if ($denied) {
+        return 403;
+    }
     root /usr/share/nginx/html;
     index index.html;
     autoindex on;

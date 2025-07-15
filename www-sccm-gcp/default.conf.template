@@ -53,7 +53,7 @@ server {
     index index.html;
     autoindex on;
 
-    js_content http.authorize;
+    # js_content http.authorize;
 
   }
 

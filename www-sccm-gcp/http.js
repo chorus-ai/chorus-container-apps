@@ -43,7 +43,9 @@ function has_access(user, uri) {
 function authorize(r) {
     let user = r.variables.email,
         uri = r.variables.protected_uri;
-     r.return(has_access(user, uri) ? 200 : 403);
+    if (!has_access(user, uri)) {
+        r.return(403)
+    }
 }
 
 function whoami(r) {

@@ -44,7 +44,7 @@ function deny_user(r) {
     let user = r.variables.authenticated_user,
         uri = r.variables.protected_uri;
     if (has_access(user, uri)) {
-        return ""
+        return "";
     }
     return "DENY";
 }

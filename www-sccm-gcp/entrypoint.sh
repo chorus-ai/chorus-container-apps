@@ -28,6 +28,7 @@ elif [[ $ENTRY_COMMAND == "web" ]]; then
              --redirect-url="${OAUTH2_REDIRECT_URL}" \
              --email-domain="${OAUTH2_EMAIL_DOMAIN}" --upstream file:///dev/null &
 
+  sleep infinity
 else
   # Non blocking entrypoint starting bash
   exec "$@"

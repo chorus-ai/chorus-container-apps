@@ -67,9 +67,9 @@ server {
 
     js_set $denied http.deny_user;
 
-    if ($denied) {
-        return 403;
-    }
+    #if ($denied) {
+    #    return 403;
+    #}
     root /usr/share/nginx/html;
     index index.html;
     autoindex on;

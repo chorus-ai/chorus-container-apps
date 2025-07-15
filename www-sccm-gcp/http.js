@@ -41,7 +41,7 @@ function has_access(user, uri) {
 }
 
 function deny_user(r) {
-    let user = r.variables.authenticated_user,
+    let user = r.variables.remote_user,
         uri = r.variables.protected_uri;
     if (has_access(user, uri)) {
         return "";
@@ -50,7 +50,7 @@ function deny_user(r) {
 }
 
 function whoami(r) {
-    let user = r.variables.authenticated_user;
+    let user = r.variables.remote_user;
     r.warn(`/whoami: ${user}`);
     r.headersOut["Content-Type"] = "text/plain"
     r.return(200, user);

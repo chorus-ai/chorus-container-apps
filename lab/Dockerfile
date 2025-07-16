@@ -17,7 +17,7 @@ RUN cd /tmp && \
     apt-get update && \
     apt-get install --yes --no-install-recommends azure-cli && \
     rm -rf /var/lib/apt/lists/* && \
-    rm *.zip *.deb
+    rm -rf *.zip *.deb
 USER ${NB_UID}
 RUN mamba install --yes \
         jupyter-rsession-proxy \

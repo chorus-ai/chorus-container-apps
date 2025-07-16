@@ -15,7 +15,7 @@ RUN cd /tmp && \
     apt-get update && \
     apt-get install --yes --no-install-recommends azure-cli && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf *.zip *.deb \
+    rm -rf *.zip *.deb
 COPY *.sh /usr/local/bin/before-notebook.d
 COPY gitconfig /etc
 USER ${NB_UID}

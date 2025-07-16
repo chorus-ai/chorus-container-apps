@@ -1,8 +1,6 @@
 FROM quay.io/jupyter/datascience-notebook:2024-10-02
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
-COPY *.sh /usr/local/bin/before-notebook.d
-COPY gitconfig /etc
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers
 RUN cd /tmp && \
     curl -O https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.0-375-amd64.deb && \
@@ -17,7 +15,9 @@ RUN cd /tmp && \
     apt-get update && \
     apt-get install --yes --no-install-recommends azure-cli && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf *.zip *.deb
+    rm -rf *.zip *.deb \
+COPY *.sh /usr/local/bin/before-notebook.d
+COPY gitconfig /etc
 USER ${NB_UID}
 RUN mamba install --yes \
         jupyter-rsession-proxy \
@@ -27,7 +27,7 @@ RUN mamba install --yes \
     pip install --no-cache-dir --force-reinstall \
         git+https://github.com/TuftsCTSI/jupyter-pluto-proxy@trdw && \
     fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+    fix-permissions "/home/${NB_USER}" \
 ENV JULIA_DEPOT_PATH=:/opt/julia \
     JULIA_PKG_USE_CLI_GIT=true \
     JULIA_PKG_IGNORE_HASHES=true \

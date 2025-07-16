@@ -27,7 +27,7 @@ RUN mamba install --yes \
     pip install --no-cache-dir --force-reinstall \
         git+https://github.com/TuftsCTSI/jupyter-pluto-proxy@trdw && \
     fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}" \
+    fix-permissions "/home/${NB_USER}"
 ENV JULIA_DEPOT_PATH=:/opt/julia \
     JULIA_PKG_USE_CLI_GIT=true \
     JULIA_PKG_IGNORE_HASHES=true \

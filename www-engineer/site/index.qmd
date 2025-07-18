@@ -3,6 +3,7 @@ title: Engineer Portal
 subtitle: CHoRUS Azure Data Enclave
 format:
   html:
+    toc: false
     standalone: true
 ---
 

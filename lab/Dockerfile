@@ -38,15 +38,16 @@ RUN cd /tmp && \
     rm -rf *.zip *.deb
 COPY *.sh /usr/local/bin/before-notebook.d
 COPY gitconfig /etc
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
-        r-cran-rjava && \
-    export LD_LIBRARY_PATH=/usr/lib/jvm/java-1.21.0-openjdk-amd64/lib/server:$LD_LIBRARY_PATH && \
-    ldconfig -v
+#RUN apt-get update && \
+#    apt-get install --yes --no-install-recommends \
+#        r-cran-rjava && \
+#    export LD_LIBRARY_PATH=/usr/lib/jvm/java-1.21.0-openjdk-amd64/lib/server:$LD_LIBRARY_PATH && \
+#    ldconfig -v
 USER ${NB_UID}
 RUN mamba install --yes \
         jupyter-rsession-proxy \
-        r-renv && \
+        r-renv \
+        r-cran-rjava && \
     mamba clean --all -f -y && \
     sed -i 1,14d /opt/conda/lib/R/etc/ldpaths && \
     pip install --no-cache-dir --force-reinstall \

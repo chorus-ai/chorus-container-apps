@@ -8,7 +8,27 @@ RUN cd /tmp && \
     apt-get install --yes --no-install-recommends \
         default-jdk \
         gpg \
-        vim \
+        bsdextrautils \
+        cmake \
+        flex \
+        gdal-bin \
+        jq \
+        libcurl4-openssl-dev \
+        libgdal-dev \
+        libpq-dev \
+        libsodium-dev \
+        libsqlite3-dev \
+        libssh2-1-dev \
+        libssl-dev \
+        libudunits2-dev \
+        libxml2-dev \
+        libgeos-dev \
+        libproj-dev \
+        pandoc \
+        r-base-dev \
+        r-cran-remotes \
+        r-cran-renv \
+        nano \
         ./*.deb && \
     curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list && \

@@ -25,6 +25,7 @@ elif [[ $ENTRY_COMMAND == "web" ]]; then
              --cookie-secure=false \
              --cookie-refresh=27m \
              --cookie-expire=8h \
+             --cookie-samesite="lax" \
              --force-https=false \
              --custom-sign-in-logo="https://www.sccm.org/images/SCCM-Logo.png" \
              --banner=- \

@@ -43,10 +43,6 @@ server {
         proxy_send_timeout 180s;
     }
 
-    location = /pgadmin/ {
-       js_content http.redirect_to_default_pg;
-    }
-
     location /pgadmin/ {
         resolver ${NGINX_LOCAL_RESOLVERS};
         js_set $chorus_pg_backend http.get_chorus_pg_backend;

@@ -95,7 +95,8 @@ function get_chorus_lab_backend(r) {
 }
 
 function get_chorus_pg_backend(r) {
-    let template = r.variables.chorus_pg_backend_template,
+    let backend = r.variables.chorus_pg_backend_template,
+        template = r.variables.chorus_pg_backend_template,
         user = r.variables.authenticated_user,
         lab = backend.includes("*") ?
             user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "") :

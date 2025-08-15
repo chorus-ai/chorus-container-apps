@@ -45,7 +45,7 @@ server {
 
     location = /pgadmin/ {
        js_content http.redirect_to_default_pg;
-   }
+    }
 
     location /pgadmin/ {
         resolver ${NGINX_LOCAL_RESOLVERS};

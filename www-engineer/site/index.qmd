@@ -168,7 +168,7 @@ format:
 <div class="tool-content">
   <h3><a href="/lab/">Jupyter Lab</a></h3>
   <p>Spin up your own Python/R lab for scientific exploration.</p>
-  <p>⚠️ First-time startup may take a few seconds.</p>
+  <p>⚠️ App scales so startup may take a few seconds.</p>
   <a href="/lab/" class="cta">Get Started</a>
 </div>
 :::
@@ -180,6 +180,7 @@ format:
 <div class="tool-content">
   <h3><a href="/pgadmin/">PGAdmin</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with PGAdmin</p>
+  <p>⚠️ App scales so startup may take a few seconds.</p>
   <a href="/pgadmin/" class="cta">Get Started</a>
 </div>
 :::

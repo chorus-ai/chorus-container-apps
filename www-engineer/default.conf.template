@@ -50,7 +50,7 @@ server {
     location /pgadmin/ {
         resolver ${NGINX_LOCAL_RESOLVERS};
         js_set $chorus_pg_backend http.get_chorus_pg_backend;
-        proxy_pass $chorus_pg_backend$uri$is_args$args;
+        proxy_pass $chorus_pg_backend$is_args$args;
         proxy_redirect $chorus_pg_backend/ /;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

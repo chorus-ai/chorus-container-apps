@@ -68,6 +68,21 @@ function redirect_to_default_lab(r) {
     }
 }
 
+function redirect_to_default_pg(r) {
+    let backend = r.variables.chorus_pg_backend_template,
+        user = r.variables.authenticated_user,
+        lab = backend.includes("*") ?
+            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "") :
+            "default",
+        uri = `/pgadmin/${lab}/`;
+    if (has_access(user, uri)) {
+        r.return(303, uri);
+    }
+    else {
+        r.return(403);
+    }
+}
+
 function get_chorus_lab_backend(r) {
     let template = r.variables.chorus_lab_backend_template,
         uri = r.variables.uri,
@@ -79,4 +94,15 @@ function get_chorus_lab_backend(r) {
     return template.replaceAll("*", lab);
 }
 
-export default { authorize, whoami, redirect_to_default_lab, get_chorus_lab_backend };
+function get_chorus_pg_backend(r) {
+    let template = r.variables.chorus_pg_backend_template,
+        uri = r.variables.uri,
+        lab = uri.match(/^\/pgadmin\/([^/]+)/)[1] ?? "undefined";
+    lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "");
+    if (template.endsWith("/")) {
+        template = template.slice(0, -1);
+    }
+    return template.replaceAll("*", lab);
+}
+
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_pg, get_chorus_lab_backend, get_chorus_pg_backend };

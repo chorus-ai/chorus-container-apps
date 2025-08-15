@@ -173,6 +173,17 @@ format:
 </div>
 :::
 
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/993px-Postgresql_elephant.svg.png" alt="pgadmin Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/pgadmin/">PGAdmin</a></h3>
+  <p>Query the central database and develop SQL routines against the CHoRUS data with PGAdmin</p>
+  <a href="/pgadmin/" class="cta">Get Started</a>
+</div>
+:::
+
 :::
 :::
 :::

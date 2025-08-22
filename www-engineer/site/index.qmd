@@ -180,7 +180,7 @@ format:
 <div class="tool-content">
   <h3><a href="/pgadmin4/">PGAdmin</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with PGAdmin</p>
-  <p>⚠️ App scales so startup may take a few seconds.</p>
+  <p>🚧 This app is under construction and may or may not work! 🚧</p>
   <a href="/pgadmin4/" class="cta">Get Started</a>
 </div>
 :::

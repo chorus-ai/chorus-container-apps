@@ -57,7 +57,7 @@ function redirect_to_default_lab(r) {
     let backend = r.variables.chorus_lab_backend_template,
         user = r.variables.authenticated_user,
         lab = backend.includes("*") ?
-            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "") :
+            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
             "default",
         uri = `/lab/${lab}/`;
     if (has_access(user, uri)) {
@@ -72,7 +72,7 @@ function redirect_to_default_pg(r) {
     let backend = r.variables.chorus_pg_backend_template,
         user = r.variables.authenticated_user,
         lab = backend.includes("*") ?
-            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "") :
+            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
             "default",
         uri = `/pgadmin/${lab}/`;
     if (has_access(user, uri)) {
@@ -87,7 +87,7 @@ function get_chorus_lab_backend(r) {
     let template = r.variables.chorus_lab_backend_template,
         uri = r.variables.uri,
         lab = uri.match(/^\/lab\/([^/]+)/)[1] ?? "undefined";
-    lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "");
+    lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
     if (template.endsWith("/")) {
         template = template.slice(0, -1);
     }
@@ -98,7 +98,7 @@ function get_chorus_pg_backend(r) {
     let template = r.variables.chorus_pg_backend_template,
         user = r.variables.authenticated_user,
         lab = template.includes("*") ?
-            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "") :
+            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
             "default"
     if (template.endsWith("/")) {
         template = template.slice(0, -1);

@@ -68,4 +68,8 @@ server {
     location = /whoami {
         js_content http.whoami;
     }
+
+    location = /ive {
+        js_content http.whoami;
+    }
 }

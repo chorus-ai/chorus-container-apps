@@ -35,25 +35,4 @@ server {
         js_content http.whoami;
     }
 
-    location = /readdir/reports {
-        js_content http.readdir_reports;
-    }
-
-    location /uploads/ {
-        client_body_in_file_only clean;
-        client_body_temp_path /uploads/client_temp;
-        js_content http.uploads;
-    }
-
-    location /webapi/ {
-        proxy_pass ${CHORUS_WEBAPI_BACKEND};
-    }
-
-    location /dash/ {
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection $connection_upgrade;
-        proxy_pass ${CHORUS_DASH_BACKEND};
-    }
-
 }

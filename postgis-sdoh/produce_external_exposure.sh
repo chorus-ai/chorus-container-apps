@@ -11,7 +11,7 @@ psql -v ON_ERROR_STOP=1 -U postgres -c "\copy working.location_history FROM '/so
 psql -v ON_ERROR_STOP=1 -U postgres -c "CREATE TABLE working.location_merge AS (SELECT b.*, a.latitude, a.longitude FROM working.location a INNER JOIN working.location_history b ON a.location_id = b.location_id);"
 psql -v ON_ERROR_STOP=1 -U postgres -c "ALTER TABLE working.location_merge ADD COLUMN geom geometry(Point, 4326);"
 psql -v ON_ERROR_STOP=1 -U postgres -c "UPDATE working.location_merge SET geom = ST_SetSRID(ST_POINT(longitude, latitude), 4326);"
-echo "LOCATION and LOCATION_HISTORY loaded and merged! Launching ingestion of datasets (${DATA_SOURCE_LIST})..."
+echo "LOCATION and LOCATION_HISTORY loaded and merged! Launching ingestion of datasets (${DATA_SOURCES})..."
 
 rm -rf /shapes
 mkdir /shapes
@@ -23,7 +23,7 @@ for src in "${DATA_SOURCE_LIST[@]}"; do
   download_url=$(psql -U postgres -AXqtc "SELECT download_url FROM backbone.data_source WHERE data_source_uuid = ${src}")
   file_format=$(psql -U postgres -AXqtc "SELECT download_subtype FROM backbone.data_source WHERE data_source_uuid = ${src}")
   shape_name=$(psql -U postgres -AXqtc "SELECT download_filename FROM backbone.data_source WHERE data_source_uuid = ${src}")
-  shape_no_ext=$(psql -U postgres -AXqtc "SELECT download_filename, '.', 1) FROM backbone.data_source WHERE data_source_uuid = ${var}")
+  shape_no_ext=$(psql -U postgres -AXqtc "SELECT split_part(download_filename, '.', 1) FROM backbone.data_source WHERE data_source_uuid = ${src}")
   data_standard=$(psql -U postgres -AXqtc "SELECT download_data_standard FROM backbone.data_source WHERE data_source_uuid = ${src}")
   srid=$(psql -U postgres -AXqtc "SELECT srid FROM backbone.data_source WHERE data_source_uuid = ${src}")
   geom_type=$(psql -U postgres -AXqtc "SELECT COALESCE(geom_type, 'MISSING') FROM backbone.data_source WHERE data_source_uuid = ${src}")
@@ -95,7 +95,7 @@ done
 for var in "${VARIABLE_LIST[@]}"; do
   echo "*********************************************"
 
-  echo "Launching spatial join process to combine locations with variables..."
+  echo "Launching spatial join process to combine locations with variable ${var}..."
 
 
     geo_source=$(psql -U postgres -AXqtc "SELECT split_part(download_filename, '.', 1) FROM backbone.data_source WHERE data_source_uuid = (SELECT geom_dependency_uuid FROM backbone.variable_source WHERE variable_source_id = ${var} LIMIT 1)")
@@ -120,4 +120,6 @@ for var in "${VARIABLE_LIST[@]}"; do
     psql -v ON_ERROR_STOP=1 -U postgres -f "${tmp_sql_file}"
 done
 
+echo "Data sets and variables processed! Exporting EXTERNAL_EXPOSURE..."
 
+psql -v ON_ERROR_STOP=1 -U postgres -c "\copy working.external_exposure TO '/source/EXTERNAL_EXPOSURE.csv' CSV HEADER DELIMITER E','"

@@ -1,6 +1,6 @@
 # README - Postgis SDoH Tool
 
-See office hours video here for a description of the tool and its processes:
+See the [CHoRUS Standards office hours video from 18 September 2025](https://drive.google.com/file/d/1SWovm3vnf0PVbTC_qS6n3nBuf1dI169L/view?usp=share_link_) for a description of the tool and its processes.
 
 
 ## Deploy

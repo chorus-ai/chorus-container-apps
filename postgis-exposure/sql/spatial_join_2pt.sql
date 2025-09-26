@@ -18,27 +18,29 @@ INSERT INTO working.external_exposure(external_exposure_id,
                                       value_as_number,
                                       value_as_concept_id,
                                       unit_concept_id)
-select row_number() OVER() + (SELECT count(*) FROM working.external_exposure)
-     , gol.location_id
+select row_number() OVER() + (SELECT count(*) FROM working.external_exposure)        AS external_exposure_id
+     , gol.location_id                                                               AS location_id
      , CASE
            WHEN gol.domain_id = 1147314
                THEN gol.entity_id
            ELSE 0
-    END AS person_id
+       END                                                                           AS person_id
      , CASE
            WHEN att.attr_concept_id IS NOT NULL
-               THEN att.attr_concept_id::
-    float::int
+               THEN att.attr_concept_id::float::int
          ELSE 0
-END
-AS exposure_concept_id
+     END                                                                             AS exposure_concept_id
      , att.attr_start_date::date                                                     AS exposure_start_date
      , att.attr_start_date::timestamp                                                AS exposure_start_datetime
-     , att.attr_end_date::date                                                       AS exposure_end_date
-     , att.attr_end_date::timestamp                                                  AS exposure_end_datetime
-     , 0                                                                             AS exposure_type_concept_id
-     , 0                                                                             AS exposure_relationship_concept_id
-     , NULL                                                                          AS exposure_source_concept_id
+     , MIN(att.attr_end_date::date, gol.end_date)                                    AS exposure_end_date
+     , MIN(att.attr_end_date::timestamp, gol.end_date::timestamp)                    AS exposure_end_datetime
+     , 0                                                                             AS exposure_type_concept_id -- TODO add mapping for type concepts
+     , 0                                                                             AS exposure_relationship_concept_id -- TODO add mapping for relationships
+     , CASE
+           WHEN att.attr_concept_id IS NOT NULL
+               THEN att.attr_concept_id::float::int
+         ELSE 0
+       END                                                                           AS exposure_source_concept_id
      , '@VAR_NAME'                                                                   AS exposure_source_value
      , CAST(NULL AS VARCHAR(50))                                                     AS exposure_relationship_source_value
      , CAST(NULL AS VARCHAR(50))                                                     AS dose_unit_source_value
@@ -54,4 +56,6 @@ from (SELECT *, 1 AS join_all FROM backbone.variable_source WHERE variable_name=
                               on a.@VAR_MERGE = b.@GEO_MERGE) geo
                     on att.join_all = geo.join_all
          join working.location_merge gol
-              on public.st_within(gol.geom, geo.wgs_geom);
+              on public.st_within(gol.geom, geo.wgs_geom)
+              AND gol.start_date <= att.attr_start_date::date
+              AND gol.end_date >= att.attr_start_date::date;

@@ -52,4 +52,6 @@ from (SELECT *, 1 AS join_all FROM backbone.variable_source WHERE variable_name=
          inner join ( SELECT a.@VAR_NAME, b.wgs_geom, 1 AS join_all FROM public.@VAR_SRC) geo
                     on att.join_all = geo.join_all
          join working.location_merge gol
-              on public.st_within(gol.geom, geo.wgs_geom);
+              on public.st_within(gol.geom, geo.wgs_geom)
+         AND gol.start_date <= att.attr_start_date::date
+              AND gol.end_date >= att.attr_start_date::date;

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'postgis-sdoh/**'
+      - 'postgis-exposure/**'
 
 env:
   REGISTRY: ghcr.io
@@ -18,9 +18,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./postgis-sdoh/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-postgis-sdoh
-            context: ./postgis-sdoh
+          - dockerfile: ./postgis-exposure/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-postgis-exposure
+            context: ./postgis-exposure
     permissions:
       contents: read
       packages: write

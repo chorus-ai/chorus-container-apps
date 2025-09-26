@@ -1,6 +1,6 @@
-# README - Postgis SDoH Tool
+# README - Postgis exposure Tool
 
-See the [CHoRUS Standards office hours video from 18 September 2025](https://drive.google.com/file/d/1SWovm3vnf0PVbTC_qS6n3nBuf1dI169L/view?usp=share_link_) for a description of the tool and its processes.
+See office hours video here for a description of the tool and its processes:
 
 
 ## Deploy
@@ -20,7 +20,7 @@ docker run \
     -v ./test:/source \ 
     # This will load the test LOCATION and LOCATION_HISTORY tables. Replace with true files in same format
     -d \
-    ghcr.io/chorus-ai/chorus-postgis-sdoh:main
+    ghcr.io/chorus-ai/chorus-postgis-exposure:main
 ```
 
 This command will bring up a docker container locally with all dependencies to run the data set retrieval and spatial joining processes.

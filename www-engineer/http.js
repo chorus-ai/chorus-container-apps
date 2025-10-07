@@ -1,9 +1,3 @@
-import crypto from "crypto";
-
-function hmac(secret, payload) {
-    return crypto.createHmac("sha256", secret).update(payload).digest("hex");
-}
-
 function get_roles_by_user(user) {
     let roles = [user],
         k = 0;
@@ -97,9 +91,13 @@ function redirect_to_vmapp(r) {
     const payload = `${user}.${ts}`;
 
     const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
-    const sig = hmac(secret, payload);
-
-    return `${domain}/signin?email=${email}&ts=${ts}&sig=${sig}`;
+    
+    var crypto = require('crypto');
+    const sig = crypto.createHmac('sha256', secret)
+                      .update(payload)
+                      .digest('hex');
+    const url = `${domain}/signin?email=${email}&ts=${ts}&sig=${sig}`;
+    r.return(303, url);
 }
 
 function get_chorus_lab_backend(r) {

@@ -80,7 +80,7 @@ function redirect_to_default_pg(r) {
         lab = backend.includes("*") ?
             user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
             "default",
-        uri = `/pgadmin/${lab}/`;
+        uri = `/pgadmin4/${lab}/`;
     if (has_access(user, uri)) {
         r.return(303, uri);
     }

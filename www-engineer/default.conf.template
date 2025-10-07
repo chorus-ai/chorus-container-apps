@@ -43,11 +43,15 @@ server {
         proxy_send_timeout 180s;
     }
 
+    location = /pgadmin4/ {
+       js_content http.redirect_to_default_pg;
+   }
+
     location /pgadmin4/ {
         resolver ${NGINX_LOCAL_RESOLVERS};
         proxy_set_header X-Script-Name /pgadmin4;
         js_set $chorus_pg_backend http.get_chorus_pg_backend;
-        proxy_pass $chorus_pg_backend$is_args$args;
+        proxy_pass $chorus_pg_backend$uri$is_args$args;
         proxy_redirect $chorus_pg_backend/ /;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

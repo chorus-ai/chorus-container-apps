@@ -1,3 +1,9 @@
+import crypto from "crypto";
+
+function hmac(secret, payload) {
+    return crypto.createHmac("sha256", secret).update(payload).digest("hex");
+}
+
 function get_roles_by_user(user) {
     let roles = [user],
         k = 0;
@@ -83,6 +89,19 @@ function redirect_to_default_pg(r) {
     }
 }
 
+function redirect_to_vmapp(r) {
+    const user = r.variables.authenticated_user || "";
+    const email = encodeURIComponent(user);
+    const domain = r.variables.CHORUS_IVEAPI_BACKEND
+    const ts = Date.now().toString();
+    const payload = `${user}.${ts}`;
+
+    const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
+    const sig = hmac(secret, payload);
+
+    return `${domain}/signin?email=${email}&ts=${ts}&sig=${sig}`;
+}
+
 function get_chorus_lab_backend(r) {
     let template = r.variables.chorus_lab_backend_template,
         uri = r.variables.uri,
@@ -106,4 +125,4 @@ function get_chorus_pg_backend(r) {
     return template.replaceAll("*", lab);
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_pg, get_chorus_lab_backend, get_chorus_pg_backend };
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_pg, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_pg_backend };

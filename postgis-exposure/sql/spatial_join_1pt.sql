@@ -32,10 +32,10 @@ select row_number() OVER() + (SELECT count(*) FROM working.external_exposure)
          ELSE 0
 END
 AS exposure_concept_id
-     , att.attr_start_date::date                                                     AS exposure_start_date
-     , att.attr_start_date::timestamp                                                AS exposure_start_datetime
-     , att.attr_end_date::date                                                       AS exposure_end_date
-     , att.attr_end_date::timestamp                                                  AS exposure_end_datetime
+     , GREATEST(att.attr_start_date::date,gol.start_date)                            AS exposure_start_date
+     , GREATEST(att.attr_start_date::timestamp,gol.start_date::timestamp)            AS exposure_start_datetime
+     , LEAST(att.attr_end_date::date, gol.end_date)                                  AS exposure_end_date
+     , LEAST(att.attr_end_date::timestamp, gol.end_date::timestamp)                  AS exposure_end_datetime
      , 0                                                                             AS exposure_type_concept_id
      , 0                                                                             AS exposure_relationship_concept_id
      , NULL                                                                          AS exposure_source_concept_id
@@ -53,5 +53,6 @@ from (SELECT *, 1 AS join_all FROM backbone.variable_source WHERE variable_name=
                     on att.join_all = geo.join_all
          join working.location_merge gol
               on public.st_within(gol.geom, geo.wgs_geom)
-         AND gol.start_date <= att.attr_start_date::date
-              AND gol.end_date >= att.attr_start_date::date;
+         AND (gol.start_date BETWEEN att.attr_start_date::date AND att.attr_end_date::date
+              OR gol.end_date BETWEEN att.attr_start_date::date AND att.attr_end_date::date
+              OR (gol.start_date <= att.attr_start_date::date AND gol.end_date >= att.attr_end_date::date);

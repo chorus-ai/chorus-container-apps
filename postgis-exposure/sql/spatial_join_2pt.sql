@@ -59,4 +59,4 @@ from (SELECT *, 1 AS join_all FROM backbone.variable_source WHERE variable_name=
               on public.st_within(gol.geom, geo.wgs_geom)
             AND (gol.start_date BETWEEN att.attr_start_date::date AND att.attr_end_date::date
               OR gol.end_date BETWEEN att.attr_start_date::date AND att.attr_end_date::date
-              OR (gol.start_date <= att.attr_start_date::date AND gol.end_date >= att.attr_end_date::date);
+              OR (gol.start_date <= att.attr_start_date::date AND gol.end_date >= att.attr_end_date::date));

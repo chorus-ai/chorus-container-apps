@@ -24,7 +24,7 @@ jobs:
             context: ./mlw-jupyter-kernel/python
             tag: python
           - dockerfile: ./mlw-jupyter-kernel/python/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            image: cr1aimaheadmlw.azurecr.io/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/python
             tag: python
           - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
@@ -32,7 +32,7 @@ jobs:
             context: ./mlw-jupyter-kernel/R
             tag: r-hades
           - dockerfile: ./mlw-jupyter-kernel/R/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            image: cr1aimaheadmlw.azurecr.io/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/R
             tag: r-hades
           - dockerfile: ./mlw-jupyter-kernel/omop-alchemy/Dockerfile
@@ -40,7 +40,7 @@ jobs:
             context: ./mlw-jupyter-kernel/omop-alchemy
             tag: omop-alchemy
           - dockerfile: ./mlw-jupyter-kernel/omop-alchemy/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-mlw-kernel
+            image: cr1aimaheadmlw.azurecr.io/chorus-mlw-kernel
             context: ./mlw-jupyter-kernel/omop-alchemy
             tag: omop-alchemy
     permissions:
@@ -67,8 +67,8 @@ jobs:
       - name: Login to ACR
         uses: docker/login-action@v3
         with:
-          registry: cr0aimaheadmlw.azurecr.io
-          username: cr0aimaheadmlw
+          registry: cr1aimaheadmlw.azurecr.io
+          username: cr1aimaheadmlw
           password: ${{ secrets.ACR_TOKEN }}
 
       - name: Extract Docker metadata

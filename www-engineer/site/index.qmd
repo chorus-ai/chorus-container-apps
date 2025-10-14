@@ -180,7 +180,7 @@ format:
 <div class="tool-content">
   <h3><a href="/sqlworkbench/">SQL Workbench</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with SQL Workbench</p>
-  <p>🚧 This app is under construction and may or may not work! 🚧</p>
+  <p>⚠️ App scales so startup may take a few seconds.</p>
   <a href="/sqlworkbench/" class="cta">Get Started</a>
 </div>
 :::

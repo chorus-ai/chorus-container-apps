@@ -74,13 +74,13 @@ function redirect_to_default_lab(r) {
     }
 }
 
-function redirect_to_default_pg(r) {
-    let backend = r.variables.chorus_pg_backend_template,
+function redirect_to_default_sql(r) {
+    let backend = r.variables.chorus_sql_backend_template,
         user = r.variables.authenticated_user,
         lab = backend.includes("*") ?
             user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
             "default",
-        uri = `/pgadmin4/${lab}/`;
+        uri = `/sqlworkbench/${lab}/`;
     if (has_access(user, uri)) {
         r.return(303, uri);
     }
@@ -113,10 +113,10 @@ function get_chorus_lab_backend(r) {
     return template.replaceAll("*", lab);
 }
 
-function get_chorus_pg_backend(r) {
-    let template = r.variables.chorus_pg_backend_template,
+function get_chorus_sql_backend(r) {
+    let template = r.variables.chorus_sql_backend_template,
         uri = r.variables.uri,
-        lab = uri.match(/^\/pgadmin4\/([^/]+)/)[1] ?? "undefined";
+        lab = uri.match(/^\/sqlworkbench\/([^/]+)/)[1] ?? "undefined";
     lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
     if (template.endsWith("/")) {
         template = template.slice(0, -1);
@@ -124,4 +124,4 @@ function get_chorus_pg_backend(r) {
     return template.replaceAll("*", lab);
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_pg, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_pg_backend };
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_sql, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend };

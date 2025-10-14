@@ -181,7 +181,7 @@ format:
   <h3><a href="/sqlworkbench/">SQL Workbench</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with SQL Workbench</p>
   <p>🚧 This app is under construction and may or may not work! 🚧</p>
-  <a href="/pgadmin4/" class="cta">Get Started</a>
+  <a href="/sqlworkbench/" class="cta">Get Started</a>
 </div>
 :::
 

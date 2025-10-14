@@ -4,7 +4,7 @@ subtitle: 🚧
 ---
 Due to updates related to NIST compliance, we've needed to migrate the Data Generating Sites space elsewhere on Azure.
 
-As soon as the new page is available, we will link it here.
+You can find the new DGS Site here: https://ca-b2ai-www-dgs.redbush-0f9d0a70.eastus2.azurecontainerapps.io
 
 Thanks for your patience!
 

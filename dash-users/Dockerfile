@@ -1,4 +1,4 @@
-from python:3-bookworm
+from python:3.13-bookworm
 
 RUN pip install pandas \
                 dash \

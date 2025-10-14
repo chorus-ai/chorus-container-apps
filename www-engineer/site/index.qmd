@@ -185,6 +185,54 @@ format:
 </div>
 :::
 
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://images.seeklogo.com/logo-png/48/2/emory-university-logo-png_seeklogo-486660.png" alt="IvE Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/ive/">IVE</a></h3>
+  <p>Check out the integrated viewer app to evaluate different modes of data!</p>
+  <p>🚧 This app is under construction and may or may not work! 🚧</p>
+  <a href="/ive/" class="cta">Get Started</a>
+</div>
+:::
+
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoPxZIXiHa_Sv6N00XtL3WcGoE9-1yxekeyA&s" alt="dash Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/dash/">Overview Dashboard</a></h3>
+  <p>Check out the public data dashboard for the latest data overviews</p>
+  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
+  <a href="/dash/" class="cta">Get Started</a>
+</div>
+:::
+
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoPxZIXiHa_Sv6N00XtL3WcGoE9-1yxekeyA&s" alt="dash Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/dash2/">Data Delivery Dashboard</a></h3>
+  <p>Check out the data delivery dashboard for info on data uploads</p>
+  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
+  <a href="/dash2/" class="cta">Get Started</a>
+</div>
+:::
+
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoPxZIXiHa_Sv6N00XtL3WcGoE9-1yxekeyA&s" alt="dash Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/dash3/">User Access Dashboard</a></h3>
+  <p>Check out the user access dashboard for info on enclave accessibility</p>
+  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
+  <a href="/dash3/" class="cta">Get Started</a>
+</div>
+:::
+
 :::
 :::
 :::

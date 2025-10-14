@@ -115,10 +115,9 @@ function get_chorus_lab_backend(r) {
 
 function get_chorus_pg_backend(r) {
     let template = r.variables.chorus_pg_backend_template,
-        user = r.variables.authenticated_user,
-        lab = template.includes("*") ?
-            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
-            "default"
+        uri = r.variables.uri,
+        lab = uri.match(/^\/pgadmin4\/([^/]+)/)[1] ?? "undefined";
+    lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
     if (template.endsWith("/")) {
         template = template.slice(0, -1);
     }

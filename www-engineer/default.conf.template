@@ -27,9 +27,30 @@ server {
         expires epoch;
     }
 
-   location = /lab/ {
+    location /dash/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass ${CHORUS_DASH_PUBLIC_BACKEND};
+    }
+
+    location /dash2/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass ${CHORUS_DASH_DATA_BACKEND};
+    }
+
+    location /dash3/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass ${CHORUS_DASH_USERS_BACKEND};
+    }
+
+    location = /lab/ {
        js_content http.redirect_to_default_lab;
-   }
+    }
 
     location /lab/ {
         resolver ${NGINX_LOCAL_RESOLVERS};
@@ -45,13 +66,13 @@ server {
 
     location = /pgadmin4/ {
        js_content http.redirect_to_default_pg;
-   }
+    }
 
     location /pgadmin4/ {
         resolver ${NGINX_LOCAL_RESOLVERS};
         proxy_set_header X-Script-Name /pgadmin4;
         js_set $chorus_pg_backend http.get_chorus_pg_backend;
-        proxy_pass $chorus_pg_backend$is_args$args;
+        proxy_pass $chorus_pg_backend$uri$is_args$args;
         proxy_redirect $chorus_pg_backend/ /;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

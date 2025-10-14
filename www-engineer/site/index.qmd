@@ -175,11 +175,11 @@ format:
 
 ::: {.tool-card}
 <div class="tool-icon">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/993px-Postgresql_elephant.svg.png" alt="pgadmin Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
+  <img src="https://www.sql-workbench.eu/images/workbench64.png" alt="workbench Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
 </div>
 <div class="tool-content">
-  <h3><a href="/pgadmin4/">PGAdmin</a></h3>
-  <p>Query the central database and develop SQL routines against the CHoRUS data with PGAdmin</p>
+  <h3><a href="/sqlworkbench/">SQL Workbench</a></h3>
+  <p>Query the central database and develop SQL routines against the CHoRUS data with SQL Workbench</p>
   <p>🚧 This app is under construction and may or may not work! 🚧</p>
   <a href="/pgadmin4/" class="cta">Get Started</a>
 </div>

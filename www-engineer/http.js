@@ -74,20 +74,6 @@ function redirect_to_default_lab(r) {
     }
 }
 
-function redirect_to_default_sql(r) {
-    let backend = r.variables.chorus_sql_backend_template,
-        user = r.variables.authenticated_user,
-        lab = backend.includes("*") ?
-            user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13):
-            "default",
-        uri = `/sqlworkbench/${lab}/`;
-    if (has_access(user, uri)) {
-        r.return(303, uri);
-    }
-    else {
-        r.return(403);
-    }
-}
 
 function redirect_to_vmapp(r) {
     const user = r.variables.authenticated_user || "";
@@ -114,14 +100,11 @@ function get_chorus_lab_backend(r) {
 }
 
 function get_chorus_sql_backend(r) {
-    let template = r.variables.chorus_sql_backend_template,
-        uri = r.variables.uri,
-        lab = uri.match(/^\/sqlworkbench\/([^/]+)/)[1] ?? "undefined";
-    lab = lab.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
-    if (template.endsWith("/")) {
-        template = template.slice(0, -1);
-    }
-    return template.replaceAll("*", lab);
+    let user = r.variables.authenticated_user;
+    let lab = user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
+    let template = r.variables.chorus_sql_backend_template;
+    let end_uri =  template.replaceAll("*", lab).concat("/");
+    return end_uri;
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_default_sql, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend };
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend };

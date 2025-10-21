@@ -305,12 +305,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/lab/">Jupyter Lab</a></h3>
   <p>Spin up your own Python/R lab for scientific exploration.</p>
-  <div class="warmup-container">
-    <button id="warmup-lab" class="warmup-btn">Start App</button>
-    <span id="status-lab" class="warmup-status"></span>
-  </div>
-  <a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
 </div>
+<div class="warmup-container">
+  <button id="warmup-lab" class="warmup-btn">Start App</button>
+  <span id="status-lab" class="warmup-status"></span>
+</div>
+<a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
 :::
 
 ::: {.tool-card}
@@ -320,12 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/sqlworkbench/">SQL Workbench</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with SQL Workbench</p>
-  <div class="warmup-container">
-    <button id="warmup-sqlworkbench" class="warmup-btn">Start App</button>
-    <span id="status-sqlworkbench" class="warmup-status"></span>
-  </div>
-  <a href="/sqlworkbench/" id="link-sqlworkbench" class="cta disabled">Get Started</a>
 </div>
+<div class="warmup-container">
+  <button id="warmup-sqlworkbench" class="warmup-btn">Start App</button>
+  <span id="status-sqlworkbench" class="warmup-status"></span>
+</div>
+<a href="/sqlworkbench/" id="link-sqlworkbench" class="cta disabled">Get Started</a>
 :::
 
 ::: {.tool-card}
@@ -347,12 +347,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/dash/">Overview Dashboard</a></h3>
   <p>Check out the public data dashboard for the latest data overviews</p>
-  <div class="warmup-container">
-    <button id="warmup-dash" class="warmup-btn">Start App</button>
-    <span id="status-dash" class="warmup-status"></span>
-  </div>
-  <a href="/dash/" id="link-dash" class="cta disabled">Get Started</a>
 </div>
+<div class="warmup-container">
+  <button id="warmup-dash" class="warmup-btn">Start App</button>
+  <span id="status-dash" class="warmup-status"></span>
+</div>
+<a href="/dash/" id="link-dash" class="cta disabled">Get Started</a>
 :::
 
 ::: {.tool-card}
@@ -362,12 +362,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/dash2/">Data Delivery Dashboard</a></h3>
   <p>Check out the data delivery dashboard for info on data uploads</p>
-  <div class="warmup-container">
-    <button id="warmup-dash2" class="warmup-btn">Start App</button>
-    <span id="status-dash2" class="warmup-status"></span>
-  </div>
-  <a href="/dash2/" id="link-dash2" class="cta disabled">Get Started</a>
 </div>
+<div class="warmup-container">
+  <button id="warmup-dash2" class="warmup-btn">Start App</button>
+  <span id="status-dash2" class="warmup-status"></span>
+</div>
+<a href="/dash2/" id="link-dash2" class="cta disabled">Get Started</a>
 :::
 
 ::: {.tool-card}
@@ -377,12 +377,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/dash3/">User Access Dashboard</a></h3>
   <p>Check out the user access dashboard for info on enclave accessibility</p>
-  <div class="warmup-container">
-    <button id="warmup-dash3" class="warmup-btn">Start App</button>
-    <span id="status-dash3" class="warmup-status"></span>
-  </div>
-  <a href="/dash3/" id="link-dash3" class="cta disabled">Get Started</a>
 </div>
+<div class="warmup-container">
+  <button id="warmup-dash3" class="warmup-btn">Start App</button>
+  <span id="status-dash3" class="warmup-status"></span>
+</div>
+<a href="/dash3/" id="link-dash3" class="cta disabled">Get Started</a>
 :::
 
 :::

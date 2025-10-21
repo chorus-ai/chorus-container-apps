@@ -257,7 +257,6 @@ class AppWarmer {
 
 // Initialize warmers after page loads
 document.addEventListener('DOMContentLoaded', () => {
-  new AppWarmer('lab', '/lab/', 45000);
   new AppWarmer('sqlworkbench', '/sqlworkbench/', 45000);
   new AppWarmer('dash', '/dash/', 20000);
   new AppWarmer('dash2', '/dash2/', 20000);
@@ -305,12 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="tool-content">
   <h3><a href="/lab/">Jupyter Lab</a></h3>
   <p>Spin up your own Python/R lab for scientific exploration.</p>
+  <a href="/lab/" class="cta">Get Started</a>
 </div>
-<div class="warmup-container">
-  <button id="warmup-lab" class="warmup-btn">Start App</button>
-  <span id="status-lab" class="warmup-status"></span>
-</div>
-<a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
 :::
 
 ::: {.tool-card}

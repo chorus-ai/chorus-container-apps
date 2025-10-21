@@ -237,9 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
     </ul>
     <p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
     <p>ℹ️ This link will only work within the private CHoRUS network.</p>
-    <a href="/lab/" class="cta">Get Started</a>
-    </br>
-    </br>
+    <div class="warmup-container">
+        <button id="warmup-lab" class="warmup-btn">Start App</button>
+        <span id="status-lab" class="warmup-status"></span>
+    </div>
+    <a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
+    <br/>
+    <br/>
 </section>
 
 <section class="section" id="report-issues">

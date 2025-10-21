@@ -257,11 +257,11 @@ class AppWarmer {
 
 // Initialize warmers after page loads
 document.addEventListener('DOMContentLoaded', () => {
-  new AppWarmer('lab', '/lab/', 30000);
-  new AppWarmer('sqlworkbench', '/sqlworkbench/', 30000);
-  new AppWarmer('dash', '/dash/', 10000);
-  new AppWarmer('dash2', '/dash2/', 10000);
-  new AppWarmer('dash3', '/dash3/', 10000);
+  new AppWarmer('lab', '/lab/', 45000);
+  new AppWarmer('sqlworkbench', '/sqlworkbench/', 45000);
+  new AppWarmer('dash', '/dash/', 20000);
+  new AppWarmer('dash2', '/dash2/', 20000);
+  new AppWarmer('dash3', '/dash3/', 20000);
 });
 </script>
 

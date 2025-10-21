@@ -88,7 +88,141 @@ format: html
     a:hover {
         text-decoration: underline;
     }
+
+    .warmup-container {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .warmup-btn {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #FFA500;
+        color: #ffffff;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .warmup-btn:hover {
+        background-color: #cc8400;
+    }
+
+    .warmup-btn:disabled {
+        background-color: #999;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .warmup-status {
+        font-size: 0.85rem;
+        color: #00274D;
+        font-weight: bold;
+        display: none;
+    }
+
+    .warmup-status.active {
+        display: inline-block;
+    }
+
+    .cta.disabled {
+        background-color: #999;
+        cursor: not-allowed;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .cta.ready {
+        background-color: #28a745;
+        animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
 </style>
+
+<script>
+class AppWarmer {
+  constructor(appId, endpoint, warmupTime = 30000) {
+    this.appId = appId;
+    this.endpoint = endpoint;
+    this.warmupTime = warmupTime;
+    this.isWarming = false;
+    this.warmupBtn = document.getElementById(`warmup-${appId}`);
+    this.statusSpan = document.getElementById(`status-${appId}`);
+    this.mainLink = document.getElementById(`link-${appId}`);
+
+    this.warmupBtn?.addEventListener('click', () => this.startWarmup());
+  }
+
+  async startWarmup() {
+    if (this.isWarming) return;
+
+    this.isWarming = true;
+    this.warmupBtn.disabled = true;
+    this.warmupBtn.textContent = 'Starting...';
+    this.statusSpan.classList.add('active');
+
+    // Start countdown
+    let remaining = Math.ceil(this.warmupTime / 1000);
+    this.statusSpan.textContent = `Warming up: ${remaining}s`;
+
+    const countdown = setInterval(() => {
+      remaining--;
+      if (remaining > 0) {
+        this.statusSpan.textContent = `Warming up: ${remaining}s`;
+      }
+    }, 1000);
+
+    // Ping the endpoint to wake it up - send multiple pings to ensure scale-up
+    try {
+      // Initial ping
+      fetch(this.endpoint, { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
+
+      // Additional pings every 5 seconds to maintain pressure
+      const pingInterval = setInterval(() => {
+        fetch(this.endpoint, { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
+      }, 5000);
+
+      // Clear ping interval when warmup completes
+      setTimeout(() => clearInterval(pingInterval), this.warmupTime);
+    } catch (e) {
+      // Ignore errors - we just want to trigger the scale-up
+    }
+
+    // Wait for warmup period
+    setTimeout(() => {
+      clearInterval(countdown);
+      this.statusSpan.textContent = 'Ready!';
+      this.mainLink.classList.remove('disabled');
+      this.mainLink.classList.add('ready');
+      this.warmupBtn.textContent = 'Warmed Up';
+
+      setTimeout(() => {
+        this.statusSpan.classList.remove('active');
+        this.isWarming = false;
+      }, 3000);
+    }, this.warmupTime);
+  }
+}
+
+// Initialize warmers after page loads
+document.addEventListener('DOMContentLoaded', () => {
+  new AppWarmer('lab', '/lab/', 40000);
+});
+</script>
 
 <div class="container">
 
@@ -103,7 +237,11 @@ format: html
     </ul>
     <p>ℹ️ Your environment may take a few seconds to initialize on first access.</p>
     <p>ℹ️ This link will only work within the private CHoRUS network.</p>
-    <a href="/lab/" class="cta">Get Started</a>
+    <div class="warmup-container">
+        <button id="warmup-lab" class="warmup-btn">Start App</button>
+        <span id="status-lab" class="warmup-status"></span>
+    </div>
+    <a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
     </br>
     </br>
 </section>

@@ -126,7 +126,144 @@ format:
   a:hover {
     text-decoration: underline;
   }
+
+  .warmup-container {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .warmup-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #ff9f43;
+    color: #000;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+
+  .warmup-btn:hover {
+    background-color: #ffa502;
+  }
+
+  .warmup-btn:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .warmup-status {
+    font-size: 0.85rem;
+    color: #3ae374;
+    display: none;
+  }
+
+  .warmup-status.active {
+    display: inline-block;
+  }
+
+  .cta.disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .cta.ready {
+    background-color: #3ae374;
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
 </style>
+
+<script>
+class AppWarmer {
+  constructor(appId, endpoint, warmupTime = 30000) {
+    this.appId = appId;
+    this.endpoint = endpoint;
+    this.warmupTime = warmupTime;
+    this.isWarming = false;
+    this.warmupBtn = document.getElementById(`warmup-${appId}`);
+    this.statusSpan = document.getElementById(`status-${appId}`);
+    this.mainLink = document.getElementById(`link-${appId}`);
+
+    this.warmupBtn?.addEventListener('click', () => this.startWarmup());
+  }
+
+  async startWarmup() {
+    if (this.isWarming) return;
+
+    this.isWarming = true;
+    this.warmupBtn.disabled = true;
+    this.warmupBtn.textContent = 'Starting...';
+    this.statusSpan.classList.add('active');
+
+    // Start countdown
+    let remaining = Math.ceil(this.warmupTime / 1000);
+    this.statusSpan.textContent = `Warming up: ${remaining}s`;
+
+    const countdown = setInterval(() => {
+      remaining--;
+      if (remaining > 0) {
+        this.statusSpan.textContent = `Warming up: ${remaining}s`;
+      }
+    }, 1000);
+
+    // Ping the endpoint to wake it up - send multiple pings to ensure scale-up
+    try {
+      // Initial ping
+      fetch(this.endpoint, { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
+
+      // Additional pings every 5 seconds to maintain pressure
+      const pingInterval = setInterval(() => {
+        fetch(this.endpoint, { method: 'HEAD', mode: 'no-cors' }).catch(() => {});
+      }, 5000);
+
+      // Clear ping interval when warmup completes
+      setTimeout(() => clearInterval(pingInterval), this.warmupTime);
+    } catch (e) {
+      // Ignore errors - we just want to trigger the scale-up
+    }
+
+    // Wait for warmup period
+    setTimeout(() => {
+      clearInterval(countdown);
+      this.statusSpan.textContent = 'Ready!';
+      this.mainLink.classList.remove('disabled');
+      this.mainLink.classList.add('ready');
+      this.warmupBtn.textContent = 'Warmed Up';
+
+      setTimeout(() => {
+        this.statusSpan.classList.remove('active');
+        this.isWarming = false;
+      }, 3000);
+    }, this.warmupTime);
+  }
+}
+
+// Initialize warmers after page loads
+document.addEventListener('DOMContentLoaded', () => {
+  new AppWarmer('lab', '/lab/', 30000);
+  new AppWarmer('sqlworkbench', '/sqlworkbench/', 30000);
+  new AppWarmer('dash', '/dash/', 10000);
+  new AppWarmer('dash2', '/dash2/', 10000);
+  new AppWarmer('dash3', '/dash3/', 10000);
+});
+</script>
 
 ::: {.container}
 
@@ -168,8 +305,11 @@ format:
 <div class="tool-content">
   <h3><a href="/lab/">Jupyter Lab</a></h3>
   <p>Spin up your own Python/R lab for scientific exploration.</p>
-  <p>⚠️ App scales so startup may take a few seconds.</p>
-  <a href="/lab/" class="cta">Get Started</a>
+  <div class="warmup-container">
+    <button id="warmup-lab" class="warmup-btn">Start App</button>
+    <span id="status-lab" class="warmup-status"></span>
+  </div>
+  <a href="/lab/" id="link-lab" class="cta disabled">Get Started</a>
 </div>
 :::
 
@@ -180,8 +320,11 @@ format:
 <div class="tool-content">
   <h3><a href="/sqlworkbench/">SQL Workbench</a></h3>
   <p>Query the central database and develop SQL routines against the CHoRUS data with SQL Workbench</p>
-  <p>⚠️ App scales so startup may take a few seconds.</p>
-  <a href="/sqlworkbench/" class="cta">Get Started</a>
+  <div class="warmup-container">
+    <button id="warmup-sqlworkbench" class="warmup-btn">Start App</button>
+    <span id="status-sqlworkbench" class="warmup-status"></span>
+  </div>
+  <a href="/sqlworkbench/" id="link-sqlworkbench" class="cta disabled">Get Started</a>
 </div>
 :::
 
@@ -204,8 +347,11 @@ format:
 <div class="tool-content">
   <h3><a href="/dash/">Overview Dashboard</a></h3>
   <p>Check out the public data dashboard for the latest data overviews</p>
-  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
-  <a href="/dash/" class="cta">Get Started</a>
+  <div class="warmup-container">
+    <button id="warmup-dash" class="warmup-btn">Start App</button>
+    <span id="status-dash" class="warmup-status"></span>
+  </div>
+  <a href="/dash/" id="link-dash" class="cta disabled">Get Started</a>
 </div>
 :::
 
@@ -216,8 +362,11 @@ format:
 <div class="tool-content">
   <h3><a href="/dash2/">Data Delivery Dashboard</a></h3>
   <p>Check out the data delivery dashboard for info on data uploads</p>
-  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
-  <a href="/dash2/" class="cta">Get Started</a>
+  <div class="warmup-container">
+    <button id="warmup-dash2" class="warmup-btn">Start App</button>
+    <span id="status-dash2" class="warmup-status"></span>
+  </div>
+  <a href="/dash2/" id="link-dash2" class="cta disabled">Get Started</a>
 </div>
 :::
 
@@ -228,8 +377,11 @@ format:
 <div class="tool-content">
   <h3><a href="/dash3/">User Access Dashboard</a></h3>
   <p>Check out the user access dashboard for info on enclave accessibility</p>
-  <p>⚠️ App scales so may take 10 seconds to start if idle</p>
-  <a href="/dash3/" class="cta">Get Started</a>
+  <div class="warmup-container">
+    <button id="warmup-dash3" class="warmup-btn">Start App</button>
+    <span id="status-dash3" class="warmup-status"></span>
+  </div>
+  <a href="/dash3/" id="link-dash3" class="cta disabled">Get Started</a>
 </div>
 :::
 

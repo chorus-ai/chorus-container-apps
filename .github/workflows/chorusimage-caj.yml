@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'azure-pipeline-tf/**'
+      - 'azure-terraform-caj/**'
 
 env:
   REGISTRY: ghcr.io
@@ -18,9 +18,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./azure-pipeline-tf/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-az-pipe
-            context: ./azure-pipeline-tf
+          - dockerfile: ./azure-terraform-caj/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-az-tfcaj
+            context: ./azure-terraform-caj
     permissions:
       contents: read
       packages: write

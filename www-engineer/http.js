@@ -77,13 +77,36 @@ function redirect_to_vmapp(r) {
     const payload = `${user}.${ts}`;
 
     const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
-    
+
     var crypto = require('crypto');
     const sig = crypto.createHmac('sha256', secret)
                       .update(payload)
                       .digest('hex');
     const url = `${domain}/signin?email=${email}&ts=${ts}&sig=${sig}`;
     r.return(303, url);
+}
+
+function get_ive_backend(r) {
+    const user = r.variables.authenticated_user || "";
+    const email = encodeURIComponent(user);
+    const domain = r.variables.CHORUS_IVEAPI_BACKEND;
+    const ts = Date.now().toString();
+    const payload = `${user}.${ts}`;
+
+    const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
+
+    var crypto = require('crypto');
+    const sig = crypto.createHmac('sha256', secret)
+                      .update(payload)
+                      .digest('hex');
+
+    // Remove trailing slash if present
+    let backend = domain;
+    if (backend.endsWith("/")) {
+        backend = backend.slice(0, -1);
+    }
+
+    return `${backend}/signin?email=${email}&ts=${ts}&sig=${sig}`;
 }
 
 function get_chorus_lab_backend(r) {
@@ -105,4 +128,4 @@ function get_chorus_sql_backend(r) {
     return end_uri;
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend };
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend, get_ive_backend };

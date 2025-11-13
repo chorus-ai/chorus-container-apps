@@ -11,6 +11,7 @@ server {
     set $chorus_lab_backend_template ${CHORUS_LAB_BACKEND_TEMPLATE};
     set $chorus_sql_backend_template ${CHORUS_SQL_BACKEND_TEMPLATE};
     set $CHORUS_IVEAPI_BACKEND ${CHORUS_IVEAPI_BACKEND};
+    set $CHORUS_IVEAPI_SECRET ${CHORUS_IVEAPI_SECRET};
     set $authenticated_user $http_x_ms_client_principal_name;
     if ($authenticated_user = '') {
         set $authenticated_user ${REMOTE_USER};
@@ -90,7 +91,14 @@ server {
         js_content http.whoami;
     }
 
-    location = /ive {
-        js_content http.redirect_to_vmapp;
+    location /ive {
+        resolver ${NGINX_LOCAL_RESOLVERS};
+        js_set $ive_backend http.get_ive_backend;
+        proxy_pass $ive_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 180s;
+        proxy_send_timeout 180s;
     }
 }

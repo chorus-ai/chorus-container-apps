@@ -10,8 +10,8 @@ server {
     proxy_set_header Authorization "";
     set $chorus_lab_backend_template ${CHORUS_LAB_BACKEND_TEMPLATE};
     set $chorus_sql_backend_template ${CHORUS_SQL_BACKEND_TEMPLATE};
-    set $CHORUS_IVEAPI_BACKEND ${CHORUS_IVEAPI_BACKEND};
-    set $CHORUS_IVEAPI_SECRET ${CHORUS_IVEAPI_SECRET};
+    set $chorus_iveapi_backend ${CHORUS_IVEAPI_BACKEND};
+    set $chorus_iveapi_secret ${CHORUS_IVEAPI_SECRET};
     set $authenticated_user $http_x_ms_client_principal_name;
     if ($authenticated_user = '') {
         set $authenticated_user ${REMOTE_USER};

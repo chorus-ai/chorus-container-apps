@@ -72,11 +72,11 @@ function redirect_to_default_lab(r) {
 function redirect_to_vmapp(r) {
     const user = r.variables.authenticated_user || "";
     const email = encodeURIComponent(user);
-    const domain = r.variables.CHORUS_IVEAPI_BACKEND
+    const domain = r.variables.chorus_iveapi_backend;
     const ts = Date.now().toString();
     const payload = `${user}.${ts}`;
 
-    const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
+    const secret = r.variables.chorus_iveapi_secret || "dev_secret";
 
     var crypto = require('crypto');
     const sig = crypto.createHmac('sha256', secret)
@@ -89,11 +89,11 @@ function redirect_to_vmapp(r) {
 function get_ive_backend(r) {
     const user = r.variables.authenticated_user || "";
     const email = encodeURIComponent(user);
-    const domain = r.variables.CHORUS_IVEAPI_BACKEND;
+    const domain = r.variables.chorus_iveapi_backend;
     const ts = Date.now().toString();
     const payload = `${user}.${ts}`;
 
-    const secret = r.variables.CHORUS_IVEAPI_SECRET || "dev_secret";
+    const secret = r.variables.chorus_iveapi_secret || "dev_secret";
 
     var crypto = require('crypto');
     const sig = crypto.createHmac('sha256', secret)

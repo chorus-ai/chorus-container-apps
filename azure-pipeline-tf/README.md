@@ -1,6 +1,6 @@
 # Azure Pipeline Terraform Runner
 
-This directory contains a containerized Azure Pipelines agent configured for running Terraform operations in Azure Container Apps.
+This directory contains a containerized Azure Pipelines agent configured for running Terraform operations like plan and apply in Azure Container Apps.
 
 ## Features
 

@@ -1,6 +1,6 @@
 FROM hashicorp/terraform:latest
 
-# Install dependencies
+# Install dependencies and build tools
 RUN apk add --no-cache \
     bash \
     curl \
@@ -10,6 +10,11 @@ RUN apk add --no-cache \
     openssl \
     python3 \
     py3-pip \
+    gcc \
+    python3-dev \
+    musl-dev \
+    linux-headers \
+    libffi-dev \
     && update-ca-certificates
 
 # Install Azure CLI

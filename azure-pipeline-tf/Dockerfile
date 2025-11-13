@@ -1,24 +1,30 @@
-FROM hashicorp/terraform:latest
+FROM --platform=linux/amd64 ubuntu:22.04
 
-# Install dependencies and build tools
-RUN apk add --no-cache \
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TERRAFORM_VERSION=1.9.8
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
     bash \
     curl \
     jq \
     git \
     ca-certificates \
-    openssl \
+    unzip \
+    wget \
     python3 \
-    py3-pip \
-    gcc \
-    python3-dev \
-    musl-dev \
-    linux-headers \
-    libffi-dev \
-    && update-ca-certificates
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Terraform
+RUN wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && mv terraform /usr/local/bin/ \
+    && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
+    && terraform --version
 
 # Install Azure CLI
-RUN pip3 install --no-cache-dir azure-cli --break-system-packages
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
 # Create working directory for the agent
 RUN mkdir -p /opt/azp

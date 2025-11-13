@@ -26,8 +26,6 @@ if [ -z "$AZP_TOKEN_FILE" ]; then
   echo -n $AZP_TOKEN > "$AZP_TOKEN_FILE"
 fi
 
-unset AZP_TOKEN
-
 if [ -n "$AZP_WORK" ]; then
   mkdir -p "$AZP_WORK"
 fi
@@ -68,7 +66,7 @@ print_header "1. Determining matching Azure Pipelines agent..."
 AZP_AGENT_PACKAGES=$(curl -LsS \
     -u user:$(echo "$AZP_TOKEN") \
     -H 'Accept:application/json;' \
-    "$AZP_URL/_apis/distributedtask/packages/agent?platform=linux-arm64&top=1")
+    "$AZP_URL/_apis/distributedtask/packages/agent?platform=linux-x64&top=1")
 
 AZP_AGENT_PACKAGE_LATEST_URL=$(echo "$AZP_AGENT_PACKAGES" | jq -r '.value[0].downloadUrl')
 

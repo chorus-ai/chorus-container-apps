@@ -81,19 +81,21 @@ COPY --from=membarrier /tmp/membarrier_check /usr/bin/
 RUN \
     cd /tmp && \
     echo "Downloading Eclipse ${ECLIPSE_VERSION}..." && \
-    curl -L -o eclipse.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${ECLIPSE_VERSION}/R/eclipse-java-${ECLIPSE_VERSION}-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    wget --progress=bar:force -O eclipse.tar.gz "https://download.eclipse.org/technology/epp/downloads/release/${ECLIPSE_VERSION}/R/eclipse-java-${ECLIPSE_VERSION}-R-linux-gtk-x86_64.tar.gz" && \
     echo "Download complete. File size: $(stat -c%s eclipse.tar.gz) bytes" && \
-    echo "Extracting Eclipse..." && \
+    echo "Verifying download is a valid gzip file..." && \
+    file eclipse.tar.gz && \
+    echo "Extracting Eclipse to /app..." && \
     tar -xzf eclipse.tar.gz -C /app && \
+    echo "Contents of /app after extraction:" && \
+    ls -la /app/ && \
     rm eclipse.tar.gz && \
-    echo "Eclipse extracted. Checking installation..." && \
-    ls -la /app/eclipse && \
-    echo "Setting permissions..." && \
+    echo "Verifying Eclipse directory exists..." && \
+    test -d /app/eclipse || (echo "ERROR: /app/eclipse directory not found!" && ls -la /app && exit 1) && \
+    echo "Eclipse extracted. Checking binary..." && \
+    ls -la /app/eclipse/eclipse && \
     chmod +x /app/eclipse/eclipse && \
-    test -f /app/eclipse/eclipse || (echo "ERROR: Eclipse binary not found!" && exit 1) && \
-    echo "Eclipse binary found at /app/eclipse/eclipse" && \
     file /app/eclipse/eclipse && \
-    ldd /app/eclipse/eclipse || echo "ldd check completed" && \
     mkdir -p /export/configs/eclipse-workspace && \
     chmod -R 777 /export/configs/eclipse-workspace
 

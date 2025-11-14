@@ -44,10 +44,18 @@ RUN \
         udev \
         unzip \
         wget \
+        curl \
+        file \
         zlib-dev \
         # Add java and bash for Eclipse
         openjdk17 \
+        openjdk17-jre \
         bash \
+        # GTK and Eclipse dependencies
+        gtk+3.0 \
+        webkit2gtk \
+        libsecret \
+        libxtst \
         # WebGL support.
         mesa-dri-gallium \
         # Audio support.
@@ -74,12 +82,21 @@ COPY --from=membarrier /tmp/membarrier_check /usr/bin/
 
 # Install Eclipse IDE
 RUN \
-    mkdir -p /app/eclipse && \
     cd /tmp && \
-    wget -O eclipse.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${ECLIPSE_VERSION}/R/eclipse-java-${ECLIPSE_VERSION}-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    echo "Downloading Eclipse ${ECLIPSE_VERSION}..." && \
+    curl -L -o eclipse.tar.gz "https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/${ECLIPSE_VERSION}/R/eclipse-java-${ECLIPSE_VERSION}-R-linux-gtk-x86_64.tar.gz&r=1" && \
+    echo "Download complete. File size: $(stat -c%s eclipse.tar.gz) bytes" && \
+    echo "Extracting Eclipse..." && \
     tar -xzf eclipse.tar.gz -C /app && \
     rm eclipse.tar.gz && \
+    echo "Eclipse extracted. Checking installation..." && \
+    ls -la /app/eclipse && \
+    echo "Setting permissions..." && \
     chmod +x /app/eclipse/eclipse && \
+    test -f /app/eclipse/eclipse || (echo "ERROR: Eclipse binary not found!" && exit 1) && \
+    echo "Eclipse binary found at /app/eclipse/eclipse" && \
+    file /app/eclipse/eclipse && \
+    ldd /app/eclipse/eclipse || echo "ldd check completed" && \
     mkdir -p /export/configs/eclipse-workspace && \
     chmod -R 777 /export/configs/eclipse-workspace
 

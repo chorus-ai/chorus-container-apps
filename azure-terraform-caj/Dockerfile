@@ -10,6 +10,11 @@ RUN apk add --no-cache \
     ca-certificates \
     python3 \
     py3-pip \
+    gcc \
+    python3-dev \
+    musl-dev \
+    linux-headers \
+    libffi-dev \
     && update-ca-certificates
 
 # Install Azure CLI

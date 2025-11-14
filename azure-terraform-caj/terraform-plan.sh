@@ -99,9 +99,18 @@ if [ ! -d "$CLONE_TF_DIR" ]; then
   exit 1
 fi
 
+# Determine the target workspace directory (maintaining subfolder structure)
+TARGET_WORKSPACE_DIR="$WORKSPACE_DIR/$TERRAFORM_DIR"
+
+# Create the target directory if it doesn't exist
+mkdir -p "$TARGET_WORKSPACE_DIR"
+
 echo "Copying .tf and .json files from repo to workspace directory..."
+echo "Source: $CLONE_TF_DIR"
+echo "Target: $TARGET_WORKSPACE_DIR"
+
 # Copy all .tf and .json files (but not .terraform directory or state files from source)
-find "$CLONE_TF_DIR" -maxdepth 1 -type f \( -name "*.tf" -o -name "*.json" \) -exec cp {} "$WORKSPACE_DIR/" \;
+find "$CLONE_TF_DIR" -maxdepth 1 -type f \( -name "*.tf" -o -name "*.json" \) -exec cp {} "$TARGET_WORKSPACE_DIR/" \;
 
 # Count files copied
 TF_FILE_COUNT=$(find "$CLONE_TF_DIR" -maxdepth 1 -type f \( -name "*.tf" -o -name "*.json" \) | wc -l)
@@ -111,7 +120,7 @@ echo "Copied $TF_FILE_COUNT terraform files to workspace"
 rm -rf "$TEMP_DIR"
 
 # Navigate to workspace directory
-cd "$WORKSPACE_DIR"
+cd "$TARGET_WORKSPACE_DIR"
 
 echo ""
 echo "Files in workspace directory:"

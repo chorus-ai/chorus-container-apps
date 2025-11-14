@@ -2,13 +2,47 @@
 
 This container is designed to run as an Azure Container App Job that:
 1. Clones Terraform configuration files (.tf and .json) from an Azure DevOps repository
-2. Copies them to a mounted workspace directory containing existing Terraform state
+2. Copies them to a mounted workspace directory containing existing Terraform state (preserving subfolder structure)
 3. Runs `terraform plan` against the existing state to show what changes would be made
 
 This workflow is ideal when you want to:
 - Manage Terraform state separately (in a mounted volume or Azure Files)
 - Update only the Terraform configuration files without reinitializing
 - Run plans against existing infrastructure state
+- Support multiple Terraform workspaces in nested directories
+
+## Directory Structure
+
+The script maintains the nested directory structure from your repository:
+
+```
+Mounted Volume:
+/mnt/workspace/
+└── terraform-internal/
+    ├── workspace-a/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── terraform.tfstate
+    └── workspace-b/
+        ├── main.tf
+        ├── variables.tf
+        └── terraform.tfstate
+
+Repository:
+repo/
+└── terraform-internal/
+    ├── workspace-a/
+    │   ├── main.tf
+    │   └── variables.tf
+    └── workspace-b/
+        ├── main.tf
+        └── variables.tf
+```
+
+When you set `TERRAFORM_DIR=terraform-internal/workspace-a`, the script:
+1. Clones files from `repo/terraform-internal/workspace-a/`
+2. Copies them to `/mnt/workspace/terraform-internal/workspace-a/`
+3. Runs `terraform plan` in that directory using the existing state file
 
 ## Features
 
@@ -48,6 +82,8 @@ The container includes a script at `/usr/local/bin/terraform-plan.sh` that handl
 #### Optional
 - `BRANCH`: Git branch to checkout (default: `main`)
 - `TERRAFORM_DIR`: Directory containing terraform code within the repo (default: `.`)
+  - Example: `terraform-internal/workspace-a` for nested workspaces
+  - The script preserves this path structure in the mounted volume
 - `TFE_HOSTNAME`: Terraform Enterprise hostname (default: `app.terraform.io`)
 
 #### Azure Provider Authentication
@@ -110,8 +146,8 @@ az containerapp job create \
   --env-vars \
     REPO_URL=https://dev.azure.com/yourorg/yourproject/_git/yourrepo \
     BRANCH=main \
-    TERRAFORM_DIR=terraform/environments/dev \
-    WORKSPACE_DIR=/mnt/terraform-workspace \
+    TERRAFORM_DIR=workspace-a \
+    WORKSPACE_DIR=/mnt/terraform-workspace/terraform-internal \
     TFE_HOSTNAME=app.terraform.io \
     ARM_CLIENT_ID=<client-id> \
     ARM_TENANT_ID=<tenant-id> \

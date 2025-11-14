@@ -49,13 +49,10 @@ RUN \
         zlib-dev \
         # Add java and bash for Eclipse
         openjdk17 \
-        openjdk17-jre \
         bash \
         # GTK and Eclipse dependencies
         gtk+3.0 \
-        webkit2gtk \
         libsecret \
-        libxtst \
         # WebGL support.
         mesa-dri-gallium \
         # Audio support.

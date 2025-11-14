@@ -128,4 +128,12 @@ function get_chorus_sql_backend(r) {
     return end_uri;
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend, get_ive_backend };
+function get_chorus_ecl_backend(r) {
+    let user = r.variables.authenticated_user;
+    let lab = user.toLowerCase().replace(/@.*/, "").replace(/[^0-9a-z]+/g, "").substring(0,13);
+    let template = r.variables.chorus_ecl_backend_template;
+    let end_uri =  template.replaceAll("*", lab).concat("/");
+    return end_uri;
+}
+
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend, get_chorus_ecl_backend, get_ive_backend };

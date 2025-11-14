@@ -258,6 +258,7 @@ class AppWarmer {
 // Initialize warmers after page loads
 document.addEventListener('DOMContentLoaded', () => {
   new AppWarmer('sqlworkbench', '/sqlworkbench/', 45000);
+  new AppWarmer('eclipse', '/eclipse/', 45000);
   new AppWarmer('dash', '/dash/', 20000);
   new AppWarmer('dash2', '/dash2/', 20000);
   new AppWarmer('dash3', '/dash3/', 20000);
@@ -378,6 +379,22 @@ document.addEventListener('DOMContentLoaded', () => {
   <span id="status-dash3" class="warmup-status"></span>
 </div>
 <a href="/dash3/" id="link-dash3" class="cta disabled">Get Started</a>
+:::
+
+::: {.tool-card}
+<div class="tool-icon">
+  <img src="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-grey-orange.svg" alt="Eclipse Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white; padding: 4px;" />
+</div>
+<div class="tool-content">
+  <h3><a href="/eclipse/">Eclipse IDE</a></h3>
+  <p>Java development environment for building and testing applications.</p>
+  <p style="color: #ff9f43; font-size: 0.85rem; margin-top: 8px;">⚠️ Not available to all users. Request access if you need Java development tools.</p>
+</div>
+<div class="warmup-container">
+  <button id="warmup-eclipse" class="warmup-btn">Start App</button>
+  <span id="status-eclipse" class="warmup-status"></span>
+</div>
+<a href="/eclipse/" id="link-eclipse" class="cta disabled">Get Started</a>
 :::
 
 :::

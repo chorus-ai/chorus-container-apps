@@ -10,6 +10,7 @@ server {
     proxy_set_header Authorization "";
     set $chorus_lab_backend_template ${CHORUS_LAB_BACKEND_TEMPLATE};
     set $chorus_sql_backend_template ${CHORUS_SQL_BACKEND_TEMPLATE};
+    set $chorus_ecl_backend_template ${CHORUS_ECL_BACKEND_TEMPLATE};
     set $chorus_iveapi_backend ${CHORUS_IVEAPI_BACKEND};
     set $chorus_iveapi_secret ${CHORUS_IVEAPI_SECRET};
     set $authenticated_user $http_x_ms_client_principal_name;
@@ -71,6 +72,18 @@ server {
         js_set $chorus_sql_backend http.get_chorus_sql_backend;
         rewrite /sqlworkbench/(.*) /$1 break;
         proxy_pass $chorus_sql_backend/$1$is_args$args;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 180s;
+        proxy_send_timeout 180s;
+    }
+
+    location /eclipse {
+        resolver ${NGINX_LOCAL_RESOLVERS};
+        js_set $chorus_ecl_backend http.get_chorus_ecl_backend;
+        rewrite /eclipse/(.*) /$1 break;
+        proxy_pass $chorus_ecl_backend/$1$is_args$args;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;

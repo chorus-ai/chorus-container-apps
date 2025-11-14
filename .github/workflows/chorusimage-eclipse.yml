@@ -1,11 +1,11 @@
-name: chorus images azure terraform container app
+name: chorus images eclipse
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'azure-terraform-caj/**'
+      - 'eclipse/**'
 
 env:
   REGISTRY: ghcr.io
@@ -18,9 +18,9 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - dockerfile: ./azure-terraform-caj/Dockerfile
-            image: ghcr.io/chorus-ai/chorus-az-tfcaj
-            context: ./azure-terraform-caj
+          - dockerfile: ./eclipse/Dockerfile
+            image: ghcr.io/chorus-ai/chorus-eclipse
+            context: ./eclipse
     permissions:
       contents: read
       packages: write

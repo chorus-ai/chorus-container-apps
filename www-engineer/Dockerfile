@@ -31,6 +31,7 @@ ENV SERVER_PORT=8080 \
     OTEL_ENDPOINT=127.0.0.1:4317 \
     CHORUS_LAB_BACKEND_TEMPLATE=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_SQL_BACKEND_TEMPLATE=http://127.0.0.1:\$server_port/undefined/ \
+    CHORUS_ECL_BACKEND_TEMPLATE=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_PREFECT_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_WEBAPI_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_DASH_PUBLIC_BACKEND=http://127.0.0.1:\$server_port/undefined/ \

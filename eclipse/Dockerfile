@@ -79,6 +79,7 @@ COPY --from=membarrier /tmp/membarrier_check /usr/bin/
 
 # Install Eclipse IDE
 RUN \
+    mkdir -p /app && \
     cd /tmp && \
     echo "Downloading Eclipse ${ECLIPSE_VERSION}..." && \
     wget --progress=bar:force -O eclipse.tar.gz "https://download.eclipse.org/technology/epp/downloads/release/${ECLIPSE_VERSION}/R/eclipse-java-${ECLIPSE_VERSION}-R-linux-gtk-x86_64.tar.gz" && \

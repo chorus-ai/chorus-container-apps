@@ -4,6 +4,26 @@ set -e # Exit immediately if a command exits with a non-zero status.
 set -u # Treat unset variables as an error.
 
 export HOME=/app/eclipse
+
+echo "Checking Eclipse installation..."
+ls -la /app/eclipse/
+
+if [ ! -f /app/eclipse/eclipse ]; then
+    echo "ERROR: Eclipse binary not found at /app/eclipse/eclipse"
+    echo "Contents of /app/eclipse:"
+    ls -la /app/eclipse/
+    exit 1
+fi
+
+echo "Eclipse binary found. Checking executable permissions..."
+ls -l /app/eclipse/eclipse
+
+echo "Checking file type..."
+file /app/eclipse/eclipse
+
+echo "Checking shared library dependencies..."
+ldd /app/eclipse/eclipse || echo "ldd failed - may be missing dependencies"
+
 cd /app/eclipse
 
 PIDS=
@@ -28,6 +48,7 @@ for PID in "$PIDS"; do
 done
 set -e
 
-./eclipse -data /export/configs/eclipse-workspace
+echo "Starting Eclipse..."
+/app/eclipse/eclipse -data /export/configs/eclipse-workspace
 
 # vim:ft=sh:ts=4:sw=4:et:sts=4

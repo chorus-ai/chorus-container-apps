@@ -83,6 +83,9 @@ RUN mkdir -p /opt/ijava-jars && \
     mv jai_core-1.1.3.jar jai_core.jar && \
     chown -R ${NB_UID}:${NB_GID} /opt/ijava-jars
 USER ${NB_UID}
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends \
+        postgresql-client
 RUN cd /tmp && \
     curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip -o ijava.zip && \
     unzip ijava.zip && \

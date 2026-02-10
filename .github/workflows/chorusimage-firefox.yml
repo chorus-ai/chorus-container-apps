@@ -23,10 +23,6 @@ jobs:
             image: ghcr.io/chorus-ai/chorus-firefox
             context: ./firefox
             tag: main
-          - dockerfile: ./firefox/Dockerfile
-            image: cr0aimaheadmlw.azurecr.io/chorus-firefox
-            context: ./firefox
-            tag: aimahead
     permissions:
       contents: read
       packages: write
@@ -47,13 +43,6 @@ jobs:
           registry: ghcr.io
           username: b2ai-googleform-bot
           password: ${{ secrets.GH_TOKEN }}
-
-      - name: Login to ACR
-        uses: docker/login-action@v3
-        with:
-          registry: cr0aimaheadmlw.azurecr.io
-          username: cr0aimaheadmlw
-          password: ${{ secrets.ACR_TOKEN }}
 
       - name: Extract Docker metadata
         id: meta

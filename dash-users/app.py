@@ -40,6 +40,14 @@ def data_load():
 df = data_load()
 loaded_at = df['loaded_at'][0]
 
+# Read last-updated timestamp written by the refresh job
+TIMESTAMP_FILE = '/az_users/data/last_updated.txt'
+if os.path.exists(TIMESTAMP_FILE):
+    with open(TIMESTAMP_FILE, 'r') as f:
+        last_updated_str = f.read().strip()
+else:
+    last_updated_str = str(loaded_at)[0:19]
+
 heading = html.H1("CHoRUS User Access Dashboard", className="bg-secondary text-white p-2 mb-4")
 
 about_card = dcc.Markdown(
@@ -73,6 +81,19 @@ app.layout = dbc.Container(
     [
         dcc.Store(id="store-permissions", data={}),
         heading,
+        # Data refresh timestamp
+        html.Div(
+            f"Data last refreshed: {last_updated_str}",
+            style={
+                "fontSize": "13px",
+                "color": "#888",
+                "textAlign": "right",
+                "padding": "2px 14px",
+                "fontStyle": "italic",
+                "marginTop": "-10px",
+                "marginBottom": "10px",
+            },
+        ),
         dcc.Markdown(id="title"),
         dbc.Row(dbc.Col([ dcc.Markdown(id="subtitle-1"), make_grid_group()]), className="my-4"),
 

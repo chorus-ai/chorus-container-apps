@@ -197,5 +197,16 @@ for row in toIterate.itertuples():
 
 
 
-user_df['loaded_at'] = [datetime.datetime.now()] * user_df.shape[0]
-user_df.to_csv('/az_users/data/personnel_metadata.csv', index=False)
+user_df['loaded_at'] = [datetime.datetime.now(datetime.timezone.utc)] * user_df.shape[0]
+
+# Save to shared volume
+output_dir = os.environ.get('OUTPUT_DIR', '/az_users/data')
+os.makedirs(output_dir, exist_ok=True)
+user_df.to_csv(os.path.join(output_dir, 'personnel_metadata.csv'), index=False)
+
+# Write refresh timestamp
+timestamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+with open(os.path.join(output_dir, 'last_updated.txt'), 'w') as f:
+    f.write(timestamp)
+
+print(f"Data saved to {output_dir}/personnel_metadata.csv at {timestamp}")

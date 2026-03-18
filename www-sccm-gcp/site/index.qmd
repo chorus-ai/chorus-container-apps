@@ -1,8 +1,8 @@
 ---
-title: SCCM Datathon Portal
+title: REDISCOVER-ICU Portal
 subtitle: SCCM GCP Data Enclave
 ---
 
-The SCCM Datathon Portal currently offers a small collection of tools and services.
+The REDISCOVER-ICU Portal currently offers a small collection of tools and services.
 
 - Check **[Ares](/ares/)** to characterize data and assess data quality.

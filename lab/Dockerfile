@@ -1,4 +1,4 @@
-FROM quay.io/jupyter/datascience-notebook:2026-03-24
+FROM quay.io/jupyter/datascience-notebook:2026-03-23
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers

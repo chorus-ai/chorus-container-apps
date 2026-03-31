@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly as py
 import pathlib
+import os
+from datetime import datetime
 
 
 app = dash.Dash(
@@ -34,6 +36,14 @@ conditions_df = conditions_df_tmp[conditions_df_tmp["num_persons"]>=20] # SMALL 
 demograph_df = pd.read_csv("/app/data/demograph.csv", header=0)
 access_df = pd.read_csv("/app/data/access_details.csv", header=0)
 site_deid_df = pd.read_csv("/app/data/source_key.csv", header=0)
+
+# Read last-updated timestamp written by the refresh job
+TIMESTAMP_FILE = "/app/data/last_updated.txt"
+if os.path.exists(TIMESTAMP_FILE):
+    with open(TIMESTAMP_FILE, 'r') as f:
+        last_updated_str = f.read().strip()
+else:
+    last_updated_str = "Unknown"
 site_deid_dict = dict(zip(site_deid_df["s_name"],site_deid_df["s_key"]))
 person_ct_dict = dict(zip(persons_omop_df["site"],persons_omop_df["count_person"]))
 note_ct_dict = dict(zip(persons_omop_df["site"],persons_omop_df["count_note"]))
@@ -396,6 +406,17 @@ app.layout = html.Div(
             id="banner",
             className="banner",
             children=[html.Img(src=app.get_asset_url("chorus_multicolor.png")), html.H6("Bridge2AI for Clinical Care")],
+        ),
+        # Data refresh timestamp
+        html.Div(
+            f"Data last refreshed: {last_updated_str}",
+            style={
+                "fontSize": "12px",
+                "color": "#888",
+                "textAlign": "right",
+                "padding": "2px 14px",
+                "fontStyle": "italic",
+            },
         ),
         # Left column
         html.Div(

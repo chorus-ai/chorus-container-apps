@@ -5,9 +5,6 @@ RUN apt-get update && \
         postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install azure-storage-blob \
-                azure-identity
-
 COPY *.sql /app/
 COPY job/refresh_data.py /app/refresh_data.py
 

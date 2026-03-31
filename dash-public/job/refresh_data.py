@@ -1,54 +1,39 @@
 """
 dash-public weekly refresh job
 
-Reads blob metadata from Azure Blob Storage, loads it into Postgres,
+Scans metadata from the mounted CHoRUS file share, loads it into Postgres,
 runs SQL transformations, and exports CSV files to the shared data volume.
 
 Adapted from:
-  - dash/read_blob_chorus.py   (blob reading + Postgres loading)
+    - dash/read_blob_chorus.py   (metadata loading + Postgres staging)
   - dash-public/export_dash_src.sh (SQL queries + CSV export)
 
 Environment variables required:
-  PILOT_CONN_STR  - Azure Storage connection string
+    PILOT_ROOT      - Root of CHoRUS file share to scan (default: /choruspilot)
   PGHOST          - Postgres host  (default: localhost)
   PGPORT          - Postgres port  (default: 5432)
   PGUSER          - Postgres user  (default: postgres)
   DATA_DIR        - Output directory for CSVs (default: /app/data)
 """
 
+import csv
 import os
 import subprocess
 import sys
 from datetime import datetime, timezone
-
-from azure.storage.blob import BlobServiceClient
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
-BLOB_CONN_STR = os.environ["PILOT_CONN_STR"]
+PILOT_ROOT = os.environ.get("PILOT_ROOT", "/choruspilot")
 
 PGHOST = os.environ.get("PGHOST", "localhost")
 PGPORT = os.environ.get("PGPORT", "5432")
 PGUSER = os.environ.get("PGUSER", "postgres")
 DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
-
-SITE_CONTAINERS = [
-    "columbia", "duke", "emory", "mayo", "mgh", "mit",
-    "nationwide", "pitts", "seattle", "tuft", "ucla",
-    "ucsf", "uflorida", "uva",
-]
-
-# Map raw container names → canonical site names used by OMOP DBs
-SITE_DB_MAP = {
-    "tuft": "tufts",
-    "pitts": "pittsburgh",
-    "uflorida": "florida",
-    "uva": "virginia",
-}
-
-BLOB_COLUMN_LIST = ["name", "container", "size", "last_modified", "creation_time"]
 
 # The 14 OMOP site databases to query for person/note counts
 OMOP_SITE_DBS = [
@@ -87,12 +72,15 @@ def psql_scalar(database, sql):
 
 
 # ---------------------------------------------------------------------------
-# Stage 1 – Read blob metadata from Azure and load into Postgres
+# Stage 1 – Scan file share metadata and load into Postgres
 # ---------------------------------------------------------------------------
 
-def stage_read_blobs():
-    print("\n=== Stage 1: Reading blob metadata from Azure Blob Storage ===")
-    blob_svc = BlobServiceClient.from_connection_string(conn_str=BLOB_CONN_STR)
+def stage_scan_fileshare():
+    print("\n=== Stage 1: Scanning file metadata from CHoRUS file share ===")
+    root = Path(PILOT_ROOT)
+
+    if not root.exists() or not root.is_dir():
+        raise FileNotFoundError(f"PILOT_ROOT does not exist or is not a directory: {PILOT_ROOT}")
 
     # Re-create the raw metadata table
     psql("ohdsi", sql="DROP TABLE IF EXISTS public.all_metadata;")
@@ -107,48 +95,51 @@ def stage_read_blobs():
         );
     """)
 
-    global_cnt = 0
-    tmp_csv = "/tmp/blob_metadata.csv"
+    total_files = 0
+    tmp_csv = None
+    try:
+        with NamedTemporaryFile(mode="w", newline="", suffix=".csv", delete=False) as tmp:
+            tmp_csv = tmp.name
+            writer = csv.writer(tmp)
+            writer.writerow(["file_id", "name", "container", "last_modified", "size", "creation_time"])
 
-    for site_name in SITE_CONTAINERS:
-        print(f"  Listing blobs in container: {site_name}")
-        site_cc = blob_svc.get_container_client(site_name)
-        blobs = site_cc.list_blobs()
+            for path in root.rglob("*"):
+                if not path.is_file():
+                    continue
 
-        row_cnt = 0
-        with open(tmp_csv, "w") as f:
-            for blob in blobs:
-                if row_cnt == 0:
-                    # Write header once per site batch
-                    header = "id"
-                    for key in blob.keys():
-                        if key in BLOB_COLUMN_LIST:
-                            header += f",{key}"
-                    f.write(header + "\n")
+                rel_path = path.relative_to(root)
+                rel_parts = rel_path.parts
+                if len(rel_parts) > 1:
+                    container = rel_parts[0]
+                    name = "/".join(rel_parts[1:])
+                else:
+                    container = "unknown"
+                    name = rel_parts[0]
 
-                line = str(global_cnt)
-                for key in blob.keys():
-                    if key in BLOB_COLUMN_LIST:
-                        line += f",{blob[key]}"
-                f.write(line + "\n")
+                stat = path.stat()
+                last_modified = datetime.fromtimestamp(stat.st_mtime, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                # Linux ctime is inode change time, not reliable file creation time.
+                creation_time = last_modified
 
-                global_cnt += 1
-                row_cnt += 1
-                if row_cnt % 100_000 == 0:
-                    print(f"    {row_cnt} blobs parsed...")
+                writer.writerow([
+                    total_files,
+                    name,
+                    container,
+                    last_modified,
+                    str(stat.st_size),
+                    creation_time,
+                ])
+                total_files += 1
 
-        # Load CSV into Postgres
-        if row_cnt > 0:
-            copy_cmd = (
-                f"tail -q -n +2 {tmp_csv} | "
-                f"psql -h {PGHOST} -p {PGPORT} -U {PGUSER} -d ohdsi "
-                f"-c \"\\copy public.all_metadata FROM STDIN CSV DELIMITER E','\""
-            )
-            run(["bash", "-c", copy_cmd])
-        print(f"  {site_name}: {row_cnt} blobs loaded ({global_cnt} total)")
+                if total_files % 100_000 == 0:
+                    print(f"    {total_files} files scanned...")
 
-    os.remove(tmp_csv) if os.path.exists(tmp_csv) else None
-    print(f"  Total blobs loaded: {global_cnt}")
+        psql("ohdsi", copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")
+    finally:
+        if tmp_csv and os.path.exists(tmp_csv):
+            os.remove(tmp_csv)
+
+    print(f"  Total files loaded: {total_files}")
 
 
 # ---------------------------------------------------------------------------
@@ -234,7 +225,7 @@ if __name__ == "__main__":
     print("  dash-public weekly refresh job")
     print("=" * 60)
 
-    stage_read_blobs()
+    stage_scan_fileshare()
     stage_sql_transforms()
     stage_export_csvs()
     stage_write_timestamp()

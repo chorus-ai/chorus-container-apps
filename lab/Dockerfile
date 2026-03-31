@@ -1,9 +1,9 @@
-FROM quay.io/jupyter/datascience-notebook:2024-10-02
+FROM quay.io/jupyter/datascience-notebook:2026-03-24
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 USER root
 ENV DATABASECONNECTOR_JAR_FOLDER=/opt/jdbc-drivers
 RUN cd /tmp && \
-    curl -O https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.0-375-amd64.deb && \
+    curl -O https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2026.01.2-418-amd64.deb && \
     apt-get update && \
     apt-get install --yes --no-install-recommends \
         default-jdk \

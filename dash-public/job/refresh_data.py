@@ -350,12 +350,12 @@ def stage_export_csvs():
     print("  Collecting per-site OMOP counts...")
     omop_path = os.path.join(DATA_DIR, "omop_counts.csv")
     with open(omop_path, "w") as f:
-        f.write("site, count_person, count_note\n")
+        f.write("site,count_person,count_note\n")
         for site_db in OMOP_SITE_DBS:
             try:
                 count_person = psql_scalar(site_db, "SELECT count(*) FROM omopcdm.person;")
                 count_note = psql_scalar(site_db, "SELECT count(distinct(person_id)) FROM omopcdm.note;")
-                f.write(f"{site_db}, {count_person}, {count_note}\n")
+                f.write(f"{site_db},{count_person},{count_note}\n")
                 print(f"    {site_db}: persons={count_person}, notes={count_note}")
             except subprocess.CalledProcessError as e:
                 print(f"    WARNING: could not query {site_db}: {e}", file=sys.stderr)

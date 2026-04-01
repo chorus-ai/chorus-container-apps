@@ -14,6 +14,7 @@ RUN cd /tmp && \
         gdal-bin \
         jq \
         libcurl4-openssl-dev \
+        libcairo2-dev \
         libgdal-dev \
         libpq-dev \
         libsodium-dev \
@@ -24,11 +25,18 @@ RUN cd /tmp && \
         libxml2-dev \
         libgeos-dev \
         libproj-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfreetype6-dev \
+        libpng-dev \
+        libtiff5-dev \
+        nano \
         pandoc \
+        postgresql-client \
         r-base-dev \
         r-cran-remotes \
         r-cran-renv \
-        nano \
+        unixodbc-dev \
         ./*.deb && \
     curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list && \
@@ -38,11 +46,7 @@ RUN cd /tmp && \
     rm -rf *.zip *.deb
 COPY *.sh /usr/local/bin/before-notebook.d
 COPY gitconfig /etc
-#RUN apt-get update && \
-#    apt-get install --yes --no-install-recommends \
-#        r-cran-rjava && \
-#    export LD_LIBRARY_PATH=/usr/lib/jvm/java-1.21.0-openjdk-amd64/lib/server:$LD_LIBRARY_PATH && \
-#    ldconfig -v
+
 USER ${NB_UID}
 RUN mamba install --yes \
         jupyter-rsession-proxy \
@@ -82,9 +86,7 @@ RUN mkdir -p /opt/ijava-jars && \
     curl -O https://repo1.maven.org/maven2/javax/media/jai_core/1.1.3/jai_core-1.1.3.jar && \
     mv jai_core-1.1.3.jar jai_core.jar && \
     chown -R ${NB_UID}:${NB_GID} /opt/ijava-jars
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
-        postgresql-client
+
 USER ${NB_UID}
 RUN cd /tmp && \
     curl -L https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip -o ijava.zip && \

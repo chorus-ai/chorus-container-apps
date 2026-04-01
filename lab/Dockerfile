@@ -31,6 +31,7 @@ RUN cd /tmp && \
         libpng-dev \
         librsvg2-dev \
         libtiff5-dev \
+        libreoffice \
         nano \
         pandoc \
         postgresql-client \

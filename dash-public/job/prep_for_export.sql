@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS public.all_metadata_expanded;
 
 CREATE TABLE public.all_metadata_expanded AS (
 SELECT     name,
-           container,
+           replace(container, '-temp', '') AS container,
            last_modified::timestamp AS last_modified,
            size::float AS size,
            creation_time::timestamp AS creation_time,

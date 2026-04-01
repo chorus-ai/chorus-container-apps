@@ -1,21 +1,26 @@
 """
 dash-public weekly refresh job
 
-Scans metadata from Azure File Share using Azure SDK, loads it into Postgres,
-runs SQL transformations, and exports CSV files to the shared data volume.
+Scans metadata from all Azure File Shares in a storage account using Azure SDK,
+loads it into Postgres, runs SQL transformations, and exports CSV files.
+
+Each site (tufts, mgh, columbia, etc.) has its own file share within the storage account.
+This script scans all file shares and treats each share name as a "container".
 
 Adapted from:
     - dash/read_blob_chorus.py   (metadata loading + Postgres staging)
   - dash-public/export_dash_src.sh (SQL queries + CSV export)
 
 Environment variables required:
-  AZURE_STORAGE_ACCOUNT   - Azure storage account name
-  AZURE_STORAGE_KEY       - Azure storage account key (or use AZURE_STORAGE_CONNECTION_STRING)
-  AZURE_FILE_SHARE_NAME   - Name of the Azure file share to scan (default: choruspilot)
-  PGHOST                  - Postgres host  (default: localhost)
-  PGPORT                  - Postgres port  (default: 5432)
-  PGUSER                  - Postgres user  (default: postgres)
-  DATA_DIR                - Output directory for CSVs (default: /app/data)
+  AZURE_STORAGE_ACCOUNT      - Azure storage account name (e.g., "choruspilot")
+  AZURE_STORAGE_KEY          - Azure storage account key (or use AZURE_STORAGE_CONNECTION_STRING)
+  AZURE_FILE_SHARE_PREFIX    - Optional: Only scan shares starting with this prefix (default: scan all)
+  MAX_WORKERS                - Number of parallel workers (default: 8)
+  BATCH_SIZE                 - Files per batch for memory management (default: 10000)
+  PGHOST                     - Postgres host  (default: localhost)
+  PGPORT                     - Postgres port  (default: 5432)
+  PGUSER                     - Postgres user  (default: postgres)
+  DATA_DIR                   - Output directory for CSVs (default: /app/data)
 """
 
 import csv
@@ -23,7 +28,6 @@ import os
 import subprocess
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
 from tempfile import NamedTemporaryFile
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
@@ -37,7 +41,10 @@ from azure.storage.fileshare import ShareServiceClient
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT")
 AZURE_STORAGE_KEY = os.environ.get("AZURE_STORAGE_KEY")
 AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
-AZURE_FILE_SHARE_NAME = os.environ.get("AZURE_FILE_SHARE_NAME", "choruspilot")
+
+# Optional: Filter file shares by prefix (e.g., only scan shares starting with "site-")
+# If not set, scans all file shares in the storage account
+AZURE_FILE_SHARE_PREFIX = os.environ.get("AZURE_FILE_SHARE_PREFIX", "")
 
 # Performance tuning
 MAX_WORKERS = int(os.environ.get("MAX_WORKERS", "8"))  # For 4 vCPU, 8-12 threads is optimal
@@ -90,10 +97,10 @@ def psql_scalar(database, sql):
 # ---------------------------------------------------------------------------
 
 def stage_scan_fileshare():
-    print("\n=== Stage 1: Scanning file metadata from Azure File Share ===")
+    print("\n=== Stage 1: Scanning file metadata from Azure File Shares ===")
     print(f"  Performance settings: MAX_WORKERS={MAX_WORKERS}, BATCH_SIZE={BATCH_SIZE:,}")
 
-    # Initialize Azure File Share client
+    # Initialize Azure Storage Service client
     if AZURE_STORAGE_CONNECTION_STRING:
         share_service_client = ShareServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
     elif AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY:
@@ -101,8 +108,6 @@ def stage_scan_fileshare():
         share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY)
     else:
         raise ValueError("Either AZURE_STORAGE_CONNECTION_STRING or both AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY must be set")
-
-    share_client = share_service_client.get_share_client(AZURE_FILE_SHARE_NAME)
 
     # Re-create the raw metadata table
     psql("ohdsi", sql="DROP TABLE IF EXISTS public.all_metadata;")
@@ -122,13 +127,16 @@ def stage_scan_fileshare():
     total_files = 0
     tmp_csv = None
 
-    def process_item_to_record(item, directory_path, container_name):
+    def process_item_to_record(item, directory_path, share_name):
         """Convert a file item to a record dict - OPTIMIZED: no extra API calls!"""
-        # Build full path
-        full_path = f"{directory_path}/{item['name']}" if directory_path else item['name']
-
-        # Extract relative name (remove container prefix)
-        relative_name = full_path.split('/', 1)[1] if '/' in full_path else item['name']
+        # Build full path within the share
+        if directory_path:
+            full_path = f"{directory_path}/{item['name']}"
+            # Name is the path within the share
+            relative_name = full_path
+        else:
+            # Root-level file in share
+            relative_name = item['name']
 
         # Get properties from the item dict (already available from listing!)
         file_size = item.get('size', 0)
@@ -148,15 +156,15 @@ def stage_scan_fileshare():
 
         return {
             'name': relative_name,
-            'container': container_name,
+            'container': share_name,  # Container = file share name (e.g., "tufts", "mgh")
             'last_modified': last_modified,
             'size': str(file_size),
             'creation_time': creation_time,
         }
 
-    def scan_directory_recursive(directory_path, container_name, batch_buffer):
+    def scan_directory_recursive(share_client, directory_path, share_name, batch_buffer):
         """
-        Recursively scan directory and yield batches to queue.
+        Recursively scan directory within a file share.
         MEMORY-SAFE: Flushes to queue every BATCH_SIZE files instead of collecting all.
         """
         try:
@@ -172,43 +180,45 @@ def stage_scan_fileshare():
                         subdirs.append(full_path)
                     else:
                         # Process file and add to batch buffer
-                        record = process_item_to_record(item, directory_path, container_name)
+                        record = process_item_to_record(item, directory_path, share_name)
                         batch_buffer.append(record)
 
                         # Flush batch if it reaches BATCH_SIZE
                         if len(batch_buffer) >= BATCH_SIZE:
-                            result_queue.put(('batch', list(batch_buffer), container_name))
+                            result_queue.put(('batch', list(batch_buffer), share_name))
                             batch_buffer.clear()
 
                 except Exception as e:
-                    print(f"    WARNING: Cannot access item in {directory_path}: {e}", file=sys.stderr)
+                    print(f"    WARNING [{share_name}]: Cannot access item in {directory_path}: {e}", file=sys.stderr)
 
             # Recursively process subdirectories
             for subdir_path in subdirs:
-                scan_directory_recursive(subdir_path, container_name, batch_buffer)
+                scan_directory_recursive(share_client, subdir_path, share_name, batch_buffer)
 
         except Exception as e:
-            print(f"    WARNING: Cannot scan directory {directory_path}: {e}", file=sys.stderr)
+            print(f"    WARNING [{share_name}]: Cannot scan directory {directory_path}: {e}", file=sys.stderr)
 
-    def process_container_worker(dir_info):
-        """Worker function - scans a container and streams batches to queue."""
-        directory_path, container_name = dir_info
+    def process_share_worker(share_name):
+        """Worker function - scans an entire file share and streams batches to queue."""
         batch_buffer = []
 
         try:
-            # Scan the entire container tree
-            scan_directory_recursive(directory_path, container_name, batch_buffer)
+            # Get client for this specific file share
+            share_client = share_service_client.get_share_client(share_name)
+
+            # Scan the entire share starting from root
+            scan_directory_recursive(share_client, "", share_name, batch_buffer)
 
             # Flush any remaining files in buffer
             if batch_buffer:
-                result_queue.put(('batch', batch_buffer, container_name))
+                result_queue.put(('batch', batch_buffer, share_name))
 
-            # Signal this container is complete
-            result_queue.put(('done', container_name, None))
+            # Signal this share is complete
+            result_queue.put(('done', share_name, None))
 
         except Exception as e:
-            print(f"    ERROR processing container {container_name}: {e}", file=sys.stderr)
-            result_queue.put(('error', container_name, str(e)))
+            print(f"    ERROR processing file share {share_name}: {e}", file=sys.stderr)
+            result_queue.put(('error', share_name, str(e)))
 
     try:
         with NamedTemporaryFile(mode="w", newline="", suffix=".csv", delete=False) as tmp:
@@ -216,84 +226,70 @@ def stage_scan_fileshare():
             writer = csv.writer(tmp)
             writer.writerow(["file_id", "name", "container", "last_modified", "size", "creation_time"])
 
-            print("  Discovering top-level containers...")
+            print(f"  Discovering file shares in storage account '{AZURE_STORAGE_ACCOUNT}'...")
 
-            # Get top-level directories
-            root_dir_client = share_client.get_directory_client("")
-            root_items = root_dir_client.list_directories_and_files()
+            # List all file shares in the storage account
+            all_shares = share_service_client.list_shares()
+            file_shares = []
 
-            root_dirs = []
-            root_files_count = 0
+            for share in all_shares:
+                share_name = share['name']
 
-            for item in root_items:
-                if item['is_directory']:
-                    # Top-level container
-                    container_name = item['name']
-                    root_dirs.append((item['name'], container_name))
-                else:
-                    # Root-level file (rare, but handle it)
-                    record = process_item_to_record(item, "", "root")
-                    writer.writerow([
-                        total_files,
-                        record['name'],
-                        record['container'],
-                        record['last_modified'],
-                        record['size'],
-                        record['creation_time'],
-                    ])
-                    total_files += 1
-                    root_files_count += 1
+                # Filter by prefix if specified
+                if AZURE_FILE_SHARE_PREFIX and not share_name.startswith(AZURE_FILE_SHARE_PREFIX):
+                    print(f"  Skipping share '{share_name}' (doesn't match prefix '{AZURE_FILE_SHARE_PREFIX}')")
+                    continue
 
-            if root_files_count > 0:
-                print(f"  Found {root_files_count:,} root-level files")
+                file_shares.append(share_name)
 
-            if not root_dirs:
-                print("  No containers found to scan")
-            else:
-                print(f"  Found {len(root_dirs)} containers, starting parallel scan with {MAX_WORKERS} workers...")
+            if not file_shares:
+                print(f"  No file shares found{' matching prefix' if AZURE_FILE_SHARE_PREFIX else ''}")
+                return
 
-                # Start worker threads
-                containers_completed = 0
-                containers_total = len(root_dirs)
+            print(f"  Found {len(file_shares)} file shares to scan: {', '.join(file_shares)}")
+            print(f"  Starting parallel scan with {MAX_WORKERS} workers...")
 
-                with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                    # Submit all container scan jobs
-                    for dir_info in root_dirs:
-                        executor.submit(process_container_worker, dir_info)
+            # Start worker threads
+            shares_completed = 0
+            shares_total = len(file_shares)
 
-                    # Process results from queue as they arrive
-                    while containers_completed < containers_total:
-                        msg_type, data, extra = result_queue.get()
+            with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                # Submit all file share scan jobs
+                for share_name in file_shares:
+                    executor.submit(process_share_worker, share_name)
 
-                        if msg_type == 'batch':
-                            # Write batch to CSV
-                            batch_records = data
-                            container_name = extra
+                # Process results from queue as they arrive
+                while shares_completed < shares_total:
+                    msg_type, data, extra = result_queue.get()
 
-                            for record in batch_records:
-                                writer.writerow([
-                                    total_files,
-                                    record['name'],
-                                    record['container'],
-                                    record['last_modified'],
-                                    record['size'],
-                                    record['creation_time'],
-                                ])
-                                total_files += 1
+                    if msg_type == 'batch':
+                        # Write batch to CSV
+                        batch_records = data
 
-                            if total_files % 100_000 == 0:
-                                print(f"    Progress: {total_files:,} files scanned...")
+                        for record in batch_records:
+                            writer.writerow([
+                                total_files,
+                                record['name'],
+                                record['container'],
+                                record['last_modified'],
+                                record['size'],
+                                record['creation_time'],
+                            ])
+                            total_files += 1
 
-                        elif msg_type == 'done':
-                            container_name = data
-                            containers_completed += 1
-                            print(f"    ✓ Completed container: {container_name} ({containers_completed}/{containers_total})")
+                        if total_files % 100_000 == 0:
+                            print(f"    Progress: {total_files:,} files scanned...")
 
-                        elif msg_type == 'error':
-                            container_name = data
-                            error_msg = extra
-                            containers_completed += 1
-                            print(f"    ✗ Failed container: {container_name} - {error_msg}", file=sys.stderr)
+                    elif msg_type == 'done':
+                        share_name = data
+                        shares_completed += 1
+                        print(f"    ✓ Completed share: {share_name} ({shares_completed}/{shares_total})")
+
+                    elif msg_type == 'error':
+                        share_name = data
+                        error_msg = extra
+                        shares_completed += 1
+                        print(f"    ✗ Failed share: {share_name} - {error_msg}", file=sys.stderr)
 
         print(f"\n  Writing {total_files:,} records to database...")
         psql("ohdsi", copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")

@@ -1,7 +1,7 @@
 """
 dash-public weekly refresh job
 
-Scans metadata from the mounted CHoRUS file share, loads it into Postgres,
+Scans metadata from Azure File Share using Azure SDK, loads it into Postgres,
 runs SQL transformations, and exports CSV files to the shared data volume.
 
 Adapted from:
@@ -9,11 +9,13 @@ Adapted from:
   - dash-public/export_dash_src.sh (SQL queries + CSV export)
 
 Environment variables required:
-    PILOT_ROOT      - Root of CHoRUS file share to scan (default: /choruspilot)
-  PGHOST          - Postgres host  (default: localhost)
-  PGPORT          - Postgres port  (default: 5432)
-  PGUSER          - Postgres user  (default: postgres)
-  DATA_DIR        - Output directory for CSVs (default: /app/data)
+  AZURE_STORAGE_ACCOUNT   - Azure storage account name
+  AZURE_STORAGE_KEY       - Azure storage account key (or use AZURE_STORAGE_CONNECTION_STRING)
+  AZURE_FILE_SHARE_NAME   - Name of the Azure file share to scan (default: choruspilot)
+  PGHOST                  - Postgres host  (default: localhost)
+  PGPORT                  - Postgres port  (default: 5432)
+  PGUSER                  - Postgres user  (default: postgres)
+  DATA_DIR                - Output directory for CSVs (default: /app/data)
 """
 
 import csv
@@ -23,13 +25,25 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from concurrent.futures import ThreadPoolExecutor
+from queue import Queue
+from azure.storage.fileshare import ShareServiceClient
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
-PILOT_ROOT = os.environ.get("PILOT_ROOT", "/choruspilot")
+# Azure Storage credentials
+AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT")
+AZURE_STORAGE_KEY = os.environ.get("AZURE_STORAGE_KEY")
+AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+AZURE_FILE_SHARE_NAME = os.environ.get("AZURE_FILE_SHARE_NAME", "choruspilot")
 
+# Performance tuning
+MAX_WORKERS = int(os.environ.get("MAX_WORKERS", "8"))  # For 4 vCPU, 8-12 threads is optimal
+BATCH_SIZE = int(os.environ.get("BATCH_SIZE", "10000"))  # Flush to CSV every N files
+
+# Postgres configuration
 PGHOST = os.environ.get("PGHOST", "localhost")
 PGPORT = os.environ.get("PGPORT", "5432")
 PGUSER = os.environ.get("PGUSER", "postgres")
@@ -76,11 +90,19 @@ def psql_scalar(database, sql):
 # ---------------------------------------------------------------------------
 
 def stage_scan_fileshare():
-    print("\n=== Stage 1: Scanning file metadata from CHoRUS file share ===")
-    root = Path(PILOT_ROOT)
+    print("\n=== Stage 1: Scanning file metadata from Azure File Share ===")
+    print(f"  Performance settings: MAX_WORKERS={MAX_WORKERS}, BATCH_SIZE={BATCH_SIZE:,}")
 
-    if not root.exists() or not root.is_dir():
-        raise FileNotFoundError(f"PILOT_ROOT does not exist or is not a directory: {PILOT_ROOT}")
+    # Initialize Azure File Share client
+    if AZURE_STORAGE_CONNECTION_STRING:
+        share_service_client = ShareServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+    elif AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY:
+        account_url = f"https://{AZURE_STORAGE_ACCOUNT}.file.core.windows.net"
+        share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY)
+    else:
+        raise ValueError("Either AZURE_STORAGE_CONNECTION_STRING or both AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY must be set")
+
+    share_client = share_service_client.get_share_client(AZURE_FILE_SHARE_NAME)
 
     # Re-create the raw metadata table
     psql("ohdsi", sql="DROP TABLE IF EXISTS public.all_metadata;")
@@ -95,76 +117,98 @@ def stage_scan_fileshare():
         );
     """)
 
+    # Shared state - use Queue for thread-safe batch passing
+    result_queue = Queue(maxsize=MAX_WORKERS * 2)  # Bounded queue to prevent memory explosion
     total_files = 0
     tmp_csv = None
-    root_str = str(root)
 
-    def scan_directory(dir_path, rel_path=""):
-        """Recursively scan directory using os.scandir for maximum performance."""
-        nonlocal total_files
+    def process_item_to_record(item, directory_path, container_name):
+        """Convert a file item to a record dict - OPTIMIZED: no extra API calls!"""
+        # Build full path
+        full_path = f"{directory_path}/{item['name']}" if directory_path else item['name']
 
-        # Extract container from relative path
-        if rel_path:
-            first_sep = rel_path.find(os.sep)
-            if first_sep > 0:
-                container = rel_path[:first_sep]
-                name_prefix = rel_path[first_sep+1:] + os.sep
-            elif first_sep == 0:
-                # Path starts with separator
-                next_sep = rel_path.find(os.sep, 1)
-                if next_sep > 0:
-                    container = rel_path[1:next_sep]
-                    name_prefix = rel_path[next_sep+1:] + os.sep if next_sep < len(rel_path) - 1 else ""
-                else:
-                    container = rel_path[1:]
-                    name_prefix = ""
-            else:
-                container = rel_path
-                name_prefix = ""
+        # Extract relative name (remove container prefix)
+        relative_name = full_path.split('/', 1)[1] if '/' in full_path else item['name']
+
+        # Get properties from the item dict (already available from listing!)
+        file_size = item.get('size', 0)
+
+        # Handle timestamp properties
+        last_modified_prop = item.get('last_modified')
+        if last_modified_prop:
+            last_modified = last_modified_prop.strftime("%Y-%m-%dT%H:%M:%SZ") if hasattr(last_modified_prop, 'strftime') else str(last_modified_prop)
         else:
-            container = "unknown"
-            name_prefix = ""
+            last_modified = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        creation_time_prop = item.get('creation_time')
+        if creation_time_prop:
+            creation_time = creation_time_prop.strftime("%Y-%m-%dT%H:%M:%SZ") if hasattr(creation_time_prop, 'strftime') else str(creation_time_prop)
+        else:
+            creation_time = last_modified
+
+        return {
+            'name': relative_name,
+            'container': container_name,
+            'last_modified': last_modified,
+            'size': str(file_size),
+            'creation_time': creation_time,
+        }
+
+    def scan_directory_recursive(directory_path, container_name, batch_buffer):
+        """
+        Recursively scan directory and yield batches to queue.
+        MEMORY-SAFE: Flushes to queue every BATCH_SIZE files instead of collecting all.
+        """
+        try:
+            dir_client = share_client.get_directory_client(directory_path) if directory_path else share_client.get_directory_client("")
+            items = dir_client.list_directories_and_files()
+
+            subdirs = []
+            for item in items:
+                try:
+                    if item['is_directory']:
+                        # Build full path for subdirectory
+                        full_path = f"{directory_path}/{item['name']}" if directory_path else item['name']
+                        subdirs.append(full_path)
+                    else:
+                        # Process file and add to batch buffer
+                        record = process_item_to_record(item, directory_path, container_name)
+                        batch_buffer.append(record)
+
+                        # Flush batch if it reaches BATCH_SIZE
+                        if len(batch_buffer) >= BATCH_SIZE:
+                            result_queue.put(('batch', list(batch_buffer), container_name))
+                            batch_buffer.clear()
+
+                except Exception as e:
+                    print(f"    WARNING: Cannot access item in {directory_path}: {e}", file=sys.stderr)
+
+            # Recursively process subdirectories
+            for subdir_path in subdirs:
+                scan_directory_recursive(subdir_path, container_name, batch_buffer)
+
+        except Exception as e:
+            print(f"    WARNING: Cannot scan directory {directory_path}: {e}", file=sys.stderr)
+
+    def process_container_worker(dir_info):
+        """Worker function - scans a container and streams batches to queue."""
+        directory_path, container_name = dir_info
+        batch_buffer = []
 
         try:
-            with os.scandir(dir_path) as entries:
-                for entry in entries:
-                    try:
-                        # Use cached stat from DirEntry
-                        is_dir = entry.is_dir(follow_symlinks=False)
+            # Scan the entire container tree
+            scan_directory_recursive(directory_path, container_name, batch_buffer)
 
-                        if is_dir:
-                            # Recurse into subdirectory
-                            new_rel = os.path.join(rel_path, entry.name) if rel_path else entry.name
-                            scan_directory(entry.path, new_rel)
-                        else:
-                            # Process file
-                            stat_info = entry.stat(follow_symlinks=False)
+            # Flush any remaining files in buffer
+            if batch_buffer:
+                result_queue.put(('batch', batch_buffer, container_name))
 
-                            # Build file name
-                            name = name_prefix + entry.name if name_prefix else entry.name
+            # Signal this container is complete
+            result_queue.put(('done', container_name, None))
 
-                            # Format timestamp
-                            last_modified = datetime.fromtimestamp(stat_info.st_mtime, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-                            writer.writerow([
-                                total_files,
-                                name,
-                                container,
-                                last_modified,
-                                str(stat_info.st_size),
-                                last_modified,  # creation_time = last_modified on Linux
-                            ])
-                            total_files += 1
-
-                            if total_files % 100_000 == 0:
-                                print(f"    {total_files} files scanned...")
-
-                    except (PermissionError, OSError) as e:
-                        print(f"    WARNING: Cannot access {entry.path}: {e}", file=sys.stderr)
-                        continue
-
-        except (PermissionError, OSError) as e:
-            print(f"    WARNING: Cannot scan directory {dir_path}: {e}", file=sys.stderr)
+        except Exception as e:
+            print(f"    ERROR processing container {container_name}: {e}", file=sys.stderr)
+            result_queue.put(('error', container_name, str(e)))
 
     try:
         with NamedTemporaryFile(mode="w", newline="", suffix=".csv", delete=False) as tmp:
@@ -172,15 +216,93 @@ def stage_scan_fileshare():
             writer = csv.writer(tmp)
             writer.writerow(["file_id", "name", "container", "last_modified", "size", "creation_time"])
 
-            # Start recursive scan from root
-            scan_directory(root_str)
+            print("  Discovering top-level containers...")
 
+            # Get top-level directories
+            root_dir_client = share_client.get_directory_client("")
+            root_items = root_dir_client.list_directories_and_files()
+
+            root_dirs = []
+            root_files_count = 0
+
+            for item in root_items:
+                if item['is_directory']:
+                    # Top-level container
+                    container_name = item['name']
+                    root_dirs.append((item['name'], container_name))
+                else:
+                    # Root-level file (rare, but handle it)
+                    record = process_item_to_record(item, "", "root")
+                    writer.writerow([
+                        total_files,
+                        record['name'],
+                        record['container'],
+                        record['last_modified'],
+                        record['size'],
+                        record['creation_time'],
+                    ])
+                    total_files += 1
+                    root_files_count += 1
+
+            if root_files_count > 0:
+                print(f"  Found {root_files_count:,} root-level files")
+
+            if not root_dirs:
+                print("  No containers found to scan")
+            else:
+                print(f"  Found {len(root_dirs)} containers, starting parallel scan with {MAX_WORKERS} workers...")
+
+                # Start worker threads
+                containers_completed = 0
+                containers_total = len(root_dirs)
+
+                with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                    # Submit all container scan jobs
+                    for dir_info in root_dirs:
+                        executor.submit(process_container_worker, dir_info)
+
+                    # Process results from queue as they arrive
+                    while containers_completed < containers_total:
+                        msg_type, data, extra = result_queue.get()
+
+                        if msg_type == 'batch':
+                            # Write batch to CSV
+                            batch_records = data
+                            container_name = extra
+
+                            for record in batch_records:
+                                writer.writerow([
+                                    total_files,
+                                    record['name'],
+                                    record['container'],
+                                    record['last_modified'],
+                                    record['size'],
+                                    record['creation_time'],
+                                ])
+                                total_files += 1
+
+                            if total_files % 100_000 == 0:
+                                print(f"    Progress: {total_files:,} files scanned...")
+
+                        elif msg_type == 'done':
+                            container_name = data
+                            containers_completed += 1
+                            print(f"    ✓ Completed container: {container_name} ({containers_completed}/{containers_total})")
+
+                        elif msg_type == 'error':
+                            container_name = data
+                            error_msg = extra
+                            containers_completed += 1
+                            print(f"    ✗ Failed container: {container_name} - {error_msg}", file=sys.stderr)
+
+        print(f"\n  Writing {total_files:,} records to database...")
         psql("ohdsi", copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")
+
     finally:
         if tmp_csv and os.path.exists(tmp_csv):
             os.remove(tmp_csv)
 
-    print(f"  Total files loaded: {total_files}")
+    print(f"  Total files loaded: {total_files:,}")
 
 
 # ---------------------------------------------------------------------------

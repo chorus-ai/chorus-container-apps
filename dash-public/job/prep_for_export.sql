@@ -21,3 +21,244 @@ SELECT     name,
            CURRENT_TIMESTAMP AS loaded_at
     FROM public.all_metadata WHERE size::float > 0
 );
+
+
+DROP TABLE IF EXISTS public.by_site_metadata;
+
+CREATE TABLE public.by_site_metadata AS (
+WITH  bs_tmp AS (
+    SELECT container,
+           sum(size) filter (WHERE mode = 'OMOP')  AS OMOP_SIZE,
+           sum(size) filter (WHERE mode = 'WAVE')  AS WAVE_SIZE,
+           sum(size) filter (WHERE mode = 'IMAGE')  AS IMAGE_SIZE,
+           sum(size) filter (WHERE mode = 'NOTE')  AS NOTE_SIZE,
+           (SELECT sum(size) FROM public.all_metadata_expanded WHERE mode = 'OMOP') AS TOTAL_OMOP_SIZE,
+           (SELECT sum(size) FROM public.all_metadata_expanded WHERE mode = 'WAVE') AS TOTAL_WAVE_SIZE,
+           (SELECT sum(size) FROM public.all_metadata_expanded WHERE mode = 'IMAGE') AS TOTAL_IMAGE_SIZE,
+           (SELECT sum(size) FROM public.all_metadata_expanded WHERE mode = 'NOTE') AS TOTAL_NOTE_SIZE,
+           count(*) filter (WHERE mode = 'OMOP')  AS OMOP_FILES,
+           count(*) filter (WHERE mode = 'WAVE')  AS WAVE_FILES,
+           count(*) filter (WHERE mode = 'IMAGE')  AS IMAGE_FILES,
+           count(*) filter (WHERE mode = 'NOTE')  AS NOTE_FILES,
+           ARRAY_AGG(DISTINCT(extension)) filter (WHERE mode = 'WAVE') AS WAVEFORM_EXT,
+           ARRAY_AGG(DISTINCT(extension)) filter (WHERE mode = 'IMAGE') AS IMAGE_EXT,
+           MAX(last_modified) AS MOST_RECENT_UPLOAD,
+           MAX(last_modified)  filter (WHERE mode = 'OMOP')  AS MOST_RECENT_OMOP,
+           MAX(last_modified)  filter (WHERE mode = 'WAVE')  AS MOST_RECENT_WAVE,
+           MAX(last_modified)  filter (WHERE mode = 'IMAGE')  AS MOST_RECENT_IMAGE,
+           MAX(last_modified)  filter (WHERE mode = 'NOTE')  AS MOST_RECENT_NOTE,
+           MAX(loaded_at) AS LOADED_AT
+    FROM public.all_metadata_expanded
+    GROUP BY container)
+    SELECT container,
+           COALESCE(ROUND(OMOP_SIZE::numeric/1000000000, 2), 0) AS OMOP_SIZE,
+           COALESCE(ROUND(WAVE_SIZE::numeric/1000000000, 2), 0) AS WAVE_SIZE,
+           COALESCE(ROUND(IMAGE_SIZE::numeric/1000000000, 2), 0) AS IMAGE_SIZE,
+           COALESCE(ROUND(NOTE_SIZE::numeric/1000000000, 2), 0) AS NOTE_SIZE,
+           OMOP_FILES,
+           WAVE_FILES,
+           IMAGE_FILES,
+           NOTE_FILES,
+           ARRAY_TO_STRING(WAVEFORM_EXT, ';') AS WAVEFORM_EXT,
+           ARRAY_TO_STRING(IMAGE_EXT, ';') AS IMAGE_EXT,
+           MOST_RECENT_UPLOAD,
+           COALESCE(ROUND(((OMOP_SIZE / TOTAL_OMOP_SIZE) * 100)::numeric, 2), 0) AS OMOP_REL,
+           COALESCE(ROUND(((WAVE_SIZE / TOTAL_WAVE_SIZE) * 100)::numeric, 2), 0) AS WAVEFORM_REL,
+           COALESCE(ROUND(((IMAGE_SIZE / TOTAL_IMAGE_SIZE) * 100)::numeric, 2), 0) AS IMAGE_REL,
+           COALESCE(ROUND(((NOTE_SIZE / TOTAL_NOTE_SIZE) * 100)::numeric, 2), 0) AS NOTE_REL,
+           MOST_RECENT_OMOP,
+           MOST_RECENT_WAVE,
+           MOST_RECENT_IMAGE,
+           MOST_RECENT_NOTE,
+           LOADED_AT
+    FROM bs_tmp
+);
+
+DROP TABLE IF EXISTS public.all_metadata_sample;
+
+CREATE TABLE public.all_metadata_sample AS (
+WITH am_sample AS (
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'columbia' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'columbia' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'columbia' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'columbia' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'duke' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'duke' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'duke' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'duke' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'emory' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'emory' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'emory' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'emory' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mayo' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mayo' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mayo' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mayo' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mgh' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mgh' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mgh' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mgh' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mit' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mit' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mit' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'mit' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'nationwide' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'nationwide' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'nationwide' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'nationwide' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'pittsburgh' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'pittsburgh' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'pittsburgh' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'pittsburgh' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'seattle' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'seattle' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'seattle' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'seattle' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'tufts' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'tufts' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'tufts' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'tufts' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucla' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucla' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucla' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucla' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucsf' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucsf' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucsf' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'ucsf' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'florida' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'florida' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'florida' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'florida' AND mode = 'NOTE' LIMIT 1000)
+    UNION
+    --
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'virginia' AND mode = 'OMOP' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'virginia' AND mode = 'WAVE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'virginia' AND mode = 'IMAGE' LIMIT 1000)
+    UNION
+    (SELECT * FROM public.all_metadata_expanded
+    WHERE container = 'virginia' AND mode = 'NOTE' LIMIT 1000)
+                  )
+SELECT * FROM am_sample
+);
+

@@ -53,6 +53,7 @@ RUN mamba install --yes \
         jupyter-rsession-proxy \
         r-renv \
         r-rsvg \
+        r-rpostgres \
         r-rjava && \
     mamba clean --all -f -y && \
     sed -i 1,14d /opt/conda/lib/R/etc/ldpaths && \

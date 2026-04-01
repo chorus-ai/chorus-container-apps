@@ -6,6 +6,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY *.sql /app/
-COPY job/refresh_data.py /app/refresh_data.py
+COPY refresh_data.py /app/refresh_data.py
 
 ENTRYPOINT ["python3", "/app/refresh_data.py"]

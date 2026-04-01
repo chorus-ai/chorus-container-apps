@@ -1,7 +1,7 @@
 FROM ghcr.io/chorus-ai/chorus-etl:main
 LABEL maintainer="Tufts Medical Center <jared.houghtaling@tuftsmedicine.org>"
 USER root
-
+# Update for new builds
 RUN Rscript -e 'remotes::install_version("renv", "1.0.2")'
 COPY renv.lock .
 RUN Rscript -e 'renv::restore()'

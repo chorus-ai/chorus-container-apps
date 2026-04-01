@@ -2,23 +2,14 @@ DROP TABLE IF EXISTS public.allfiles;
 CREATE TABLE public.allfiles AS (SELECT * FROM public.all_metadata_expanded);
 ALTER TABLE public.allfiles ADD COLUMN person text;
 ALTER TABLE public.allfiles RENAME COLUMN mode TO modality;
--- logic to extract unique persons from per-site deliveries
+-- logic to extract unique persons by finding parent directory of waveform(s)/image(s)
 UPDATE public.allfiles
 SET person = CASE
-       WHEN container = 'columbia' THEN split_part(name, '/', 2)
-       WHEN container = 'duke' AND modality = 'WAVE' THEN split_part(name, '/', 1)
-       WHEN container = 'duke' AND modality = 'IMAGE' THEN split_part(name, '/', 2)
-       WHEN container = 'emory' THEN split_part(name, '/', 2)
-       WHEN container = 'mayo' THEN split_part(split_part(name, '/', 2), '_', 1) -- No person in path
-       WHEN container = 'mgh' THEN split_part(name, '/', 1) -- path leads with person for non-OMOP data
-       WHEN container = 'mit' THEN split_part(name, '/', 2)
-       WHEN container = 'nationwide' THEN split_part(name, '/', 1)
-       WHEN container = 'pitts' THEN split_part(name, '/', 3)
-       WHEN container = 'seattle' THEN split_part(name, '/', 1)
-       WHEN container = 'tuft' THEN split_part(name, '/', 2)
-       WHEN container = 'ucla' THEN replace(split_part(name, '/', 1), 'Person', '')
-       WHEN container = 'uflorida' THEN split_part(name, '/', 1)
-       WHEN container = 'uva' THEN split_part(name, '/', 2)
+       WHEN name ~* '.*/waveforms?/.*' THEN
+           (regexp_match(name, '([^/]+)/waveforms?/', 'i'))[1]
+       WHEN name ~* '.*/images?/.*' THEN
+           (regexp_match(name, '([^/]+)/images?/', 'i'))[1]
+       ELSE NULL
        END
 WHERE name IS NOT NULL;
 

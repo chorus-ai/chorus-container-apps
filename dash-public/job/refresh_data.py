@@ -97,42 +97,83 @@ def stage_scan_fileshare():
 
     total_files = 0
     tmp_csv = None
+    root_str = str(root)
+
+    def scan_directory(dir_path, rel_path=""):
+        """Recursively scan directory using os.scandir for maximum performance."""
+        nonlocal total_files
+
+        # Extract container from relative path
+        if rel_path:
+            first_sep = rel_path.find(os.sep)
+            if first_sep > 0:
+                container = rel_path[:first_sep]
+                name_prefix = rel_path[first_sep+1:] + os.sep
+            elif first_sep == 0:
+                # Path starts with separator
+                next_sep = rel_path.find(os.sep, 1)
+                if next_sep > 0:
+                    container = rel_path[1:next_sep]
+                    name_prefix = rel_path[next_sep+1:] + os.sep if next_sep < len(rel_path) - 1 else ""
+                else:
+                    container = rel_path[1:]
+                    name_prefix = ""
+            else:
+                container = rel_path
+                name_prefix = ""
+        else:
+            container = "unknown"
+            name_prefix = ""
+
+        try:
+            with os.scandir(dir_path) as entries:
+                for entry in entries:
+                    try:
+                        # Use cached stat from DirEntry
+                        is_dir = entry.is_dir(follow_symlinks=False)
+
+                        if is_dir:
+                            # Recurse into subdirectory
+                            new_rel = os.path.join(rel_path, entry.name) if rel_path else entry.name
+                            scan_directory(entry.path, new_rel)
+                        else:
+                            # Process file
+                            stat_info = entry.stat(follow_symlinks=False)
+
+                            # Build file name
+                            name = name_prefix + entry.name if name_prefix else entry.name
+
+                            # Format timestamp
+                            last_modified = datetime.fromtimestamp(stat_info.st_mtime, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+                            writer.writerow([
+                                total_files,
+                                name,
+                                container,
+                                last_modified,
+                                str(stat_info.st_size),
+                                last_modified,  # creation_time = last_modified on Linux
+                            ])
+                            total_files += 1
+
+                            if total_files % 100_000 == 0:
+                                print(f"    {total_files} files scanned...")
+
+                    except (PermissionError, OSError) as e:
+                        print(f"    WARNING: Cannot access {entry.path}: {e}", file=sys.stderr)
+                        continue
+
+        except (PermissionError, OSError) as e:
+            print(f"    WARNING: Cannot scan directory {dir_path}: {e}", file=sys.stderr)
+
     try:
         with NamedTemporaryFile(mode="w", newline="", suffix=".csv", delete=False) as tmp:
             tmp_csv = tmp.name
             writer = csv.writer(tmp)
             writer.writerow(["file_id", "name", "container", "last_modified", "size", "creation_time"])
 
-            for path in root.rglob("*"):
-                if not path.is_file():
-                    continue
-
-                rel_path = path.relative_to(root)
-                rel_parts = rel_path.parts
-                if len(rel_parts) > 1:
-                    container = rel_parts[0]
-                    name = "/".join(rel_parts[1:])
-                else:
-                    container = "unknown"
-                    name = rel_parts[0]
-
-                stat = path.stat()
-                last_modified = datetime.fromtimestamp(stat.st_mtime, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-                # Linux ctime is inode change time, not reliable file creation time.
-                creation_time = last_modified
-
-                writer.writerow([
-                    total_files,
-                    name,
-                    container,
-                    last_modified,
-                    str(stat.st_size),
-                    creation_time,
-                ])
-                total_files += 1
-
-                if total_files % 100_000 == 0:
-                    print(f"    {total_files} files scanned...")
+            # Start recursive scan from root
+            scan_directory(root_str)
 
         psql("ohdsi", copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")
     finally:

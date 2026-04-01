@@ -29,6 +29,7 @@ RUN cd /tmp && \
         libfribidi-dev \
         libfreetype6-dev \
         libpng-dev \
+        librsvg2-dev \
         libtiff5-dev \
         nano \
         pandoc \

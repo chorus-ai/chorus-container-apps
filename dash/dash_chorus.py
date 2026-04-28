@@ -29,9 +29,13 @@ def data_load():
     by_site = pd.read_csv(by_site_file)
     sample_file = '/pilot_meta/data/sample.csv'
     df = pd.read_csv(sample_file)
-    return df, by_site
+    by_site_landing_file = '/pilot_meta/data/by_site_landing.csv'
+    by_site_landing = pd.read_csv(by_site_landing_file)
+    sample_landing_file = '/pilot_meta/data/sample_landing.csv'
+    df_landing = pd.read_csv(sample_landing_file)
+    return df, by_site, df_landing, by_site_landing
 
-df, by_site = data_load()
+df, by_site, df_landing, by_site_landing  = data_load()
 
 container_dropdown = html.Div(
     [
@@ -47,10 +51,24 @@ container_dropdown = html.Div(
     ],  className="mb-4",
 )
 
+storage_dropdown = html.Div(
+    [
+        dbc.Label("Select a Storage Container", html_for="storage_dropdown"),
+        dcc.Dropdown(
+            id="storage-dropdown",
+            options=['choruspilot', 'mghb2ailanding'],
+            value='choruspilot',
+            clearable=False,
+            maxHeight=600,
+            optionHeight=50
+        ),
+    ],  className="mb-4",
+)
+
 
 control_panel = dbc.Card(
     dbc.CardBody(
-        [container_dropdown ],
+        [storage_dropdown, container_dropdown],
         className="bg-light",
     ),
     className="mb-4"
@@ -60,8 +78,8 @@ heading = html.H1("CHoRUS Data Delivery Dashboard",className="bg-secondary text-
 
 about_card = dcc.Markdown(
     """
-    The dashboard references files delivered to the choruspilotstorage storage container. It is updated by a
-        job that runs daily; information is thus not real-time, but should be accurate within a 24-hour window.
+    The dashboard references files delivered to the choruspilotstorage and mghb2ailanding storage containers. It is updated by a
+        job that runs weekly; information is thus not real-time, but should be accurate within a seven-day window.
     """)
 
 info = dbc.Accordion([
@@ -69,10 +87,10 @@ info = dbc.Accordion([
 ],  start_collapsed=True)
 
 
-def make_grid_group():
+def make_grid_group(dat):
     grid = dag.AgGrid(
         id="grid-group",
-        rowData=by_site.to_dict("records"),
+        rowData=dat.to_dict("records"),
         columnDefs= [{"field": c} for c in group_table_columns],
         defaultColDef={"filter": True, "floatingFilter": True,  "wrapHeaderText": True, "autoHeaderHeight": True, "initialWidth": 200 },
         dashGridOptions={},
@@ -82,10 +100,10 @@ def make_grid_group():
     return grid
 
 
-def make_grid_all():
+def make_grid_all(dat):
     grid = dag.AgGrid(
         id="grid-all",
-        rowData=df.to_dict("records"),
+        rowData=dat.to_dict("records"),
         columnDefs= [{"field": c} for c in all_table_columns],
         defaultColDef={"filter": True, "floatingFilter": True,  "wrapHeaderText": True, "autoHeaderHeight": True, "initialWidth": 200 },
         dashGridOptions={},
@@ -108,41 +126,69 @@ app.layout = dbc.Container(
                 ],  md=9
             ),
         ]),
-        dbc.Row(dbc.Col([ dcc.Markdown(id="subtitle-1"), make_grid_group()]), className="my-4"),
-        dbc.Row(dbc.Col([ dcc.Markdown(id="subtitle-2"), make_grid_all()]), className="my-4"),
+        dbc.Row(dbc.Col([ dcc.Markdown(id="subtitle-1"), make_grid_group(by_site)]), className="my-4"),
+        dbc.Row(dbc.Col([ dcc.Markdown(id="subtitle-2"), make_grid_all(df)]), className="my-4"),
     ],
     fluid=True,
 )
 
 
 @callback(
+    Output("container-dropdown", "options"),
+    Output("container-dropdown", "value"),
+    Input("storage-dropdown", "value"),
+)
+def update_container_options(storage):
+    source = by_site if storage == "choruspilot" else by_site_landing
+    options = sorted(source["container"].unique())
+    value = options[0] if options else None
+    return options, value
+
+
+@callback(
     Output("grid-group", "dashGridOptions"),
+    Output("grid-group", "rowData"),
+    Output("grid-all", "rowData"),
     Output("grid-all", "filterModel"),
     Output("store-selected-group", "data"),
     Output("store-selected-all", "data"),
-    Input("container-dropdown", "value")
+    Input("container-dropdown", "value"),
+    Input("storage-dropdown", "value")
 )
-def pin_selected_report(container):
-    bsite = by_site[(by_site["container"] == container)]
-    bsite = bsite.fillna('')
+def update_grids(container, storage):
+    if storage == "choruspilot":
+        full_group = by_site.fillna('')
+        full_all = df.fillna('')
+    else:
+        full_group = by_site_landing.fillna('')
+        full_all = df_landing.fillna('')
+
+    bsite = full_group[full_group["container"] == container]
     records_group = bsite.to_dict("records")
-    dff = df[(df["container"] == container)]
-    dff = dff.fillna('')
-    records_all = dff.to_dict("records")
-    return {"pinnedTopRowData": records_group},{'container': {'filterType': 'string', 'type': 'equals', 'filter': container}}, records_group, records_all
+    records_all = full_all[full_all["container"] == container].to_dict("records")
+
+    return (
+        {"pinnedTopRowData": records_group},
+        full_group.to_dict("records"),
+        full_all.to_dict("records"),
+        {"container": {"filterType": "string", "type": "equals", "filter": container}},
+        records_group,
+        records_all,
+    )
 
 
 @callback(
     Output("title", "children"),
     Input("store-selected-group", "data"),
+    Input("storage-dropdown", "value")
 )
-def make_title(data):
+def make_title(data, storage):
     try:
         data = data[0]
-    except:
-        data = by_site[by_site["container"] == 'columbia'].to_dict("records")
+    except (IndexError, KeyError):
+        data = by_site[by_site["container"] == 'columbia'].to_dict("records")[0]
     title = f"""
-    ## Data Delivery Report for {data["container"]} 
+    ## Data Delivery Report for {data["container"]} in {storage} 
     *(Metadata refreshed at {data["loaded_at"]})*
     
     ** For file-specific details, see the per-file grid at the bottom of the page **
@@ -177,9 +223,9 @@ def make_subtitle_2(data):
 )
 def make_mode_gap_card(data):
     try:
-        data=data[0]
-    except:
-        data=by_site[by_site["container"] == 'columbia'].to_dict("records")
+        data = data[0]
+    except (IndexError, KeyError):
+        data = by_site[by_site["container"] == 'columbia'].to_dict("records")[0]
     data = {k: (f"{v}" if v  else '0') for k, v in data.items()}
     modegap = dbc.Row([
         dbc.Col([

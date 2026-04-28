@@ -40,7 +40,8 @@ from azure.storage.fileshare import ShareServiceClient
 # Azure Storage credentials
 AZURE_STORAGE_ACCOUNT = os.environ.get("AZURE_STORAGE_ACCOUNT")
 AZURE_STORAGE_KEY = os.environ.get("AZURE_STORAGE_KEY")
-AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+AZURE_STORAGE_ACCOUNT_LANDING = os.environ.get("AZURE_STORAGE_ACCOUNT_LANDING")
+AZURE_STORAGE_KEY_LANDING = os.environ.get("AZURE_STORAGE_KEY_LANDING")
 
 # Optional: Filter file shares by prefix (e.g., only scan shares starting with "site-")
 # If not set, scans all file shares in the storage account
@@ -55,6 +56,7 @@ PGHOST = os.environ.get("PGHOST", "localhost")
 PGPORT = os.environ.get("PGPORT", "5432")
 PGUSER = os.environ.get("PGUSER", "postgres")
 DATA_DIR = os.environ.get("DATA_DIR", "/app/data")
+DELIV_DIR = os.environ.get("DELIV_DIR", "/app/delivery")
 
 # The 14 OMOP site databases to query for person/note counts
 OMOP_SITE_DBS = [
@@ -96,22 +98,23 @@ def psql_scalar(database, sql):
 # Stage 1 – Scan file share metadata and load into Postgres
 # ---------------------------------------------------------------------------
 
-def stage_scan_fileshare():
+def stage_scan_fileshare(storage="choruspilot"):
     print("\n=== Stage 1: Scanning file metadata from Azure File Shares ===")
     print(f"  Performance settings: MAX_WORKERS={MAX_WORKERS}, BATCH_SIZE={BATCH_SIZE:,}")
 
     # Initialize Azure Storage Service client
-    if AZURE_STORAGE_CONNECTION_STRING:
-        share_service_client = ShareServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-    elif AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY:
+    if storage == "choruspilot":
         account_url = f"https://{AZURE_STORAGE_ACCOUNT}.file.core.windows.net"
         share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY)
+        database = "ohdsi"
     else:
-        raise ValueError("Either AZURE_STORAGE_CONNECTION_STRING or both AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY must be set")
+        account_url = f"https://{AZURE_STORAGE_ACCOUNT_LANDING}.file.core.windows.net"
+        share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY_LANDING)
+        database = "postgres"
 
     # Re-create the raw metadata table
-    psql("ohdsi", sql="DROP TABLE IF EXISTS public.all_metadata;")
-    psql("ohdsi", sql="""
+    psql(database, sql="DROP TABLE IF EXISTS public.all_metadata;")
+    psql(database, sql="""
         CREATE TABLE public.all_metadata(
             file_id integer,
             name text,
@@ -307,11 +310,13 @@ def stage_scan_fileshare():
 
 def stage_sql_transforms():
     print("\n=== Stage 2: Running SQL transformations ===")
-
     # Create all_metadata_expanded + by_site_metadata  (from dash/prep_for_export.sql logic)
     # This is used by get_allfiles_grouped.sql
-    print("  Running prep_for_export.sql on ohdsi...")
+    print("  Running prep_for_export.sql on choruspilot metadata...")
     psql("ohdsi", file="/app/prep_for_export.sql")
+
+    print("  Running prep_for_export.sql on landing metadata...")
+    psql("postgres", file="/app/prep_for_export.sql")
 
     # Create allfiles_grouped (the main heatmap source)
     print("  Running get_allfiles_grouped.sql on ohdsi...")
@@ -345,6 +350,19 @@ def stage_export_csvs():
 
     # chorus_conditions.csv
     psql("merge", copy_to=f"\\copy public.domain_summary_condition TO '{DATA_DIR}/chorus_conditions.csv' CSV HEADER")
+
+    # by_site.csv
+    psql("ohdsi", copy_to=f"\\copy public.by_site_metadata TO '{DELIV_DIR}/by_site.csv' CSV HEADER")
+
+    # sample.csv
+    psql("ohdsi", copy_to=f"\\copy public.all_metadata_sample TO '{DELIV_DIR}/sample.csv' CSV HEADER")
+
+    # by_site_landing.csv
+    psql("postgres", copy_to=f"\\copy public.by_site_metadata TO '{DELIV_DIR}/by_site.csv' CSV HEADER")
+
+    # sample_landing.csv
+    psql("postgres", copy_to=f"\\copy public.all_metadata_sample TO '{DELIV_DIR}/sample.csv' CSV HEADER")
+
 
     # omop_counts.csv  – per-site person and note counts
     print("  Collecting per-site OMOP counts...")
@@ -384,7 +402,8 @@ if __name__ == "__main__":
     print("  dash-public weekly refresh job")
     print("=" * 60)
 
-    stage_scan_fileshare()
+    stage_scan_fileshare("choruspilot")
+    stage_scan_fileshare("mghb2ailanding")
     stage_sql_transforms()
     stage_export_csvs()
     stage_write_timestamp()

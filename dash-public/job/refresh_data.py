@@ -32,6 +32,7 @@ from tempfile import NamedTemporaryFile
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 from azure.storage.fileshare import ShareServiceClient
+from azure.storage.blob import BlobServiceClient
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -98,19 +99,20 @@ def psql_scalar(database, sql):
 # Stage 1 – Scan file share metadata and load into Postgres
 # ---------------------------------------------------------------------------
 
-def stage_scan_fileshare(storage="choruspilot"):
-    print("\n=== Stage 1: Scanning file metadata from Azure File Shares ===")
+def stage_scan_fileshare(storage):
+    print(f"\n=== Stage 1: Scanning file metadata from '{storage}' ===")
     print(f"  Performance settings: MAX_WORKERS={MAX_WORKERS}, BATCH_SIZE={BATCH_SIZE:,}")
 
-    # Initialize Azure Storage Service client
     if storage == "choruspilot":
         account_url = f"https://{AZURE_STORAGE_ACCOUNT}.file.core.windows.net"
         share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY)
         database = "ohdsi"
+        use_blobs = False
     else:
-        account_url = f"https://{AZURE_STORAGE_ACCOUNT_LANDING}.file.core.windows.net"
-        share_service_client = ShareServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY_LANDING)
+        account_url = f"https://{AZURE_STORAGE_ACCOUNT_LANDING}.blob.core.windows.net"
+        blob_service_client = BlobServiceClient(account_url=account_url, credential=AZURE_STORAGE_KEY_LANDING)
         database = "postgres"
+        use_blobs = True
 
     # Re-create the raw metadata table
     psql(database, sql="DROP TABLE IF EXISTS public.all_metadata;")
@@ -125,26 +127,20 @@ def stage_scan_fileshare(storage="choruspilot"):
         );
     """)
 
-    # Shared state - use Queue for thread-safe batch passing
-    result_queue = Queue(maxsize=MAX_WORKERS * 2)  # Bounded queue to prevent memory explosion
+    result_queue = Queue(maxsize=MAX_WORKERS * 2)
     total_files = 0
     tmp_csv = None
 
+    # --- File share helpers ---
+
     def process_item_to_record(item, directory_path, share_name):
-        """Convert a file item to a record dict - OPTIMIZED: no extra API calls!"""
-        # Build full path within the share
         if directory_path:
-            full_path = f"{directory_path}/{item['name']}"
-            # Name is the path within the share
-            relative_name = full_path
+            relative_name = f"{directory_path}/{item['name']}"
         else:
-            # Root-level file in share
             relative_name = item['name']
 
-        # Get properties from the item dict (already available from listing!)
         file_size = item.get('size', 0)
 
-        # Handle timestamp properties
         last_modified_prop = item.get('last_modified')
         if last_modified_prop:
             last_modified = last_modified_prop.strftime("%Y-%m-%dT%H:%M:%SZ") if hasattr(last_modified_prop, 'strftime') else str(last_modified_prop)
@@ -159,69 +155,72 @@ def stage_scan_fileshare(storage="choruspilot"):
 
         return {
             'name': relative_name,
-            'container': share_name,  # Container = file share name (e.g., "tufts", "mgh")
+            'container': share_name,
             'last_modified': last_modified,
             'size': str(file_size),
             'creation_time': creation_time,
         }
 
     def scan_directory_recursive(share_client, directory_path, share_name, batch_buffer):
-        """
-        Recursively scan directory within a file share.
-        MEMORY-SAFE: Flushes to queue every BATCH_SIZE files instead of collecting all.
-        """
         try:
             dir_client = share_client.get_directory_client(directory_path) if directory_path else share_client.get_directory_client("")
-            items = dir_client.list_directories_and_files()
-
             subdirs = []
-            for item in items:
+            for item in dir_client.list_directories_and_files():
                 try:
                     if item['is_directory']:
-                        # Build full path for subdirectory
                         full_path = f"{directory_path}/{item['name']}" if directory_path else item['name']
                         subdirs.append(full_path)
                     else:
-                        # Process file and add to batch buffer
-                        record = process_item_to_record(item, directory_path, share_name)
-                        batch_buffer.append(record)
-
-                        # Flush batch if it reaches BATCH_SIZE
+                        batch_buffer.append(process_item_to_record(item, directory_path, share_name))
                         if len(batch_buffer) >= BATCH_SIZE:
                             result_queue.put(('batch', list(batch_buffer), share_name))
                             batch_buffer.clear()
-
                 except Exception as e:
                     print(f"    WARNING [{share_name}]: Cannot access item in {directory_path}: {e}", file=sys.stderr)
-
-            # Recursively process subdirectories
             for subdir_path in subdirs:
                 scan_directory_recursive(share_client, subdir_path, share_name, batch_buffer)
-
         except Exception as e:
             print(f"    WARNING [{share_name}]: Cannot scan directory {directory_path}: {e}", file=sys.stderr)
 
     def process_share_worker(share_name):
-        """Worker function - scans an entire file share and streams batches to queue."""
         batch_buffer = []
-
         try:
-            # Get client for this specific file share
             share_client = share_service_client.get_share_client(share_name)
-
-            # Scan the entire share starting from root
             scan_directory_recursive(share_client, "", share_name, batch_buffer)
-
-            # Flush any remaining files in buffer
             if batch_buffer:
                 result_queue.put(('batch', batch_buffer, share_name))
-
-            # Signal this share is complete
             result_queue.put(('done', share_name, None))
-
         except Exception as e:
             print(f"    ERROR processing file share {share_name}: {e}", file=sys.stderr)
             result_queue.put(('error', share_name, str(e)))
+
+    # --- Blob storage helpers ---
+
+    def process_blob_container_worker(container_name):
+        batch_buffer = []
+        try:
+            container_client = blob_service_client.get_container_client(container_name)
+            for blob in container_client.list_blobs():
+                last_modified = blob.last_modified.strftime("%Y-%m-%dT%H:%M:%SZ") if blob.last_modified else datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                creation_time = blob.creation_time.strftime("%Y-%m-%dT%H:%M:%SZ") if blob.creation_time else last_modified
+                batch_buffer.append({
+                    'name': blob.name,
+                    'container': container_name,
+                    'last_modified': last_modified,
+                    'size': str(blob.size),
+                    'creation_time': creation_time,
+                })
+                if len(batch_buffer) >= BATCH_SIZE:
+                    result_queue.put(('batch', list(batch_buffer), container_name))
+                    batch_buffer.clear()
+            if batch_buffer:
+                result_queue.put(('batch', batch_buffer, container_name))
+            result_queue.put(('done', container_name, None))
+        except Exception as e:
+            print(f"    ERROR processing blob container {container_name}: {e}", file=sys.stderr)
+            result_queue.put(('error', container_name, str(e)))
+
+    # --- Common scan/queue/CSV logic ---
 
     try:
         with NamedTemporaryFile(mode="w", newline="", suffix=".csv", delete=False) as tmp:
@@ -229,47 +228,42 @@ def stage_scan_fileshare(storage="choruspilot"):
             writer = csv.writer(tmp)
             writer.writerow(["file_id", "name", "container", "last_modified", "size", "creation_time"])
 
-            print(f"  Discovering file shares in storage account '{AZURE_STORAGE_ACCOUNT}'...")
+            if use_blobs:
+                print(f"  Discovering blob containers in storage account '{storage}'...")
+                items_to_scan = [
+                    c['name'] for c in blob_service_client.list_containers()
+                    if not AZURE_FILE_SHARE_PREFIX or c['name'].startswith(AZURE_FILE_SHARE_PREFIX)
+                ]
+                worker_fn = process_blob_container_worker
+                item_label = "container"
+            else:
+                print(f"  Discovering file shares in storage account '{storage}'...")
+                items_to_scan = [
+                    s['name'] for s in share_service_client.list_shares()
+                    if not AZURE_FILE_SHARE_PREFIX or s['name'].startswith(AZURE_FILE_SHARE_PREFIX)
+                ]
+                worker_fn = process_share_worker
+                item_label = "share"
 
-            # List all file shares in the storage account
-            all_shares = share_service_client.list_shares()
-            file_shares = []
-
-            for share in all_shares:
-                share_name = share['name']
-
-                # Filter by prefix if specified
-                if AZURE_FILE_SHARE_PREFIX and not share_name.startswith(AZURE_FILE_SHARE_PREFIX):
-                    print(f"  Skipping share '{share_name}' (doesn't match prefix '{AZURE_FILE_SHARE_PREFIX}')")
-                    continue
-
-                file_shares.append(share_name)
-
-            if not file_shares:
-                print(f"  No file shares found{' matching prefix' if AZURE_FILE_SHARE_PREFIX else ''}")
+            if not items_to_scan:
+                print(f"  No {item_label}s found{' matching prefix' if AZURE_FILE_SHARE_PREFIX else ''}")
                 return
 
-            print(f"  Found {len(file_shares)} file shares to scan: {', '.join(file_shares)}")
+            print(f"  Found {len(items_to_scan)} {item_label}s to scan: {', '.join(items_to_scan)}")
             print(f"  Starting parallel scan with {MAX_WORKERS} workers...")
 
-            # Start worker threads
-            shares_completed = 0
-            shares_total = len(file_shares)
+            items_completed = 0
+            items_total = len(items_to_scan)
 
             with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                # Submit all file share scan jobs
-                for share_name in file_shares:
-                    executor.submit(process_share_worker, share_name)
+                for item_name in items_to_scan:
+                    executor.submit(worker_fn, item_name)
 
-                # Process results from queue as they arrive
-                while shares_completed < shares_total:
+                while items_completed < items_total:
                     msg_type, data, extra = result_queue.get()
 
                     if msg_type == 'batch':
-                        # Write batch to CSV
-                        batch_records = data
-
-                        for record in batch_records:
+                        for record in data:
                             writer.writerow([
                                 total_files,
                                 record['name'],
@@ -279,23 +273,19 @@ def stage_scan_fileshare(storage="choruspilot"):
                                 record['creation_time'],
                             ])
                             total_files += 1
-
                         if total_files % 100_000 == 0:
                             print(f"    Progress: {total_files:,} files scanned...")
 
                     elif msg_type == 'done':
-                        share_name = data
-                        shares_completed += 1
-                        print(f"    ✓ Completed share: {share_name} ({shares_completed}/{shares_total})")
+                        items_completed += 1
+                        print(f"    ✓ Completed {item_label}: {data} ({items_completed}/{items_total})")
 
                     elif msg_type == 'error':
-                        share_name = data
-                        error_msg = extra
-                        shares_completed += 1
-                        print(f"    ✗ Failed share: {share_name} - {error_msg}", file=sys.stderr)
+                        items_completed += 1
+                        print(f"    ✗ Failed {item_label}: {data} - {extra}", file=sys.stderr)
 
         print(f"\n  Writing {total_files:,} records to database...")
-        psql("ohdsi", copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")
+        psql(database, copy_to=f"\\copy public.all_metadata FROM '{tmp_csv}' CSV HEADER")
 
     finally:
         if tmp_csv and os.path.exists(tmp_csv):

@@ -295,7 +295,6 @@ def main() -> None:
         "CHORUS":   os.environ['CHORUS_GROUP_ID'],
         "AWSR_A":   os.environ['AWSR_A_GROUP_ID'],
         "AWSR_G":   os.environ['AWSR_G_GROUP_ID'],
-        "DATATH":   os.environ['DATATH_GROUP_ID'],
         "CHLNG":    os.environ['CHLNG_GROUP_ID'],
         "SFTLNCH":  os.environ['SFTLNCH_GROUP_ID'],
         "AIMAHEAD": os.environ['AIMAHEAD_GROUP_ID'],
@@ -303,7 +302,7 @@ def main() -> None:
     sub_id       = os.environ['SUBSCRIPTION_ID']
     aim_rg       = os.environ['AIM_RES_GRP_ID']
     b2ai_rg      = os.environ['B2AI_RES_GRP_ID']
-    aim_workspace = "mgh-aimahead-e2-mlw"
+    aim_workspace = "mgh-aimahead-2-e2-mlw"
 
     # Stage 1 – group membership + workspace roles
     credential   = build_credential()

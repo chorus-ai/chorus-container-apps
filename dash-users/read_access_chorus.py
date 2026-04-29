@@ -1,212 +1,341 @@
+"""
+read_access_chorus.py
+
+Builds a per-user access matrix across Entra groups, AML workspace roles,
+reverse-proxy JSON ACLs, and Azure container-app lab instances.
+
+Required environment variables:
+  AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_CLIENT_SECRET
+  SUBSCRIPTION_ID
+  CHORUS_GROUP_ID, AWSR_A_GROUP_ID, AWSR_G_GROUP_ID, DATATH_GROUP_ID
+  CHLNG_GROUP_ID, SFTLNCH_GROUP_ID, AIMAHEAD_GROUP_ID
+  B2AI_RES_GRP_ID, AIM_RES_GRP_ID
+  OUTPUT_DIR  (optional, default: /az_users/data)
+"""
+
 import asyncio
 import datetime
 import json
-import numpy as np
 import os
-import pandas as pd
 import re
+
+import pandas as pd
 import requests
-
-from azure.identity import ClientSecretCredential
-from msgraph import GraphServiceClient
-from azure.identity import DefaultAzureCredential
+from azure.identity import ClientSecretCredential, DefaultAzureCredential
 from azure.mgmt.resource import ResourceManagementClient
-
-# The environment variables below should be set
-#os.environ['AZURE_CLIENT_ID']
-#os.environ['AZURE_TENANT_ID']
-#os.environ['AZURE_CLIENT_SECRET']
-#os.environ['SUBSCRIPTION_ID']
-#os.environ['CHORUS_GROUP_ID']
-#os.environ['AWSR_A_GROUP_ID']
-#os.environ['AWSR_G_GROUP_ID']
-#os.environ['DATATH_GROUP_ID']
-#os.environ['CHLNG_GROUP_ID']
-#os.environ['SFTLNCH_GROUP_ID']
-#os.environ['AIMAHEAD_GROUP_ID']
-#os.environ['B2AI_RES_GRP_ID']
-#os.environ['AIM_RES_GRP_ID']
+from msgraph import GraphServiceClient
 
 
-group_dict = {"CHORUS": os.environ['CHORUS_GROUP_ID'],
-                     "AWSR_A": os.environ['AWSR_A_GROUP_ID'],
-                     "AWSR_G": os.environ['AWSR_G_GROUP_ID'],
-                     "DATATH": os.environ['DATATH_GROUP_ID'],
-                     "CHLNG" : os.environ['CHLNG_GROUP_ID'],
-                     "SFTLNCH": os.environ['SFTLNCH_GROUP_ID'],
-                     "AIMAHEAD": os.environ['AIMAHEAD_GROUP_ID']}
+# ---------------------------------------------------------------------------
+# Credential / client helpers
+# ---------------------------------------------------------------------------
 
-# Create a credential object. Used to authenticate requests
-credential = ClientSecretCredential(
-    tenant_id=os.environ['AZURE_TENANT_ID'],
-    client_id=os.environ['AZURE_CLIENT_ID'],
-    client_secret=os.environ['AZURE_CLIENT_SECRET']
-)
-scopes = ['https://graph.microsoft.com/.default']
-
-# Create an API client with the credentials and scopes.
-client = GraphServiceClient(credentials=credential, scopes=scopes)
-
-SUB_ID = os.environ["SUBSCRIPTION_ID"]
-RG_NAME = os.environ["AIM_RES_GRP_ID"]
-url = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01"
-url2 = f"https://management.azure.com/subscriptions/{SUB_ID}/resourceGroups/{RG_NAME}/providers/Microsoft.MachineLearningServices/workspaces/mgh-aimahead-e2-mlw/providers/Microsoft.Authorization/roleDefinitions?api-version=2022-04-01"
-
-# Get the access token for the Azure Management API
-token = credential.get_token("https://management.azure.com/.default")
-
-headers = {
-    "Authorization": "Bearer " + token.token,
-    "Content-Type": "application/json"
-}
+def build_credential() -> ClientSecretCredential:
+    return ClientSecretCredential(
+        tenant_id=os.environ['AZURE_TENANT_ID'],
+        client_id=os.environ['AZURE_CLIENT_ID'],
+        client_secret=os.environ['AZURE_CLIENT_SECRET'],
+    )
 
 
-response = requests.get(url, headers=headers)
-response2 = requests.get(url2, headers=headers)
+def build_graph_client(credential: ClientSecretCredential) -> GraphServiceClient:
+    return GraphServiceClient(
+        credentials=credential,
+        scopes=['https://graph.microsoft.com/.default'],
+    )
 
 
-role_df = pd.DataFrame()
-data = response.json()
-data2 = response2.json()
+# ---------------------------------------------------------------------------
+# Stage 1a – Entra group membership
+# ---------------------------------------------------------------------------
 
-for item in data["value"]:
-    role_data = [x for x in data2["value"] if x['id'] == item["properties"]["roleDefinitionId"]]
-    role_df.at[item["properties"]["principalId"], 'id'] = item["properties"]["principalId"]
-    role_df.at[item["properties"]["principalId"], 'role_name'] = role_data[0]["properties"]["roleName"]
-    role_df.at[item["properties"]["principalId"], 'type'] = item["properties"]["principalType"]
+async def fetch_group_members(client: GraphServiceClient, group_dict: dict) -> pd.DataFrame:
+    """Return a DataFrame (indexed by Entra object ID) of all members across group_dict."""
+    user_df = pd.DataFrame()
 
-user_df = pd.DataFrame({c: pd.Series(dtype='str') for c in list(group_dict.keys())})
-resource_df_b2ai = pd.DataFrame()
-resource_df_aim = pd.DataFrame()
-async def get_group_members():
-    for key in group_dict:
+    for group_key, group_id in group_dict.items():
+        members = await client.groups.by_group_id(group_id).members.get()
+        if not (members and members.value):
+            continue
+        for member in members.value:
+            user = await client.users.by_user_id(member.id).get()
+            if not user:
+                continue
+            print(user.mail)
+            uid = member.id
+            user_df.at[uid, 'name'] = user.display_name
+            user_df.at[uid, 'email'] = user.mail
+            user_df.at[uid, 'principal_name'] = user.user_principal_name
+            user_df.at[uid, 'user_group'] = (
+                'EXTERNAL' if '#' in user.user_principal_name else 'POI/INTERNAL'
+            )
+            user_df.at[uid, 'app_user_name'] = (
+                re.sub(r'[^0-9a-z]+', '', re.sub(r'@.*', '', user.mail.lower()))[:13]
+            )
+            user_df.at[uid, group_key] = group_key
 
-        members = await client.groups.by_group_id(group_dict[key]).members.get()
-        if members and members.value:
-            for member in members.value:
-                user = await client.users.by_user_id(member.id).get()
-                if user:
-                    user_df.at[member.id, 'name'] = user.display_name
-                    user_df.at[member.id, 'email'] = user.mail
-                    user_df.at[member.id, 'principal_name'] = user.user_principal_name
-                    if '#' in user.user_principal_name:
-                        user_df.at[member.id, 'user_group'] = 'EXTERNAL'
-                    else:
-                        user_df.at[member.id, 'user_group'] = 'POI/INTERNAL'
-                    user_df.at[member.id, 'app_user_name'] = re.sub(r"[^0-9a-z]+", "",re.sub(r"@.*", "", user.mail.lower()))[0:13]
-                    user_df.at[member.id, key] = key
-                    print(user.mail)
-
-asyncio.run(get_group_members())
-
-user_df['aim_workspace_person_access'] = False
-
-role_df['role_grouped'] = role_df[['id','role_name']].groupby(['id'])['role_name'].transform(lambda x: ';'.join(x))
-for user_id in user_df.index.tolist():
-    if user_id in role_df["id"].to_list():
-        user_df.at[user_id, 'aim_workspace_person_access'] = True
-        user_df.at[user_id, 'aim_workspace_person_roles'] = role_df.at[user_id, 'role_grouped']
+    return user_df
 
 
-user_df['aim_workspace_group_access'] = False
-unique_col_list = []
-for group_key in group_dict:
-    unique_col = 'aim_workspace_group_roles_' + group_key
-    unique_col_list = unique_col_list + [unique_col]
-    user_df[unique_col] = [""] * len(user_df.index)
-    if group_dict[group_key] in role_df["id"].to_list():
-        user_df['aim_workspace_group_access'][user_df[group_key] == group_key] = True
-        user_df[unique_col][user_df[group_key] == group_key] = role_df.at[group_dict[group_key], 'role_grouped']
+# ---------------------------------------------------------------------------
+# Stage 1b – AML workspace role assignments
+# ---------------------------------------------------------------------------
 
-user_df['aim_workspace_access'] = user_df.aim_workspace_person_access | user_df.aim_workspace_group_access
-print(user_df[user_df['aim_workspace_access']])
-user_df = user_df.mask(user_df == '')
-user_df['entra_groups'] = user_df[list(group_dict.keys())].apply(lambda x: ';'.join(x.dropna().astype(str).values), axis=1)
-unique_col_list = unique_col_list + ["aim_workspace_person_roles"]
-user_df['aim_workspace_roles'] = user_df[unique_col_list].apply(lambda x: ';'.join(x.dropna().astype(str).values), axis=1)
+def get_workspace_roles(
+    credential: ClientSecretCredential,
+    sub_id: str,
+    rg_name: str,
+    workspace_name: str,
+) -> pd.DataFrame:
+    """
+    Return a DataFrame (indexed by principal ID) of roles for an AML workspace.
+    Multiple roles per principal are joined with ';'.
+    """
+    base = (
+        f"https://management.azure.com/subscriptions/{sub_id}"
+        f"/resourceGroups/{rg_name}"
+        f"/providers/Microsoft.MachineLearningServices/workspaces/{workspace_name}"
+        f"/providers/Microsoft.Authorization"
+    )
+    token = credential.get_token("https://management.azure.com/.default")
+    headers = {
+        "Authorization": f"Bearer {token.token}",
+        "Content-Type": "application/json",
+    }
 
-user_df.drop(columns=list(group_dict.keys()), inplace=True)
-user_df.drop(columns=unique_col_list, inplace=True)
+    assignments = requests.get(
+        f"{base}/roleAssignments?api-version=2022-04-01", headers=headers
+    ).json()
+    definitions = requests.get(
+        f"{base}/roleDefinitions?api-version=2022-04-01", headers=headers
+    ).json()
 
-toIterate = user_df.copy()
+    def_map = {d['id']: d['properties']['roleName'] for d in definitions['value']}
 
-# STAGE 2 - read json files and check reverse proxy permissions
+    # Accumulate multiple roles per principal before building the DataFrame
+    principals: dict[str, dict] = {}
+    for item in assignments['value']:
+        props = item['properties']
+        pid = props['principalId']
+        if pid not in principals:
+            principals[pid] = {'id': pid, 'type': props['principalType'], 'roles': []}
+        principals[pid]['roles'].append(def_map.get(props['roleDefinitionId'], 'Unknown'))
 
-access_b2ai = json.load(open('/b2ai_access/data/access.json'))
-access_b2ai_list = [access_b2ai['roles'][role][0] for role in access_b2ai['roles']]
+    if not principals:
+        return pd.DataFrame(columns=['id', 'type', 'role_name'])
+
+    role_df = pd.DataFrame([
+        {'id': p['id'], 'type': p['type'], 'role_name': ';'.join(p['roles'])}
+        for p in principals.values()
+    ]).set_index('id')
+    role_df['id'] = role_df.index  # keep 'id' as a regular column too
+    return role_df
 
 
-access_aim = json.load(open('/aim_access/data/access.json'))
-access_aim_list = [access_aim['roles'][role][0] for role in access_aim['roles']]
+def apply_workspace_roles(
+    user_df: pd.DataFrame,
+    role_df: pd.DataFrame,
+    group_dict: dict,
+    col_prefix: str,
+) -> pd.DataFrame:
+    """
+    Annotate user_df with workspace access flags derived from role_df.
 
-access_dgs = json.load(open('/dgs_access/data/access.json'))
-access_dgs_list = list(access_dgs['roles'].keys())
+    Adds:
+      {col_prefix}_person_access  – user has a direct role assignment
+      {col_prefix}_group_access   – user belongs to a group with a role assignment
+      {col_prefix}_access         – either of the above
+      {col_prefix}_roles          – semicolon-joined role names
+    """
+    person_col = f"{col_prefix}_person_access"
+    group_col  = f"{col_prefix}_group_access"
+    access_col = f"{col_prefix}_access"
+    roles_col  = f"{col_prefix}_roles"
 
-for row in toIterate.itertuples():
-    if row.email in access_b2ai_list:
-        user_df.at[row.Index, 'b2ai_landing'] = 'TRUE'
+    user_df[person_col] = False
+    user_df[group_col]  = False
+
+    role_ids = set(role_df.index)
+    per_role_cols = []
+
+    # Direct (person) role assignments
+    person_roles_col = f"{col_prefix}_person_roles"
+    for uid in user_df.index:
+        if uid in role_ids:
+            user_df.at[uid, person_col] = True
+            user_df.at[uid, person_roles_col] = role_df.at[uid, 'role_name']
+    per_role_cols.append(person_roles_col)
+
+    # Group-level role assignments
+    for group_key, group_id in group_dict.items():
+        gcol = f"{col_prefix}_group_roles_{group_key}"
+        per_role_cols.append(gcol)
+        user_df[gcol] = ''
+        if group_id not in role_ids or group_key not in user_df.columns:
+            continue
+        mask = user_df[group_key] == group_key
+        user_df.loc[mask, group_col] = True
+        user_df.loc[mask, gcol] = role_df.at[group_id, 'role_name']
+
+    user_df[access_col] = user_df[person_col] | user_df[group_col]
+
+    # Collapse all per-role columns into one
+    user_df[roles_col] = user_df[per_role_cols].apply(
+        lambda x: ';'.join(dict.fromkeys(v for v in x.dropna().astype(str) if v)),
+        axis=1,
+    )
+    user_df.drop(columns=per_role_cols, inplace=True)
+    return user_df
+
+
+# ---------------------------------------------------------------------------
+# Stage 2 – Reverse-proxy / landing access JSON files
+# ---------------------------------------------------------------------------
+
+def check_access_file(
+    user_df: pd.DataFrame,
+    path: str,
+    col_name: str,
+    key_col: str = 'email',
+    use_keys: bool = False,
+) -> pd.DataFrame:
+    """
+    Mark user_df[col_name] as 'TRUE'/'FALSE' based on whether user_df[key_col]
+    appears in the access JSON at path.
+
+    JSON shapes supported:
+      {"roles": {"role_name": [identifier, ...], ...}}  use_keys=False (default)
+        → takes the first element of each role's list as the allowed identifier
+      {"roles": {"identifier": ..., ...}}               use_keys=True
+        → uses the role keys themselves as the allowed identifiers (e.g. DGS)
+    """
+    data = json.load(open(path))
+    roles = data['roles']
+    if use_keys:
+        allowed = set(roles.keys())
     else:
-        user_df.at[row.Index, 'b2ai_landing'] = 'FALSE'
-    if row.email in access_aim_list:
-        user_df.at[row.Index, 'aim_landing'] = 'TRUE'
-    else:
-        user_df.at[row.Index, 'aim_landing'] = 'FALSE'
-    if row.principal_name in access_dgs_list:
-        user_df.at[row.Index, 'dgs_landing'] = 'TRUE'
-    else:
-        user_df.at[row.Index, 'dgs_landing'] = 'FALSE'
+        allowed = {entries[0] for entries in roles.values() if entries}
+
+    user_df[col_name] = user_df[key_col].isin(allowed).map({True: 'TRUE', False: 'FALSE'})
+    return user_df
 
 
-# STAGE 3 - read resources in resource groups and check for lab instances
+# ---------------------------------------------------------------------------
+# Stage 3 – Azure resource group lab instances
+# ---------------------------------------------------------------------------
 
-credential = DefaultAzureCredential()
-resource_client = ResourceManagementClient(credential, os.environ['SUBSCRIPTION_ID'] )
-
-resource_list_b2ai = resource_client.resources.list_by_resource_group(
-    os.environ['B2AI_RES_GRP_ID'], expand = "createdTime,changedTime")
-
-resource_list_aim = resource_client.resources.list_by_resource_group(
-    os.environ['AIM_RES_GRP_ID'], expand = "createdTime,changedTime")
-
-for resource in resource_list_b2ai:
-    resource_df_b2ai.at[resource.id, 'name'] = resource.name
-    resource_df_b2ai.at[resource.id, 'type'] = resource.type
-    resource_df_b2ai.at[resource.id, 'created'] = resource.created_time
-
-for resource in resource_list_aim:
-    resource_df_aim.at[resource.id, 'name'] = resource.name
-    resource_df_aim.at[resource.id, 'type'] = resource.type
-    resource_df_aim.at[resource.id, 'created'] = resource.created_time
-
-for row in toIterate.itertuples():
-    for row2 in resource_df_b2ai.itertuples():
-        if 'ca-b2ai-lab-' + row.app_user_name == row2.name:
-            user_df.at[row.Index, 'b2ai_firefox'] = 'TRUE'
-            user_df.at[row.Index, 'b2ai_firefox_created'] = row2.created
-            break
-        else:
-            user_df.at[row.Index, 'b2ai_firefox'] = 'FALSE'
-    for row3 in resource_df_aim.itertuples():
-        if 'ca-aimahead-lab-' + row.app_user_name == row3.name:
-            user_df.at[row.Index, 'aim_firefox'] = 'TRUE'
-            user_df.at[row.Index, 'aim_firefox_created'] = row3.created
-            break
-        else:
-            user_df.at[row.Index, 'aim_firefox'] = 'FALSE'
+def get_resource_df(credential, sub_id: str, rg_name: str) -> pd.DataFrame:
+    """Return a DataFrame of resources in a resource group, indexed by resource ID."""
+    client = ResourceManagementClient(credential, sub_id)
+    rows = []
+    for resource in client.resources.list_by_resource_group(
+        rg_name, expand="createdTime,changedTime"
+    ):
+        rows.append({'id': resource.id, 'name': resource.name,
+                     'type': resource.type, 'created': resource.created_time})
+    return pd.DataFrame(rows).set_index('id') if rows else pd.DataFrame(
+        columns=['name', 'type', 'created']
+    )
 
 
+def check_lab_instances(
+    user_df: pd.DataFrame,
+    resource_df: pd.DataFrame,
+    prefix: str,
+    col_name: str,
+) -> pd.DataFrame:
+    """
+    For each user, check whether a container app named '<prefix><app_user_name>'
+    exists in resource_df. Sets col_name ('TRUE'/'FALSE') and col_name+'_created'.
+    """
+    name_to_created = resource_df.set_index('name')['created'].to_dict()
+
+    user_df[col_name] = 'FALSE'
+    user_df[col_name + '_created'] = None
+
+    for uid, row in user_df.iterrows():
+        target = prefix + str(row.get('app_user_name', ''))
+        if target in name_to_created:
+            user_df.at[uid, col_name] = 'TRUE'
+            user_df.at[uid, col_name + '_created'] = name_to_created[target]
+
+    return user_df
 
 
-user_df['loaded_at'] = [datetime.datetime.now(datetime.timezone.utc)] * user_df.shape[0]
+# ---------------------------------------------------------------------------
+# Finalize and export
+# ---------------------------------------------------------------------------
 
-# Save to shared volume
-output_dir = os.environ.get('OUTPUT_DIR', '/az_users/data')
-os.makedirs(output_dir, exist_ok=True)
-user_df.to_csv(os.path.join(output_dir, 'personnel_metadata.csv'), index=False)
+def finalize_user_df(user_df: pd.DataFrame, group_dict: dict) -> pd.DataFrame:
+    """Collapse per-group membership columns into entra_groups, then drop them."""
+    group_keys = [k for k in group_dict if k in user_df.columns]
+    user_df = user_df.mask(user_df == '')
+    user_df['entra_groups'] = user_df[group_keys].apply(
+        lambda x: ';'.join(x.dropna().astype(str).values), axis=1
+    )
+    user_df.drop(columns=group_keys, inplace=True)
+    return user_df
 
-# Write refresh timestamp
-timestamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-with open(os.path.join(output_dir, 'last_updated.txt'), 'w') as f:
-    f.write(timestamp)
 
-print(f"Data saved to {output_dir}/personnel_metadata.csv at {timestamp}")
+def save_output(user_df: pd.DataFrame, output_dir: str) -> None:
+    os.makedirs(output_dir, exist_ok=True)
+    user_df.to_csv(os.path.join(output_dir, 'personnel_metadata.csv'), index=False)
+    timestamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    with open(os.path.join(output_dir, 'last_updated.txt'), 'w') as f:
+        f.write(timestamp)
+    print(f"Data saved to {output_dir}/personnel_metadata.csv at {timestamp}")
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    group_dict = {
+        "CHORUS":   os.environ['CHORUS_GROUP_ID'],
+        "AWSR_A":   os.environ['AWSR_A_GROUP_ID'],
+        "AWSR_G":   os.environ['AWSR_G_GROUP_ID'],
+        "DATATH":   os.environ['DATATH_GROUP_ID'],
+        "CHLNG":    os.environ['CHLNG_GROUP_ID'],
+        "SFTLNCH":  os.environ['SFTLNCH_GROUP_ID'],
+        "AIMAHEAD": os.environ['AIMAHEAD_GROUP_ID'],
+    }
+    sub_id       = os.environ['SUBSCRIPTION_ID']
+    aim_rg       = os.environ['AIM_RES_GRP_ID']
+    b2ai_rg      = os.environ['B2AI_RES_GRP_ID']
+    aim_workspace = "mgh-aimahead-e2-mlw"
+
+    # Stage 1 – group membership + workspace roles
+    credential   = build_credential()
+    graph_client = build_graph_client(credential)
+
+    user_df = asyncio.run(fetch_group_members(graph_client, group_dict))
+
+    role_df = get_workspace_roles(credential, sub_id, aim_rg, aim_workspace)
+    user_df = apply_workspace_roles(user_df, role_df, group_dict, col_prefix='aim_workspace')
+    print(user_df[user_df['aim_workspace_access']])
+
+    # Stage 2 – landing / reverse-proxy access
+    user_df = check_access_file(user_df, '/b2ai_access/data/access.json', 'b2ai_landing')
+    user_df = check_access_file(user_df, '/aim_access/data/access.json',  'aim_landing')
+    user_df = check_access_file(
+        user_df, '/dgs_access/data/access.json', 'dgs_landing',
+        key_col='principal_name', use_keys=True,
+    )
+
+    # Stage 3 – lab container instances
+    default_cred   = DefaultAzureCredential()
+    resource_df_b2ai = get_resource_df(default_cred, sub_id, b2ai_rg)
+    resource_df_aim  = get_resource_df(default_cred, sub_id, aim_rg)
+
+    user_df = check_lab_instances(user_df, resource_df_b2ai, 'ca-eng-lab-',    'b2ai_firefox')
+    user_df = check_lab_instances(user_df, resource_df_aim,  'ca-aimahead-lab-', 'aim_firefox')
+
+    # Finalize and save
+    user_df['loaded_at'] = datetime.datetime.now(datetime.timezone.utc)
+    user_df = finalize_user_df(user_df, group_dict)
+    save_output(user_df, os.environ.get('OUTPUT_DIR', '/az_users/data'))
+
+
+if __name__ == '__main__':
+    main()

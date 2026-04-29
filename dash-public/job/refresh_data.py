@@ -348,10 +348,10 @@ def stage_export_csvs():
     psql("ohdsi", copy_to=f"\\copy public.all_metadata_sample TO '{DELIV_DIR}/sample.csv' CSV HEADER")
 
     # by_site_landing.csv
-    psql("postgres", copy_to=f"\\copy public.by_site_metadata TO '{DELIV_DIR}/by_site.csv' CSV HEADER")
+    psql("postgres", copy_to=f"\\copy public.by_site_metadata TO '{DELIV_DIR}/by_site_landing.csv' CSV HEADER")
 
     # sample_landing.csv
-    psql("postgres", copy_to=f"\\copy public.all_metadata_sample TO '{DELIV_DIR}/sample.csv' CSV HEADER")
+    psql("postgres", copy_to=f"\\copy public.all_metadata_sample TO '{DELIV_DIR}/sample_landing.csv' CSV HEADER")
 
 
     # omop_counts.csv  – per-site person and note counts

@@ -52,7 +52,8 @@ CREATE TABLE backbone.variable_source
     value_as_number_col	 text    NULL,
     value_source_value	 text    NULL,
     unit_concept_id	     text    NULL,
-    value_as_concept_id  text    NULL
+    value_as_concept_id  text    NULL,
+    dataset_type         text    NULL
 );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE backbone.attr_index
@@ -149,8 +150,8 @@ CREATE SEQUENCE IF NOT EXISTS geom_template_geom_record_id_seq
 	CACHE 1
 	NO CYCLE;-- attr_index definition
 
-COPY data_source FROM '/csv/DATA_SRC_SIMPLE.csv' DELIMITER E'|' CSV HEADER;
-COPY variable_source FROM '/csv/VRBL_SRC_SIMPLE.csv' DELIMITER E'|' CSV HEADER;
+COPY data_source FROM '/csv/DATA_SRC_SIMPLE.csv' CSV HEADER;
+COPY variable_source FROM '/csv/VRBL_SRC_SIMPLE.csv' CSV HEADER;
 
 
 truncate geom_index;
@@ -662,11 +663,77 @@ CREATE TABLE working.location
     address_2             varchar(50),
     city                  varchar(50),
     state                 varchar(2),
-    zip                   varchar(9),
+    zip                   varchar(10),
     county                varchar(20),
     location_source_value varchar(50),
     country_concept_id    integer,
     country_source_value  varchar(80),
     latitude              NUMERIC,
-    longitude             NUMERIC
+    longitude             NUMERIC,
+    modifier_source_value varchar(50)
 );
+
+CREATE OR REPLACE FUNCTION working.map_sdoh_year(dataset_type text, encounter_year integer)
+RETURNS integer
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF encounter_year IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    CASE upper(coalesce(dataset_type, ''))
+        WHEN 'SVI' THEN
+            IF encounter_year <= 2013 THEN
+                RETURN 2010;
+            ELSIF encounter_year <= 2015 THEN
+                RETURN 2014;
+            ELSIF encounter_year <= 2017 THEN
+                RETURN 2016;
+            ELSIF encounter_year <= 2019 THEN
+                RETURN 2018;
+            ELSIF encounter_year <= 2021 THEN
+                RETURN 2020;
+            ELSE
+                RETURN 2022;
+            END IF;
+        WHEN 'EJI' THEN
+            IF encounter_year <= 2023 THEN
+                RETURN 2022;
+            ELSE
+                RETURN 2024;
+            END IF;
+        WHEN 'ADI' THEN
+            IF encounter_year <= 2019 THEN
+                RETURN 2015;
+            ELSIF encounter_year <= 2022 THEN
+                RETURN 2020;
+            ELSE
+                RETURN 2023;
+            END IF;
+        WHEN 'SDI' THEN
+            IF encounter_year <= 2015 THEN
+                RETURN 2012;
+            ELSIF encounter_year = 2016 THEN
+                RETURN 2016;
+            ELSIF encounter_year = 2017 THEN
+                RETURN 2017;
+            ELSIF encounter_year = 2018 THEN
+                RETURN 2018;
+            ELSE
+                RETURN 2019;
+            END IF;
+        WHEN 'AHRQ' THEN
+            IF encounter_year <= 2009 THEN
+                RETURN 2009;
+            ELSIF encounter_year >= 2023 THEN
+                RETURN 2023;
+            ELSE
+                RETURN encounter_year;
+            END IF;
+        ELSE
+            RETURN NULL;
+    END CASE;
+END;
+$$;

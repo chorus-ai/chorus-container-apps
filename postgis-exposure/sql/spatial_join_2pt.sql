@@ -17,47 +17,21 @@ INSERT INTO working.external_exposure(external_exposure_id,
                                       operator_concept_id,
                                       value_as_number,
                                       value_as_concept_id,
-                                      unit_concept_id)
+                                      unit_concept_id,
+                                      sdoh_data_year,
+                                      sdoh_year_map_status)
 select row_number() OVER() + (SELECT count(*) FROM working.external_exposure)        AS external_exposure_id
      , gol.location_id                                                               AS location_id
-     , CASE
-           WHEN gol.domain_id = 1147314
-               THEN gol.entity_id
-           ELSE 0
-       END                                                                           AS person_id
+     , gol.entity_id                                                                  AS person_id
      , CASE
            WHEN NULLIF(att.attr_concept_id, '') ~ '^[-+]?[0-9]+([.][0-9]+)?$'
                THEN att.attr_concept_id::float::int
          ELSE 0
      END                                                                             AS exposure_concept_id
-    , CASE
-       WHEN working.map_sdoh_year(
-         att.dataset_type,
-         COALESCE(EXTRACT(YEAR FROM gol.start_date)::integer, EXTRACT(YEAR FROM gol.end_date)::integer)
-       ) IS NOT NULL THEN att.attr_start_date::date
-       ELSE GREATEST(att.attr_start_date::date, gol.start_date)
-      END                                                                            AS exposure_start_date
-    , CASE
-       WHEN working.map_sdoh_year(
-         att.dataset_type,
-         COALESCE(EXTRACT(YEAR FROM gol.start_date)::integer, EXTRACT(YEAR FROM gol.end_date)::integer)
-       ) IS NOT NULL THEN att.attr_start_date::timestamp
-       ELSE GREATEST(att.attr_start_date::timestamp, gol.start_date::timestamp)
-      END                                                                            AS exposure_start_datetime
-    , CASE
-       WHEN working.map_sdoh_year(
-         att.dataset_type,
-         COALESCE(EXTRACT(YEAR FROM gol.start_date)::integer, EXTRACT(YEAR FROM gol.end_date)::integer)
-       ) IS NOT NULL THEN att.attr_end_date::date
-       ELSE LEAST(att.attr_end_date::date, gol.end_date)
-      END                                                                            AS exposure_end_date
-    , CASE
-       WHEN working.map_sdoh_year(
-         att.dataset_type,
-         COALESCE(EXTRACT(YEAR FROM gol.start_date)::integer, EXTRACT(YEAR FROM gol.end_date)::integer)
-       ) IS NOT NULL THEN att.attr_end_date::timestamp
-       ELSE LEAST(att.attr_end_date::timestamp, gol.end_date::timestamp)
-      END                                                                            AS exposure_end_datetime
+    , gol.start_date                                                                  AS exposure_start_date
+    , gol.start_date::timestamp                                                       AS exposure_start_datetime
+    , gol.end_date                                                                    AS exposure_end_date
+    , gol.end_date::timestamp                                                         AS exposure_end_datetime
      , 0                                                                             AS exposure_type_concept_id -- TODO add mapping for type concepts
      , 0                                                                             AS exposure_relationship_concept_id -- TODO add mapping for relationships
      , CASE
@@ -86,6 +60,21 @@ select row_number() OVER() + (SELECT count(*) FROM working.external_exposure)   
            THEN att.unit_concept_id::float::integer
          ELSE NULL
        END                                                                           AS unit_concept_id
+     , working.map_sdoh_year(
+         att.dataset_type,
+         EXTRACT(YEAR FROM gol.start_date)::integer
+       )                                                                             AS sdoh_data_year
+     , CASE
+         WHEN working.map_sdoh_year(
+                att.dataset_type,
+                EXTRACT(YEAR FROM gol.start_date)::integer
+              ) IS NULL THEN 'not_applicable'
+         WHEN working.map_sdoh_year(
+                att.dataset_type,
+                EXTRACT(YEAR FROM gol.start_date)::integer
+              ) = EXTRACT(YEAR FROM gol.start_date)::integer THEN 'exact_year'
+         ELSE 'nearest_year'
+       END                                                                           AS sdoh_year_map_status
 from (SELECT *, 1 AS join_all FROM backbone.variable_source WHERE variable_source_id = @VAR_ID) att
          inner join (
            SELECT

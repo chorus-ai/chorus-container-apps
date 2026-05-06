@@ -653,7 +653,9 @@ CREATE TABLE working.external_exposure
     operator_concept_id                integer,
     value_as_number                    float,
     value_as_concept_id                integer,
-    unit_concept_id                    integer
+    unit_concept_id                    integer,
+    sdoh_data_year                     integer,
+    sdoh_year_map_status               varchar(20)
 );
 
 CREATE TABLE working.location

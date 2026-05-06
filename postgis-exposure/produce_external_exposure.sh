@@ -142,7 +142,7 @@ LOCATION_HISTORY_SUPPORTED_COLS=(
   start_date
   end_date
 )
-LOCATION_HISTORY_REQUIRED_COLS=(location_id start_date end_date)
+LOCATION_HISTORY_REQUIRED_COLS=(location_id start_date)
 
 get_csv_header_columns "/source/LOCATION.csv"
 validate_supported_columns "LOCATION.csv" "${LOCATION_SUPPORTED_COLS[@]}"
@@ -287,43 +287,55 @@ SELECT
   end_date
 FROM (
   SELECT
-    CASE
-      WHEN NULLIF(location_id, '') ~ '^[0-9]+$' THEN NULLIF(location_id, '')::integer
-      ELSE NULL
-    END AS location_id,
-    CASE
-      WHEN NULLIF(relationship_type_concept_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(relationship_type_concept_id, '')::integer
-      ELSE NULL
-    END AS relationship_type_concept_id,
-    CASE
-      WHEN NULLIF(domain_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(domain_id, '')::integer
-      ELSE NULL
-    END AS domain_id,
-    CASE
-      WHEN NULLIF(entity_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(entity_id, '')::integer
-      ELSE NULL
-    END AS entity_id,
-    CASE
-      WHEN NULLIF(start_date, '') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN NULLIF(start_date, '')::date
-      WHEN NULLIF(start_date, '') ~ '^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$' THEN to_date(NULLIF(start_date, ''), 'MM/DD/YYYY')
-      ELSE NULL
-    END AS start_date,
-    CASE
-      WHEN NULLIF(end_date, '') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN NULLIF(end_date, '')::date
-      WHEN NULLIF(end_date, '') ~ '^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$' THEN to_date(NULLIF(end_date, ''), 'MM/DD/YYYY')
-      ELSE NULL
-    END AS end_date
-  FROM working.location_history_raw
+    parsed.location_id,
+    parsed.relationship_type_concept_id,
+    parsed.domain_id,
+    parsed.entity_id,
+    parsed.start_date,
+    COALESCE(
+      CASE
+        WHEN lower(NULLIF(parsed.end_date_raw, '')) IN ('na', 'null') THEN NULL
+        WHEN NULLIF(parsed.end_date_raw, '') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN NULLIF(parsed.end_date_raw, '')::date
+        WHEN NULLIF(parsed.end_date_raw, '') ~ '^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$' THEN to_date(NULLIF(parsed.end_date_raw, ''), 'MM/DD/YYYY')
+        ELSE NULL
+      END,
+      make_date(EXTRACT(YEAR FROM parsed.start_date)::integer, 12, 31)
+    ) AS end_date
+  FROM (
+    SELECT
+      CASE
+        WHEN NULLIF(location_id, '') ~ '^[0-9]+$' THEN NULLIF(location_id, '')::integer
+        ELSE NULL
+      END AS location_id,
+      CASE
+        WHEN NULLIF(relationship_type_concept_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(relationship_type_concept_id, '')::integer
+        ELSE NULL
+      END AS relationship_type_concept_id,
+      CASE
+        WHEN NULLIF(domain_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(domain_id, '')::integer
+        ELSE NULL
+      END AS domain_id,
+      CASE
+        WHEN NULLIF(entity_id, '') ~ '^[-]?[0-9]+$' THEN NULLIF(entity_id, '')::integer
+        ELSE NULL
+      END AS entity_id,
+      CASE
+        WHEN NULLIF(start_date, '') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' THEN NULLIF(start_date, '')::date
+        WHEN NULLIF(start_date, '') ~ '^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$' THEN to_date(NULLIF(start_date, ''), 'MM/DD/YYYY')
+        ELSE NULL
+      END AS start_date,
+      end_date AS end_date_raw
+    FROM working.location_history_raw
+  ) parsed
 ) cleaned
 WHERE location_id IS NOT NULL
   AND start_date IS NOT NULL
-  AND end_date IS NOT NULL
   AND end_date >= start_date;"
 check_status "Normalizing LOCATION_HISTORY.csv"
 
 LOC_HIST_COUNT=$(psql -U postgres -t -c "SELECT count(*) FROM working.location_history" | xargs)
 LOC_HIST_SKIPPED=$((RAW_LOC_HIST_COUNT - LOC_HIST_COUNT))
-echo "Loaded ${LOC_HIST_COUNT} valid LOCATION_HISTORY rows; skipped ${LOC_HIST_SKIPPED} rows missing required timing fields."
+echo "Loaded ${LOC_HIST_COUNT} valid LOCATION_HISTORY rows; skipped ${LOC_HIST_SKIPPED} rows missing required start_date or invalid timing."
 
 # Verify load
 if [ "$LOC_COUNT" -eq "0" ]; then
@@ -343,7 +355,26 @@ fi
 echo "Loaded $LOC_HIST_COUNT location history rows."
 
 psql -v ON_ERROR_STOP=1 -U postgres -c "DROP TABLE IF EXISTS working.location_merge;"
-psql -v ON_ERROR_STOP=1 -U postgres -c "CREATE TABLE working.location_merge AS (SELECT b.*, a.latitude, a.longitude, a.modifier_source_value FROM working.location a INNER JOIN working.location_history b ON a.location_id = b.location_id);"
+psql -v ON_ERROR_STOP=1 -U postgres -c "
+CREATE TABLE working.location_merge AS
+SELECT
+  b.location_id,
+  b.relationship_type_concept_id,
+  b.domain_id,
+  b.entity_id,
+  GREATEST(b.start_date, gs.year_start::date) AS start_date,
+  LEAST(b.end_date, (gs.year_start + interval '1 year - 1 day')::date) AS end_date,
+  a.latitude,
+  a.longitude,
+  a.modifier_source_value
+FROM working.location a
+INNER JOIN working.location_history b
+  ON a.location_id = b.location_id
+CROSS JOIN LATERAL generate_series(
+  date_trunc('year', b.start_date)::date,
+  date_trunc('year', b.end_date)::date,
+  interval '1 year'
+) AS gs(year_start);"
 check_status "Merging location tables"
 
 psql -v ON_ERROR_STOP=1 -U postgres -c "ALTER TABLE working.location_merge ADD COLUMN geom geometry(Point, 4326);"

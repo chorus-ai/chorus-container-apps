@@ -15,8 +15,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tmp
-RUN git clone https://github.com/AustralianCancerDataNetwork/OMOP_Alchemy.git
-RUN pip install /tmp/OMOP_Alchemy
 WORKDIR /opt/etl
 RUN pip install pip==23.2.1 setuptools==68.1.2
 #COPY requirements.txt .

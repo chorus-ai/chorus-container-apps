@@ -1,6 +1,7 @@
 FROM postgis/postgis:16-3.4-alpine
 
 RUN apk add libintl gdal gdal-tools gdal-driver-pg
+RUN apk add bash
 
 RUN mkdir /csv && mkdir /app && mkdir /sql
 

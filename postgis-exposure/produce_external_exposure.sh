@@ -379,6 +379,7 @@ check_status "Merging location tables"
 
 psql -v ON_ERROR_STOP=1 -U postgres -c "ALTER TABLE working.location_merge ADD COLUMN geom geometry(Point, 4326);"
 psql -v ON_ERROR_STOP=1 -U postgres -c "UPDATE working.location_merge SET geom = ST_SetSRID(ST_POINT(longitude, latitude), 4326);"
+psql -v ON_ERROR_STOP=1 -U postgres -c "CREATE INDEX IF NOT EXISTS location_merge_geom_gist_idx ON working.location_merge USING GIST (geom);"
 echo "LOCATION and LOCATION_HISTORY loaded and merged! Launching ingestion of datasets (${DATA_SOURCES})..."
 
 rm -rf /shapes

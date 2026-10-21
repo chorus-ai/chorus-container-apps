@@ -109,6 +109,25 @@ function get_ive_backend(r) {
     return `${backend}/signin?email=${email}&ts=${ts}&sig=${sig}`;
 }
 
+// Signed identity for IVe at /ivecompass/ (IVe's server/services/proxyAuth.js
+// checks it): "<ts>.<sig>" with sig = HMAC-SHA256(secret, "<user>.<ts>"), the
+// same scheme as get_ive_backend, sent on every request as X-Chorus-Auth next
+// to X-Chorus-User. No default secret - without one (32+ chars) this returns
+// "", nginx sends no header and IVe falls back to its own sign-in.
+function get_ivecompass_auth(r) {
+    const secret = r.variables.chorus_ivecompass_secret || "";
+    const user = r.variables.authenticated_user || "";
+    if (secret.length < 32 || !user || user === "-") {
+        return "";
+    }
+    const ts = Date.now().toString();
+    var crypto = require('crypto');
+    const sig = crypto.createHmac('sha256', secret)
+                      .update(`${user}.${ts}`)
+                      .digest('hex');
+    return `${ts}.${sig}`;
+}
+
 function get_chorus_lab_backend(r) {
     let template = r.variables.chorus_lab_backend_template,
         uri = r.variables.uri,
@@ -136,4 +155,4 @@ function get_chorus_ecl_backend(r) {
     return end_uri;
 }
 
-export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend, get_chorus_ecl_backend, get_ive_backend };
+export default { authorize, whoami, redirect_to_default_lab, redirect_to_vmapp, get_chorus_lab_backend, get_chorus_sql_backend, get_chorus_ecl_backend, get_ive_backend, get_ivecompass_auth };

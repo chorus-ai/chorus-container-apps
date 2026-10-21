@@ -13,6 +13,7 @@ server {
     set $chorus_ecl_backend_template ${CHORUS_ECL_BACKEND_TEMPLATE};
     set $chorus_iveapi_backend ${CHORUS_IVEAPI_BACKEND};
     set $chorus_iveapi_secret ${CHORUS_IVEAPI_SECRET};
+    set $chorus_ivecompass_secret "${CHORUS_IVECOMPASS_SECRET}";
     set $authenticated_user $http_x_ms_client_principal_name;
     if ($authenticated_user = '') {
         set $authenticated_user ${REMOTE_USER};
@@ -134,5 +135,29 @@ server {
         # LLM SQL generation and queries over the Azure OMOP link can take minutes
         proxy_read_timeout 600s;
         proxy_send_timeout 600s;
+    }
+
+    # IVe for OMOPCompass (on the same VM). IVe is built with
+    # VITE_BASE_PATH=/ivecompass/, so the prefix is stripped here. Users are
+    # already signed in to this proxy; get_ivecompass_auth signs who they are
+    # (X-Chorus-User + X-Chorus-Auth, replacing anything the client sent) and
+    # IVe signs them in from that - no second login.
+    location = /ivecompass {
+        return 301 /ivecompass/;
+    }
+
+    location /ivecompass/ {
+        js_set $ivecompass_auth http.get_ivecompass_auth;
+        proxy_pass ${CHORUS_IVECOMPASS_BACKEND};
+        proxy_set_header X-Chorus-User      $authenticated_user;
+        proxy_set_header X-Chorus-Auth      $ivecompass_auth;
+        proxy_set_header X-Forwarded-Proto  https;
+        proxy_set_header X-Forwarded-Host   $host;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 180s;
+        proxy_send_timeout 180s;
     }
 }

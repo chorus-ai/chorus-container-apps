@@ -39,5 +39,7 @@ ENV SERVER_PORT=8080 \
     CHORUS_DASH_USERS_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_IVEAPI_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
     CHORUS_OMOPCOMPASS_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
+    CHORUS_IVECOMPASS_BACKEND=http://127.0.0.1:\$server_port/undefined/ \
+    CHORUS_IVECOMPASS_SECRET= \
     CHORUS_IVEAPI_SECRET=dev_secret \
     NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1

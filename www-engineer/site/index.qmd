@@ -338,6 +338,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ::: {.tool-card}
 <div class="tool-icon">
+<svg role="img" aria-label="OMOPCompass" viewBox="0 0 24 24" height="40px" width="40px" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" fill="none" stroke="#ff9f43" stroke-width="2"/>
+  <polygon points="15.5,8.5 13.4,13.4 8.5,15.5 10.6,10.6" fill="#ff9f43"/>
+  <circle cx="12" cy="12" r="1.2" fill="white"/>
+</svg>
+</div>
+<div class="tool-content">
+  <h3><a href="/omopcompass/">OMOPCompass</a></h3>
+  <p>Ask questions of the OMOP data in plain language: find concepts, generate and run cohort SQL, and open cohorts in IVe.</p>
+  <a href="/omopcompass/" class="cta">Get Started</a>
+</div>
+:::
+
+::: {.tool-card}
+<div class="tool-icon">
   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoPxZIXiHa_Sv6N00XtL3WcGoE9-1yxekeyA&s" alt="dash Logo" style="width: 40px; height: 40px; border-radius: 8px; background-color: white;" />
 </div>
 <div class="tool-content">
